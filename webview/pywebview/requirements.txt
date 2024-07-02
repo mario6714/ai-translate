@@ -1,0 +1,6 @@
+pywebview
+pyperclip
+pywin32
+openpyxl
+flask
+pyinstaller
