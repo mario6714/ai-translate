@@ -4,7 +4,7 @@
 download it in the releases section
 
 ### How it works
-it receives text through clipboard changes or a configured websocket server, and then translate it with AI models. it is this way so it could receive text from tools like textractor.
+it receives text through clipboard changes or a configured websocket server, and then translate it with AI models. it is this way so it could receive text from tools like [textractor](https://github.com/Artikash/Textractor).
 
 #### AI Models
 in all models available you can get a free API key. I want this repo to be also a hub of nice and free AI models. if you have a suggestion of a model with a good provider, feel free to suggest me or open a PR.
@@ -42,3 +42,8 @@ $ npm run pack
 
 ## todo
 translate a game
+add providers¹
+finish the webview in go
+-
+implement drag and drop models
+add providers²
