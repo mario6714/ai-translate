@@ -1,0 +1,7 @@
+textarea:focus-visible {
+    outline: 0;
+}
+
+div:has(textarea) {
+    border-bottom: "1px solid #4493F8"
+}
