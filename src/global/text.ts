@@ -29,15 +29,17 @@ export const [ hasEnabledModels, setEnabled ] = createSignal<number>(0)
 
 
 async function onTextChange( {window_title, text}: { window_title: string, text: string } ) { 
-    if ( window_title && (window_title !== global_text().window_title) ) { global_text().window_title = window_title }
-    const translation = await QueryTranslation({ 
-        window_title,
-        originalText: text
-    } )
-    if(translation) { global_text().translated = translation }
-    else if (global_text().translated) { global_text().translated = null }
-    global_text().untranslated = text
-    setGlobalText({ ...global_text() })
+    if (text?.length) {
+        if ( window_title && (window_title !== global_text().window_title) ) { global_text().window_title = window_title }
+        const translation = await QueryTranslation({ 
+            window_title,
+            originalText: text
+        } )
+        if(translation) { global_text().translated = translation }
+        else if (global_text().translated) { global_text().translated = null }
+        global_text().untranslated = text
+        setGlobalText({ ...global_text() })
+    }
 }
 
 export function getEnabled() { 
