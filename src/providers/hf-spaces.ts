@@ -43,13 +43,11 @@ class HfSpace extends CustomSSE {
 
 
 export async function HfSpaceHandler(text: string, model_name: string, tag: HTMLTextAreaElement): Promise<string> { 
-    // https://sfun-hf-llm-api.hf.space/api/v1/chat/completions
     // https://shuddho-hfllmapi.hf.space/api/v1/chat/completions
-    // https://hansimov-hf-llm-api.hf.space/api/v1/chat/completions
     // https://hansimov-hf-llm-api.hf.space/api/v1/chat/completions
     const API_KEY = configs().providers?.HfSpaces?.api_key
     if (!text || !tag || !model_name || !API_KEY) { return "" }
-    const hf = new HfSpace("https://shuddho-hfllmapi.hf.space/api/v1/chat/completions", { 
+    const hf = new HfSpace("https://hansimov-hf-llm-api.hf.space/api/v1/chat/completions", { 
         method: "POST",
         headers: { 
             "Authorization": "Bearer"+" "+API_KEY, 
@@ -97,6 +95,10 @@ export default {
             owned_by: "OpenAI",
             enabled: undefined
         }, {
+            name: "yi-1.5-34b",
+            owned_by: "01-ai",
+            enabled: undefined
+        }, {
             name: "mixtral-8x7b",
             owned_by: "mistralai",
             enabled: undefined
@@ -111,5 +113,4 @@ export default {
 
 // https://huggingface.co/spaces/Hansimov/hf-llm-api
 // https://huggingface.co/spaces/Shuddho/HFLLMAPI
-// https://huggingface.co/spaces/sfun/hf-llm-api
-// https://huggingface.co/spaces/sfun/hf-llm-api
+// https://huggingface.co/spaces/kenken999/fastapi_django_main
