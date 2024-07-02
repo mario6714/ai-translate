@@ -24,7 +24,7 @@ export const [ global_text, setGlobalText ] = createSignal<IGlobalText>({
     untranslated: "とある王妃の閨事～貞淑な妻はいかにして孕んだか～"
 })
 
-export const [ hasEnabledModels, setEnabled ] = createSignal<number>(0)
+export const [ enabledModels, setEnabledM ] = createSignal<IExtendedModel[] | null>(null)
 
 
 
@@ -47,11 +47,14 @@ export function getEnabled() {
     Object.keys(configs().providers).forEach(provider_name => { 
         const enabled = configs().providers[provider_name as TProviderNames]?.models?.filter( (m: IModel) => m.enabled)
         .map(m => Object.assign( {...m}, {provider_name}) )
-        if (enabled?.length && enabled) { enabled_models.push(...enabled) }
+        .sort( (b, a) => {
+            if (a.index && b.index) { return b.index < a.index? -1 : 0 }
+            return 0
+        } )
+        if (enabled?.length) { enabled_models.push(...enabled) }
     } )
 
-    if (enabled_models?.length && hasEnabledModels()!==1) { setEnabled(1) }
-    else if (hasEnabledModels()===0) { setEnabled(-1) }
+    setEnabledM(enabled_models)
     return enabled_models
 }
 

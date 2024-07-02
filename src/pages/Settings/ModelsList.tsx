@@ -1,6 +1,7 @@
 import { For, createEffect } from "solid-js"
 import { configs, save_config, setConfigs } from "../../global/configs"
-import Models, { IModel, IProvider, TProviderNames } from "../../providers"
+import { enabledModels } from "../../global/text"
+import Provider, { IModel, IProvider, TProviderNames } from "../../providers"
 
 
 
@@ -10,9 +11,9 @@ async function change_handler({provider, model}: {
 } ) { //console.log(provider, model)
 
 const provider_name = provider.provider_name as TProviderNames
-const newConfigs = {...configs()}
+const newConfigs = { ...configs() }
 const addedModel = newConfigs.getM(provider.provider_name, model?.name)
-const allowed_keys = ["name", "owned_by", "provider_name", "api_key", "enabled"]
+const allowed_keys = ["name", "owned_by", "enabled", "index", "provider_name", "api_key"]
 const providerEntry = newConfigs.providers[provider_name]
 
 
@@ -21,10 +22,13 @@ if(Object.keys(providerEntry ?? {})?.length) {
         delete configs().providers[provider_name]
         return null
 
-    } else if ( (addedModel?.enabled !== model?.enabled) && model && addedModel ) { addedModel.enabled = model.enabled }
+    } else if ( (addedModel?.enabled !== model?.enabled) && model && addedModel ) { 
+        addedModel.enabled = model.enabled 
+        if (!model.enabled) { delete model.index }
+    }
 
 } else if (provider.api_key && !providerEntry) { 
-    newConfigs.providers[provider_name] = { ...Models[provider_name] } as IProvider
+    newConfigs.providers[provider_name] = { ...Provider[provider_name] } as IProvider
     newConfigs.providers[provider_name].api_key = provider.api_key
     newConfigs.providers[provider_name].models = []
 
@@ -32,10 +36,13 @@ if(Object.keys(providerEntry ?? {})?.length) {
 
 
 if (!addedModel && model && Object.keys(model ?? {})?.length) { 
-    const newModel = Models[provider_name]?.models?.find(m => m.name === model?.name)
+    const newModel = Provider[provider_name]?.models?.find(m => m.name === model?.name)
     if(newModel) { 
         for (let [key, value] of Object.entries(model)) {
-            if (allowed_keys.includes(key) && (value!==undefined)) { newModel[key as keyof IModel] = value as never }
+            if ( allowed_keys.includes(key) && (value!==undefined) ) { 
+                newModel[key as keyof IModel] = value as never 
+                newModel.index = enabledModels()?.length
+            }
         }
 
         newConfigs.providers[provider_name]?.models?.push(newModel)
@@ -46,6 +53,7 @@ setConfigs(newConfigs)
 save_config(configs())
 
 }
+
 
 export default function ModelsList( {provider: provider_name}: {provider: string} ) { 
     let text_input: HTMLInputElement | undefined
@@ -65,7 +73,7 @@ export default function ModelsList( {provider: provider_name}: {provider: string
                     provider: {provider_name, api_key: e.currentTarget.value}
                 } ) }/>
             </div>
-            <For each={ Models[provider_name as TProviderNames]?.models }>
+            <For each={ Provider[provider_name as TProviderNames]?.models }>
                 { (model: IModel) => <ModelItem providerName={provider_name} model={model} textInputRef={text_input} /> }
             </For>
         </>

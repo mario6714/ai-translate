@@ -1,5 +1,5 @@
 import { Show, createEffect } from "solid-js";
-import { MyClipboardMonitor, MyWs, getEnabled, hasEnabledModels } from "../global/text";
+import { MyClipboardMonitor, MyWs, getEnabled, enabledModels } from "../global/text";
 import { configs, get_config, setConfigs } from "../global/configs";
 import Settings from "./Settings"
 import TextBoxes from "../components/TextBoxes";
@@ -12,7 +12,7 @@ export default function App() {
     const monitor = new MyClipboardMonitor()
 
     createEffect(() => { 
-        if (hasEnabledModels()) {
+        if (enabledModels()) {
             if (configs().wsServerUrl && !myws.isOpen()) { 
                 myws.setUrl(configs().wsServerUrl)
                 if (monitor.isRunning()) { monitor.stop() }
@@ -40,8 +40,8 @@ export default function App() {
 
 
     return ( 
-        <Show when={hasEnabledModels()!==0} fallback={<SkeletonLoading />}>
-            <Show when={hasEnabledModels()===1} fallback={ 
+        <Show when={enabledModels()!==null} fallback={<SkeletonLoading />}>
+            <Show when={enabledModels()?.length} fallback={ 
                 <>
                     <Settings />
                     <div class="flex justify-end py-4">

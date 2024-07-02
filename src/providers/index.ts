@@ -4,10 +4,12 @@ import HfSpaces, { HfSpaceHandler } from './hf-spaces'
 import Google, { GoogleHandler } from './Google'
 
 
+
 export interface IModel { 
     owned_by: string
     name: string
     enabled?: boolean
+    index?: number
 }
 
 export interface IProvider { 
@@ -16,8 +18,6 @@ export interface IProvider {
     models: IModel[]
     api_key?: string
 }
-
-
 
 
 export { GroqCloud, Google, HfSpaces }
@@ -31,15 +31,20 @@ export const Handlers: {
     //HuggingFace: HfHandler
 }
 
-const Models = { GroqCloud, Google, HfSpaces }
+const Providers: { 
+    GroqCloud: IProvider
+    Google: IProvider
+    HfSpaces: IProvider
 
-export type TProviderNames = Exclude<keyof typeof Models, "getM">
+} = { GroqCloud, Google, HfSpaces }
+
+export type TProviderNames = Exclude<keyof typeof Providers, "getM">
 
 export type IProviders = { 
-    [key in keyof typeof Models]: IProvider
+    [key in keyof typeof Providers]: IProvider
 }
 
-export default Models
+export default Providers
 
 // https://ai.google.dev/
 // https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct
