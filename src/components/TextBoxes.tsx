@@ -1,4 +1,4 @@
-import { For, Show, createMemo, createSignal } from "solid-js"
+import { Show, createMemo, createSignal } from "solid-js"
 import { open_settings } from "../global/configs"
 import { IExtendedModel, getEnabled } from "../global/text"
 import TextBox from "../components/TextBox"
@@ -8,17 +8,17 @@ import TextBox from "../components/TextBox"
 export default function TextBoxes() { 
     const [ hover, setHover ] = createSignal(false)
 
-    const enabledModels = createMemo<IExtendedModel[]>( (prev) => { 
-        const enabled_models = getEnabled()
+    const enabledModels = createMemo<IExtendedModel[]>( () => { 
+        const enabled_models = getEnabled() ?? []
 
-        enabled_models.forEach( (model, index) => { 
+        /* enabled_models.forEach( (model, index) => { 
             const { name, provider_name } = model
             model.component = prev?.find(prevModel => (
                 (prevModel.name === name) && (prevModel.provider_name === provider_name)
             ))?.component ?? <TextBox modelName={model.name} provider={model.provider_name} index={index} />
-        })
+        }) */
 
-        return [...enabled_models]
+        return enabled_models
     } )
 
 
@@ -39,9 +39,9 @@ export default function TextBoxes() {
             </Show>
 
 
-            <For each={enabledModels()}>
-                { model => model.component }
-            </For>
+            { enabledModels().map( (model, index) => 
+                <TextBox modelName={model.name} provider={model.provider_name} index={index} />
+            ) }
 
         </main>
     )
