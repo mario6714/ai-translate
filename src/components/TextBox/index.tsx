@@ -31,7 +31,6 @@ export default function TextBox( {modelName, provider: provider_name, index}: IT
 
     async function translate() { 
         if (handler && textarea) { 
-            setText('translated', "Loading...")
             const translated = await handler(text.untranslated, modelName, textarea).catch(() => "")
             setText('translated', translated)
             if (index===0) { save_text(text) }
@@ -46,10 +45,10 @@ export default function TextBox( {modelName, provider: provider_name, index}: IT
             if (translated) { 
                 if (index===0) { setText('translated', translated) }
                 else { setText('translated', "") }
-                return
-            }
 
-            translate()
+            } else { await translate() }
+
+            console.log(modelName, ":", text.translated) 
         }
 
     })
@@ -59,9 +58,9 @@ export default function TextBox( {modelName, provider: provider_name, index}: IT
         <section class="w-full flex justify-between">
 
             <div class="w-full py-1 relative">
-                <textarea class={`w-full h-44 p-2 ${textareaStyle()} bg-inherit`} ref={textarea} readonly name="" id="" cols="30" rows="10">
-                    { text.translated }
-                </textarea>
+                <textarea class={`w-full h-44 p-2 ${textareaStyle()} bg-inherit`} 
+                 value={text.translated as string} ref={textarea} readonly={!text.editing}
+                 name="" id="" cols="30" rows="10" />
                 <p class="py-1 px-2 absolute bottom-0 text-sm text-placeholder italic">{modelName} - {provider_name}</p>
             </div>
 
@@ -75,7 +74,6 @@ export default function TextBox( {modelName, provider: provider_name, index}: IT
                             </button>
 
                             <button onclick={ () => { 
-                                textarea?.attributes.removeNamedItem('readonly')
                                 if(!text.editing) { setText('editing', true) }
                             } }>
                                     <svg class="w-6 h-6 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -100,15 +98,11 @@ function ConfirmationControls( {store}: {store: [ITextStore, SetStoreFunction<IT
     const [ text, setText ] = store
     const textarea = document.querySelector('textarea')
 
-    function toggleEdit() { 
-        textarea?.setAttribute('readonly', '')
-        if (text.editing) { setText('editing', false) }
-    }
 
     return(
         <div class="flex flex-col justify-center items-center gap-4 m-2">
             <button onclick={ () => { 
-                toggleEdit()
+                if (text.editing) { setText('editing', false) }
                 if (text.translated !== textarea?.value && textarea && textarea?.value) { 
                     setText('translated', textarea.value)
                     save_text(text)
@@ -119,7 +113,7 @@ function ConfirmationControls( {store}: {store: [ITextStore, SetStoreFunction<IT
                 </svg>
             </button>
             <button onclick={ () => { 
-                toggleEdit()
+                if (text.editing) { setText('editing', false) }
                 if (text.translated !== textarea?.value && textarea && text.translated) { textarea.textContent = text.translated }
             } }>
                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

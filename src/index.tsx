@@ -13,7 +13,6 @@ function Root()  {
     createEffect(async() => { console.log('hello from "app" p/')
         const result = await get_config()
         if (result) { setConfigs(result) }
-        console.log(result)
         getEnabled()
     } )
 

@@ -47,7 +47,7 @@ export async function HfSpaceHandler(text: string, model_name: string, tag: HTML
     // https://hansimov-hf-llm-api.hf.space/api/v1/chat/completions
     const API_KEY = configs().providers?.HfSpaces?.api_key
     if (!text || !tag || !model_name || !API_KEY) { return "" }
-    const hf = new HfSpace("https://hansimov-hf-llm-api.hf.space/api/v1/chat/completions", { 
+    const hf = new HfSpace("https://shuddho-hfllmapi.hf.space/api/v1/chat/completions", { 
         method: "POST",
         headers: { 
             "Authorization": "Bearer"+" "+API_KEY, 

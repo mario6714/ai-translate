@@ -26,22 +26,6 @@ export const [ global_text, setGlobalText ] = createSignal<IGlobalText>({
 
 export const [ enabledModels, setEnabledM ] = createSignal<IExtendedModel[] | null>(null)
 
-
-
-async function onTextChange( {window_title, text}: { window_title: string, text: string } ) { 
-    if (text?.length) {
-        if ( window_title && (window_title !== global_text().window_title) ) { global_text().window_title = window_title }
-        const translation = await QueryTranslation({ 
-            window_title,
-            originalText: text
-        } )
-        if(translation) { global_text().translated = translation }
-        else if (global_text().translated) { global_text().translated = null }
-        global_text().untranslated = text
-        setGlobalText({ ...global_text() })
-    }
-}
-
 export function getEnabled() { 
     const enabled_models: IExtendedModel[] = []
     Object.keys(configs().providers).forEach(provider_name => { 
@@ -56,6 +40,22 @@ export function getEnabled() {
 
     setEnabledM(enabled_models)
     return enabled_models
+}
+
+
+
+async function onTextChange( {window_title, text}: { window_title: string, text: string } ) { 
+    if (text?.trim().length) {
+        if ( window_title && (window_title !== global_text().window_title) ) { global_text().window_title = window_title }
+        const translation = await QueryTranslation({ 
+            window_title,
+            originalText: text
+        } )
+        if(translation) { global_text().translated = translation }
+        else if (global_text().translated) { global_text().translated = null }
+        global_text().untranslated = text
+        setGlobalText({ ...global_text() })
+    }
 }
 
 
