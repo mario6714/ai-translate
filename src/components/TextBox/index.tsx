@@ -64,7 +64,9 @@ export default function TextBox( {modelName, provider: provider_name, index}: IT
                 <p class="py-1 px-2 absolute bottom-0 text-sm text-placeholder italic">{modelName} - {provider_name}</p>
             </div>
 
-            <Show when={!text.editing} fallback={<ConfirmationControls store={[ text, setText ]} />}>
+            <Show when={!text.editing} fallback={
+                <ConfirmationControls store={[ text, setText ]} textarea={textarea} />
+            }>
                 <div class="flex flex-col justify-end items-center m-4">
                     <div class="flex flex-col gap-2 items-center">
                             <button onclick={ translate }>
@@ -94,10 +96,11 @@ export default function TextBox( {modelName, provider: provider_name, index}: IT
 
 
 
-function ConfirmationControls( {store}: {store: [ITextStore, SetStoreFunction<ITextStore>]} ) { 
-    const [ text, setText ] = store
-    const textarea = document.querySelector('textarea')
+function ConfirmationControls( 
+    {store, textarea}: { store: [ITextStore, SetStoreFunction<ITextStore>], textarea: HTMLTextAreaElement | undefined }
+) { 
 
+    const [ text, setText ] = store
 
     return(
         <div class="flex flex-col justify-center items-center gap-4 m-2">
