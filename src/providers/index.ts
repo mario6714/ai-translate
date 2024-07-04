@@ -1,7 +1,7 @@
 import GroqCloud, { GroqHandler } from './GroqCloud'
 import HfSpaces, { HfSpaceHandler } from './hf-spaces'
-//import HuggingFace, { HfHandler } from './HuggingFace'
 import Google, { GoogleHandler } from './Google'
+import Cohere, { CohereHandler } from './Cohere'
 
 
 
@@ -20,7 +20,7 @@ export interface IProvider {
 }
 
 
-export { GroqCloud, Google, HfSpaces }
+export { GroqCloud, Google, HfSpaces, Cohere }
 
 export const Handlers: { 
     [key: string]: (text: string, model_name: string, tag: HTMLTextAreaElement) => Promise<string>
@@ -28,15 +28,16 @@ export const Handlers: {
     GroqCloud: GroqHandler,
     HfSpaces: HfSpaceHandler,
     Google: GoogleHandler,
-    //HuggingFace: HfHandler
+    Cohere: CohereHandler
 }
 
 const Providers: { 
     GroqCloud: IProvider
     Google: IProvider
     HfSpaces: IProvider
+    Cohere: IProvider
 
-} = { GroqCloud, Google, HfSpaces }
+} = { GroqCloud, Google, HfSpaces, Cohere }
 
 export type TProviderNames = Exclude<keyof typeof Providers, "getM">
 

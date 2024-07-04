@@ -1,4 +1,4 @@
-import { CustomSSE, CustomSSEInit, Prompt, configs } from "../global/configs";
+import { CustomSSE, CustomSSEInit } from "../global/configs";
 
 
 
@@ -9,27 +9,33 @@ function isUuid(string: string) {
 
 
 class HfChat extends CustomSSE { 
-    public conversationId: string | undefined
-    public lastId: string | undefined
+    private _conversationId: string | undefined
+    private _lastId: string | undefined
+    private _model: string
 
-    constructor( url: string | null, init?: CustomSSEInit ) { 
+    constructor( url: string | null, init: CustomSSEInit & { model: string } ) { 
         super(url, init)
+        this._model = init.model
     }
 
-    async createConversation(model: string) { 
-        const { name, owned_by } = HuggingModels.find(m => m.name === model) ?? {}
+    get conversationId() { return this._conversationId }
+    get lastId() { return this._lastId }
+    get model() { return this._model }
+
+    async createConversation() { 
+        const { name, owned_by } = HuggingModels.find(m => m.name === this._model) ?? {}
         const { conversationId } = await this.sendPostRequest({ 
             model: owned_by+"/"+name,
             preprompt: ""
         }, "https://huggingface.co/chat/conversation")
         .request?.then(response => response.status===200? response.json() : response.text())
-        this.conversationId = conversationId
+        this._conversationId = conversationId
         return conversationId
     }
 
     async getLastId() { 
-        if(this.conversationId && this.headers?.Authorization) { 
-            const items: string[] = await fetch(`https://huggingface.co/chat/conversation/${this.conversationId}/__data.json?x-sveltekit-invalidated=11`, { 
+        if(this._conversationId && this.headers?.Authorization) { 
+            const items: string[] = await fetch(`https://huggingface.co/chat/conversation/${this._conversationId}/__data.json?x-sveltekit-invalidated=11`, { 
                 headers: this.headers
 
             }).then(response => response.status===200? response.json() : null)
@@ -37,25 +43,18 @@ class HfChat extends CustomSSE {
                 return response?.nodes[1].data.filter( (item:any) => isUuid(item) )
             })
 
-            this.lastId = items.at(-1)
-            return this.lastId
+            this._lastId = items.at(-1)
+            return this._lastId
         }
     }
 
-    async sendPrompt(prompt: string, model: string) { 
-        if(!this.conversationId) { await this.createConversation(model) }
-        this.url = ` https://huggingface.co/chat/conversation/${this.conversationId}`
+    async sendPrompt(prompt: string) { 
+        if(!this._conversationId) { await this.createConversation() }
+        this.url = ` https://huggingface.co/chat/conversation/${this._conversationId}`
         await this.getLastId()
 
-        if(this.conversationId && this.lastId) {
-            return this.sendPostRequest( {
-                inputs: prompt,
-                id: this.lastId,
-                is_retry: false,
-                is_continue: false,
-                web_search: false,
-                files: []
-            } )
+        if(this._conversationId && this._lastId) { prompt
+            return this.getStream("")
         }
     }
 
@@ -64,32 +63,21 @@ class HfChat extends CustomSSE {
 
 
 
-export async function HfHandler(text: string, model_name: string, tag: HTMLTextAreaElement): Promise<string> { 
-    configs()
+export async function HfHandler(text: string, model_name: string, _?: HTMLTextAreaElement): Promise<string> { 
     const API_KEY = ""//configs().providers?.HuggingFace?.api_key
-    if (!text || !tag || !model_name || !API_KEY) { return "" }
+    //if (!text || !tag || !model_name || !API_KEY) { return "" }
     const hf = new HfChat(null, { 
-        method: "POST",
-        headers: { 
-            "Authorization": "Bearer"+" "+API_KEY, 
-            'Content-Type': 'application/json',
-        }
+        headers: { "Authorization": "Bearer "+API_KEY },
+        model: model_name
     })
 
 
-    tag.value = ""
-    await hf?.sendPrompt(Prompt(text), model_name)
-    hf?.execute( (data: any) => { console.log(data)
-        /* data?.forEach( (response:any) => { 
-            if(response?.choices) {
-                const text = response?.choices[0].delta.content
-                if(tag && text) { tag.value += text }
-            }
-        } ) */
-    })
+    const response = await hf.sendPrompt(text)
+    if(response) { 
+        for await (const chunk of response) { console.log(chunk) }
+    }
 
-    return tag.value
-
+    return ""
 }
 
 
@@ -125,3 +113,5 @@ export default {
     api_key: undefined,
     models: HuggingModels
 }
+
+// try: https://corsproxy.io/

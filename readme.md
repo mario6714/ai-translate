@@ -10,7 +10,7 @@ it receives text through clipboard changes or a configured websocket server, and
 in all models available you can get a free API key. I want this repo to be also a hub of nice and free AI models. if you have a suggestion of a model with a good provider, feel free to suggest me or open a PR.
 
 ### Caching
-the translation of your favorite AI model is cached by default in **%appdata%\ai-translate**. it's cached in a **.xlsx** file, so it can be imported to translator++
+the translation of your favorite AI model (the first) is cached by default in **%appdata%\ai-translate**. it's cached in a **.xlsx** file, so it can be imported to translator++
 
 ### Demo
 WIP
@@ -34,7 +34,7 @@ $ npm run build
 # preview the webview
 $ npm run start
 
-# build the exe
+# build the exe (python)
 $ npm run pack
 ```
 

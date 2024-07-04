@@ -17,25 +17,32 @@ type IResponse = {
 }
 
 class HfSpace extends CustomSSE { 
-    constructor( url: string, init?: CustomSSEInit ) { 
+    private _model?: string
+    constructor( url: string, init?: CustomSSEInit & { model: string } ) { 
         super(url, init)
+        if (init?.model) { this._model = init.model }
     }
 
-    sendPrompt(prompt: string, model: string) { 
-        return this.sendPostRequest( { 
-            model: model,
-            messages: [
-              {
-                role: "user",
-                content: prompt
-              }
-            ],
-            temperature: 0.2,
-            top_p: 0.45,
-            max_tokens: -1,
-            use_cache: false,
-            stream: true
-        });
+    get model() { return this._model }
+
+
+    async sendPrompt(prompt: string) { 
+        if (this._model) { 
+            return this.getStream<IResponse>( { 
+                model: this._model,
+                messages: [
+                {
+                    role: "user",
+                    content: prompt
+                }
+                ],
+                temperature: 0.2,
+                top_p: 0.45,
+                max_tokens: -1,
+                use_cache: false,
+                stream: true
+            });
+        }
     }
 
 }
@@ -48,24 +55,21 @@ export async function HfSpaceHandler(text: string, model_name: string, tag: HTML
     const API_KEY = configs().providers?.HfSpaces?.api_key
     if (!text || !tag || !model_name || !API_KEY) { return "" }
     const hf = new HfSpace("https://shuddho-hfllmapi.hf.space/api/v1/chat/completions", { 
-        method: "POST",
-        headers: { 
-            "Authorization": "Bearer"+" "+API_KEY, 
-            'Content-Type': 'application/json',
-            "Accept": "application/json"
-        }
+        headers: { "Authorization": "Bearer"+" "+API_KEY },
+        model: model_name
     })
 
 
     tag.value = ""
-    hf?.sendPrompt(Prompt(text), model_name).execute( (data: IResponse[] | undefined) => { 
-        data?.forEach(response => { 
-            if(response?.choices) {
-                const text = response?.choices[0].delta.content
+    const stream = await hf.sendPrompt(Prompt(text))
+    if (stream) { 
+        for await (const chunk of stream) { 
+            if(chunk?.choices) {
+                const text = chunk?.choices?.[0]?.delta?.content
                 if(tag && text) { tag.value += text }
             }
-        } )
-    })
+        }
+    }
 
     return tag.value
 

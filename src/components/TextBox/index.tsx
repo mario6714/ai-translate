@@ -31,7 +31,8 @@ export default function TextBox( {modelName, provider: provider_name, index}: IT
 
     async function translate() { 
         if (handler && textarea) { 
-            const translated = await handler(text.untranslated, modelName, textarea).catch(() => "")
+            const translated = await handler(text.untranslated, modelName, textarea)
+            .catch(e => { console.error(e) ; return "" })
             setText('translated', translated)
             if (index===0) { save_text(text) }
         }
@@ -111,7 +112,7 @@ function ConfirmationControls(
                     save_text(text)
                 }
             } }>
-                <svg class="w-5 h-5 text-primary hover:text-white active:text-white/60" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <svg class="w-5 h-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                 </svg>
             </button>
@@ -120,7 +121,7 @@ function ConfirmationControls(
                 if (text.editing) { setText('editing', false) }
                 if (text.translated !== textarea?.value && textarea && text.translated) { textarea.value = text.translated }
             } }>
-                <svg class="w-5 h-5 text-primary hover:text-white active:text-white/60" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <svg class="w-5 h-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
             </button>

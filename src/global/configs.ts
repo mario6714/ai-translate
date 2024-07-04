@@ -56,12 +56,15 @@ export async function open_dir() { return await OpenConfigDir() }
 export type CustomSSEInit = { 
     method?: string
     headers?: { 
-        Authorization: string
-        "Content-Type": string
+        Authorization?: string
+        "Content-Type"?: string
         Accept?: string
     }
     credentials?: RequestCredentials
 }
+
+type IHttpBody = Record<string, any> | string
+
 
 export class CustomSSE { 
     public url: string | null
@@ -72,53 +75,50 @@ export class CustomSSE {
 
     constructor( url: string | null, init?: CustomSSEInit ) {
         this.url = url
-        this.method = init?.method ?? "GET"
-        this.headers = init?.headers
+        this.method = init?.method ?? "POST"
+        this.headers = init?.headers ?? {} as never
         this.credentials = init?.credentials
+
+        if (!this.headers?.["Content-Type"]) { this.headers["Content-Type"] = "application/json" }
     }
 
-    public sendPostRequest(httpBody: Partial<{ [key: string]: any }>, url?: string ) { 
+    sendPostRequest(httpBody: IHttpBody, url?: string ) { 
         const requestUrl = url ?? this.url
-        const { method, headers, credentials } = this
+        const { headers, credentials } = this
 
-        if(httpBody && Object.keys(httpBody)?.length && requestUrl && this.method==="POST") {
+        if(httpBody && requestUrl) {
             this.request = fetch(requestUrl, { 
-                method,
+                method: "POST",
                 credentials,
                 headers,
-                body: JSON.stringify(httpBody)
+                body: typeof httpBody!=="string"? JSON.stringify(httpBody) : httpBody
             } )
         }
 
         return this
     }
 
-    public execute(callback: (message: any) => any) { 
-        this.read(callback)
-    }
-
-    private async read(callback: (message: any) => any) { 
-        const values: any[] = []
+    async* getStream<T= unknown>(httpBody: IHttpBody, url?: string ): AsyncGenerator<T> { 
+        this.sendPostRequest(httpBody, url)
         const reader = await this.reader()
         while(true) { 
             const result = await reader?.read();
-            let content: string[] | undefined = result.value?.replaceAll('data:', "").replaceAll("\r", "").trim().split("\n")
+            const content = result.value?.replaceAll('data:', "").replaceAll("\r", "").trim().split("\n")
             .filter(item => item).map(item => JSON.parse(item))
-            if(!values.includes(content)) { 
-                callback? callback(content) : console.log(content)
-                values.push(content)
+
+            if (content) { 
+                for (let item of content) { yield item as T }
             }
-
-            if (result.done) { reader?.releaseLock();break }
+            if (result.done) { reader?.releaseLock() ; break }
         }
-
     }
 
 
     private async reader() { //precisa ser o mesmo reader
-        const response = await this.request
-        if(!response || !response.body) { throw new Error("Request is empty!") }
-        return response.body?.pipeThrough(new TextDecoderStream()).getReader()
+        const response = await this.request as Response
+        const body = response.body
+        if(!response || !body) { throw new Error("Request is empty!") }
+        return body?.pipeThrough(new TextDecoderStream()).getReader()
     }
 
 }

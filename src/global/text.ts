@@ -93,13 +93,14 @@ class Monitor {
 
             const execute = this.callback
             this.interval = setInterval(async function() { 
-                if (document.hidden) { return }
                 const tmp_value = await GetClipboardText()
                 const window_title = await GetActiveWindowTitle()
-                if ( (value !== tmp_value) && tmp_value && window_title && document.hidden===false ) { 
-                    execute({ window_title, text: tmp_value })
+                if (!document.hidden) { 
+                    if ( (value !== tmp_value) && tmp_value && window_title && document.hidden===false ) { 
+                        execute({ window_title, text: tmp_value })
+                    }
+                    else if (document.hidden) { console.log(document.hidden) }
                 }
-                else if (document.hidden) { console.log(document.hidden) }
 
                 value = tmp_value
 

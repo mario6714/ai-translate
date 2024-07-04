@@ -69,7 +69,7 @@ function MyGoogleChat(key: string, model_name: string) {
     const genAI = new GoogleGenerativeAI(key)
     const model = genAI.getGenerativeModel({ 
         model: model_name,
-        systemInstruction: "Be as fastest as possible"
+        systemInstruction: "Be the fastest as possible"
     })
     return model
 }
