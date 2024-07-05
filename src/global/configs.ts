@@ -1,5 +1,5 @@
 import { createSignal } from "solid-js"
-import { IModel, IProvider, IProviders, TProviderNames } from "../providers"
+import { IModel, IProvider, IProviders, TProviderKeys } from "../providers"
 import { GetConfig, SaveConfig, OpenConfigDir, OpenConfigWindow } from "../../modules"
 
 
@@ -21,9 +21,9 @@ export const [ configs, setConfigs ] = createSignal<IConfig>({
 } as any)
 
 const prototype = Object.getPrototypeOf(configs())
-prototype.getM = function(provider_name?: string, name?: string) { 
-    if (provider_name && name) { 
-        const provider: Partial<IProvider> = configs().providers[provider_name as TProviderNames] as IProvider
+prototype.getM = function(provider_key?: string, name?: string) { 
+    if (provider_key && name) { 
+        const provider: Partial<IProvider> = configs().providers[provider_key as TProviderKeys] as IProvider
         const model = provider?.models?.find( (m: IModel) => m.name === name)
         return model
     }

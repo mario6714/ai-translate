@@ -41,9 +41,9 @@ $ npm run pack
 #### The addition of a webview in go is WIP
 
 ## todo
-translate a game
-add providers¹
-finish the webview in go
--
-implement drag and drop models
-add providers²
+
+translate a game  
+implement drag and drop models  
+-  
+finish the webview in go  
+search for more providers  

@@ -1,12 +1,12 @@
 import { JSX, createSignal } from "solid-js"
 import { configs } from "./configs"
-import { IModel, TProviderNames } from "../providers"
+import { IModel, TProviderKeys } from "../providers"
 import { GetActiveWindowTitle, GetClipboardText, QueryTranslation, SaveText } from "../../modules/"
 
 
 
 export type IExtendedModel = IModel & { 
-    provider_name: string
+    provider_key: string
     component?: JSX.Element
 }
 
@@ -28,11 +28,14 @@ export const [ enabledModels, setEnabledM ] = createSignal<IExtendedModel[] | nu
 
 export function getEnabled() { 
     const enabled_models: IExtendedModel[] = []
-    Object.keys(configs().providers).forEach(provider_name => { 
-        const enabled = configs().providers[provider_name as TProviderNames]?.models?.filter( (m: IModel) => m.enabled)
-        .map(m => Object.assign( {...m}, {provider_name}) )
-        .sort( (b, a) => {
-            if (a.index && b.index) { return b.index < a.index? -1 : 0 }
+    Object.keys(configs().providers).forEach(provider_key => { 
+        const enabled = configs().providers[provider_key as TProviderKeys]?.models?.filter( (m: IModel) => m.enabled)
+        .map(m => Object.assign( {...m}, {provider_key}) )
+        .sort( (b, a) => { 
+            if (a.index && b.index) { 
+                if (b.index > a.index + 1) { b.index = a.index+1 }
+                return b.index < a.index? -1 : 0 
+            }
             return 0
         } )
         if (enabled?.length) { enabled_models.push(...enabled) }

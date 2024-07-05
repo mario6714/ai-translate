@@ -114,4 +114,3 @@ export default {
     models: HuggingModels
 }
 
-// try: https://corsproxy.io/

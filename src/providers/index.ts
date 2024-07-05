@@ -2,6 +2,8 @@ import GroqCloud, { GroqHandler } from './GroqCloud'
 import HfSpaces, { HfSpaceHandler } from './hf-spaces'
 import Google, { GoogleHandler } from './Google'
 import Cohere, { CohereHandler } from './Cohere'
+import Auto, { AutomaticHandler } from './Auto'
+import DeepL, { DeepLHandler } from './DeepL'
 
 
 
@@ -14,13 +16,13 @@ export interface IModel {
 
 export interface IProvider { 
     provider_name: string
-    about_url: string
+    about_url: string | null
     models: IModel[]
     api_key?: string
 }
 
 
-export { GroqCloud, Google, HfSpaces, Cohere }
+export { GroqCloud, Google, HfSpaces, Cohere, Auto, DeepL }
 
 export const Handlers: { 
     [key: string]: (text: string, model_name: string, tag: HTMLTextAreaElement) => Promise<string>
@@ -28,7 +30,9 @@ export const Handlers: {
     GroqCloud: GroqHandler,
     HfSpaces: HfSpaceHandler,
     Google: GoogleHandler,
-    Cohere: CohereHandler
+    Cohere: CohereHandler,
+    Auto: AutomaticHandler,
+    DeepL: DeepLHandler
 }
 
 const Providers: { 
@@ -36,10 +40,12 @@ const Providers: {
     Google: IProvider
     HfSpaces: IProvider
     Cohere: IProvider
+    Auto: IProvider
+    DeepL: IProvider
 
-} = { GroqCloud, Google, HfSpaces, Cohere }
+} = { GroqCloud, Google, HfSpaces, Cohere, Auto, DeepL }
 
-export type TProviderNames = Exclude<keyof typeof Providers, "getM">
+export type TProviderKeys = Exclude<keyof typeof Providers, "getM">
 
 export type IProviders = { 
     [key in keyof typeof Providers]: IProvider

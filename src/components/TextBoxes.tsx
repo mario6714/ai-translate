@@ -40,7 +40,7 @@ export default function TextBoxes() {
 
 
             { enabledModels()?.map( (model, index) => 
-                <TextBox modelName={model.name} provider={model.provider_name} index={index} />
+                <TextBox modelName={model.name} providerKey={model.provider_key} index={index} />
             ) }
 
         </main>

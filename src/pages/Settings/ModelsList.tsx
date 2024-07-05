@@ -1,53 +1,46 @@
-import { For, createEffect } from "solid-js"
+import { For, Show, createEffect } from "solid-js"
 import { configs, save_config, setConfigs } from "../../global/configs"
 import { enabledModels } from "../../global/text"
-import Provider, { IModel, IProvider, TProviderNames } from "../../providers"
+import Provider, { IModel, IProvider, TProviderKeys } from "../../providers"
+import Providers from "../../providers"
 
 
 
 async function change_handler({provider, model}: { 
     provider: Partial<IProvider>, 
-    model?: Partial<IModel>
+    model?: IModel
 } ) { //console.log(provider, model)
 
-const provider_name = provider.provider_name as TProviderNames
+const provider_key = provider.provider_name as TProviderKeys
 const newConfigs = { ...configs() }
 const addedModel = newConfigs.getM(provider.provider_name, model?.name)
-const allowed_keys = ["name", "owned_by", "enabled", "index", "provider_name", "api_key"]
-const providerEntry = newConfigs.providers[provider_name]
+//const allowed_keys = ["name", "owned_by", "enabled", "index", "provider_name", "api_key"]
+let providerEntry: IProvider | null = newConfigs.providers[provider_key]
 
 
-if(Object.keys(providerEntry ?? {})?.length) { 
+if (Object.keys(providerEntry ?? {})?.length) { 
     if (!provider.api_key) { 
-        delete configs().providers[provider_name]
-        return null
+        delete newConfigs.providers[provider_key]
+        providerEntry = null
 
-    } else if ( (addedModel?.enabled !== model?.enabled) && model && addedModel ) { 
-        addedModel.enabled = model.enabled 
-        if (!model.enabled) { delete model.index }
+    } else if (model && addedModel && !model.enabled) { 
+        const models = newConfigs?.providers[provider_key]?.models
+        if(models) { 
+            const index = models.findIndex(savedModel => savedModel.name === model.name)
+            models.splice(index, 1)
+        }
     }
 
 } else if (provider.api_key && !providerEntry) { 
-    newConfigs.providers[provider_name] = { ...Provider[provider_name] } as IProvider
-    newConfigs.providers[provider_name].api_key = provider.api_key
-    newConfigs.providers[provider_name].models = []
+    providerEntry = { ...Provider[provider_key] } as IProvider
+    providerEntry.api_key = provider.api_key
+    providerEntry.models = []
+    newConfigs.providers[provider_key] = providerEntry
 
 }
 
 
-if (!addedModel && model && Object.keys(model ?? {})?.length) { 
-    const newModel = Provider[provider_name]?.models?.find(m => m.name === model?.name)
-    if(newModel) { 
-        for (let [key, value] of Object.entries(model)) {
-            if ( allowed_keys.includes(key) && (value!==undefined) ) { 
-                newModel[key as keyof IModel] = value as never 
-                newModel.index = enabledModels()?.length
-            }
-        }
-
-        newConfigs.providers[provider_name]?.models?.push(newModel)
-    }
-}
+if (!addedModel && model?.enabled && providerEntry) { providerEntry.models.push(model) }
 
 setConfigs(newConfigs)
 save_config(configs())
@@ -55,51 +48,69 @@ save_config(configs())
 }
 
 
-export default function ModelsList( {provider: provider_name}: {provider: string} ) { 
+export default function ModelsList( {provider: provider_key}: {provider: string} ) { 
     let text_input: HTMLInputElement | undefined
+    const provider = Providers[provider_key as TProviderKeys]
 
     createEffect(() => { 
-        const apiKey = configs()?.providers[provider_name as TProviderNames]?.api_key
+        const apiKey = configs()?.providers[provider_key as TProviderKeys]?.api_key
         if (apiKey && text_input) { text_input.value = apiKey }
     })
 
 
     return ( 
         <>
-            <div class="py-3 px-8 flex gap-4 items-center">
-                <h1 class="font-bold text-xl">API KEY:</h1>
-                <input type="text" placeholder="Insert key..." id={"input-"+provider_name} class="h-10 text-center rounded-xl bg-button"  
-                ref={text_input} onInput={ (e) => change_handler( {
-                    provider: {provider_name, api_key: e.currentTarget.value}
-                } ) }/>
+            <Show when={provider.about_url}>
+                <div class="px-8 flex gap-4 items-center">
+                    <h1 class="font-bold text-xl">API KEY:</h1>
+                    <input type="text" placeholder="Insert key..." id={"input-"+provider_key} class="h-10 text-center rounded-xl bg-button"  
+                    ref={text_input} onInput={ (e) => change_handler( {
+                        provider: {provider_name: provider_key, api_key: e.currentTarget.value}
+                    } ) }/>
+                </div>
+            </Show>
+            <div>
+                <For each={ Provider[provider_key as TProviderKeys]?.models }>
+                    { (model: IModel) => <ModelItem providerName={provider_key} model={model} textInputRef={text_input} /> }
+                </For>
             </div>
-            <For each={ Provider[provider_name as TProviderNames]?.models }>
-                { (model: IModel) => <ModelItem providerName={provider_name} model={model} textInputRef={text_input} /> }
-            </For>
         </>
     )
 }
 
 
 
-
 function ModelItem( {model, providerName: provider_name, textInputRef}: {model: IModel, providerName: string, textInputRef?: HTMLInputElement} ) { 
     let check_input: HTMLInputElement | undefined
+    const provider = Providers[provider_name as TProviderKeys]
 
     createEffect(() => { 
         if (configs().getM(provider_name, model.name)?.enabled && check_input) { check_input.checked = true }
     } )
 
+    function checkboxHandler(e: Event & {
+        currentTarget: HTMLInputElement;
+        target: HTMLInputElement;
+    }) { 
 
-    return(
+        const api_key = provider.about_url? textInputRef?.value : "none"
+        const enabled = e.currentTarget.checked
+        const { name, owned_by } = model
+        if (!api_key && enabled) { e.currentTarget.checked = false }
+        else { 
+            change_handler( { 
+                provider: { provider_name, api_key },
+                model: { name, enabled, owned_by, index: enabledModels()?.length }
+            } )
+        }
+    }
+
+
+    return( 
         <li class="flex items-center gap-12 px-8 ">
             <div class="flex">
                 <input type="checkbox" id={`${provider_name}-${model.name}`} class="mx-2" 
-                 ref={check_input} onChange={ (e) => change_handler( { 
-                        provider: {provider_name, api_key: textInputRef?.value},
-                        model: {name: model.name, enabled: e.currentTarget.checked}
-
-                } ) } />
+                 ref={check_input} onChange={ checkboxHandler } />
                 <p>{model.name}</p>
             </div>
         </li>

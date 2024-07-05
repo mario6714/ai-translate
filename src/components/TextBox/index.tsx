@@ -1,7 +1,7 @@
 import { Show, createEffect, createMemo } from "solid-js"
 import { SetStoreFunction, createStore } from "solid-js/store"
 import { IText, global_text, save_text } from "../../global/text"
-import { Handlers, TProviderNames } from "../../providers"
+import Providers, { Handlers, TProviderKeys } from "../../providers"
 import SaveIcon from "../SaveIcon"
 import './style.css'
 
@@ -9,7 +9,7 @@ import './style.css'
 
 type ITextBoxProps = { 
     modelName: string 
-    provider: string
+    providerKey: string
     index: number
 }
 
@@ -18,15 +18,16 @@ type ITextStore = IText & {
 }
 
 
-export default function TextBox( {modelName, provider: provider_name, index}: ITextBoxProps ) { 
+export default function TextBox( {modelName, providerKey, index}: ITextBoxProps ) { 
     const [ text, setText ] = createStore<ITextStore>({ 
         editing: false,
         translated: "Waiting for text...",
         untranslated: global_text().untranslated
     })
     const textareaStyle = createMemo(() => text.translated==="Waiting for text..."? "italic text-zinc-100" : "")
-    const handler = Handlers[provider_name as TProviderNames]
+    const handler = Handlers[providerKey as TProviderKeys]
     let textarea: HTMLTextAreaElement | undefined
+    const provider = Providers[providerKey as TProviderKeys]
 
 
     async function translate() { 
@@ -62,7 +63,7 @@ export default function TextBox( {modelName, provider: provider_name, index}: IT
                 <textarea class={`w-full h-44 p-2 ${textareaStyle()} bg-inherit`} 
                  value={text.translated as string} ref={textarea} readonly={!text.editing}
                  name="" id="" cols="30" rows="10" />
-                <p class="py-1 px-2 absolute bottom-0 text-sm text-placeholder italic">{modelName} - {provider_name}</p>
+                <p class="py-1 px-2 absolute bottom-0 text-sm text-placeholder italic">{modelName} - {provider.provider_name}</p>
             </div>
 
             <Show when={!text.editing} fallback={
