@@ -1,6 +1,5 @@
 import { For, Show, createEffect } from "solid-js"
-import { configs, save_config, setConfigs } from "../../global/configs"
-import { enabledModels } from "../../global/text"
+import { configs, save_config, setConfigs, enabledModels } from "../../global/configs"
 import Provider, { IModel, IProvider, TProviderKeys } from "../../providers"
 import Providers from "../../providers"
 

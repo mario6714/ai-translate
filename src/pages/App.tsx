@@ -1,6 +1,6 @@
 import { Show, createEffect } from "solid-js";
-import { MyClipboardMonitor, MyWs, getEnabled, enabledModels } from "../global/text";
-import { configs, get_config, setConfigs } from "../global/configs";
+import { MyClipboardMonitor, MyWs } from "../global/text";
+import { configs, get_config, setConfigs, getEnabled, enabledModels } from "../global/configs";
 import Settings from "./Settings"
 import TextBoxes from "../components/TextBoxes";
 import SkeletonLoading from "../components/SkeletonLoading";

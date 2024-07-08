@@ -2,8 +2,7 @@
 import { createEffect } from 'solid-js'
 import { render } from 'solid-js/web'
 import { Router, Route } from '@solidjs/router'
-import { get_config, setConfigs } from './global/configs'
-import { getEnabled } from './global/text'
+import { get_config, setConfigs, getEnabled } from './global/configs'
 import App from './pages/App'
 import Settings from './pages/Settings'
 

@@ -1,14 +1,8 @@
-import { JSX, createSignal } from "solid-js"
-import { configs, save_config } from "./configs"
-import { IModel, TProviderKeys } from "../providers"
+import { createSignal } from "solid-js"
+import { configs } from "./configs"
 import { GetActiveWindowTitle, GetClipboardText, QueryTranslation, SaveText } from "../../modules/"
 
 
-
-export type IExtendedModel = IModel & { 
-    provider_key: string
-    component?: JSX.Element
-}
 
 export interface IText { 
     untranslated: string
@@ -23,40 +17,6 @@ export interface IGlobalText extends IText {
 export const [ global_text, setGlobalText ] = createSignal<IGlobalText>({
     untranslated: "とある王妃の閨事～貞淑な妻はいかにして孕んだか～"
 })
-
-export const [ enabledModels, setEnabledM ] = createSignal<IExtendedModel[] | null>(null)
-
-export function getEnabled() { 
-    const enabled_models: IExtendedModel[] = []
-    Object.keys(configs().providers).forEach(provider_key => { 
-        const enabled = configs().providers[provider_key as TProviderKeys]?.models?.filter( (m: IModel) => m.enabled)
-        .map(m => Object.assign( {...m}, {provider_key}) )
-        if (enabled?.length) { enabled_models.push(...enabled) }
-    } )
-
-    enabled_models.sort( (b, a) => { 
-        if (typeof a.index==="number" && typeof b.index==="number") { return b.index < a.index? -1 : 0 }
-        return 0
-    } )
-
-    let flag = false
-    for (let i=0; i<enabled_models.length-1; i++) { 
-        const a = enabled_models[i]; const b = enabled_models[i+1]
-        if (a.index && b.index) { 
-            if (b.index > a.index + 1 || b.index === a.index) { 
-                b.index = a.index+1 
-                const modelB = configs().getM(b.provider_key, b.name) as IModel 
-                modelB.index = a.index+1
-                if (!flag) { flag = true }
-            }
-        }
-    }
-
-    if (flag) { save_config(configs()) }
-    setEnabledM(enabled_models)
-    return enabled_models
-}
-
 
 
 async function onTextChange( {window_title, text}: { window_title: string, text: string } ) { 

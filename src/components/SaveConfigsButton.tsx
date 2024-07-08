@@ -1,4 +1,4 @@
-import { getEnabled } from "../global/text";
+import { getEnabled } from "../global/configs";
 
 
 export default function SaveConfigsButton() { 

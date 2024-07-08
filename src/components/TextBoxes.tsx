@@ -1,6 +1,5 @@
 import { Show, createEffect, createSignal } from "solid-js"
-import { configs, open_settings, save_config } from "../global/configs"
-import { enabledModels, getEnabled } from "../global/text"
+import { configs, open_settings, save_config, enabledModels, getEnabled } from "../global/configs"
 import TextBox from "../components/TextBox"
 
 
