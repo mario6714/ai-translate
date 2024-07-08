@@ -35,7 +35,7 @@ export function getEnabled() {
     } )
 
     enabled_models.sort( (b, a) => { 
-        if (a.index && b.index) { return b.index < a.index? -1 : 0 }
+        if (typeof a.index==="number" && typeof b.index==="number") { return b.index < a.index? -1 : 0 }
         return 0
     } )
 
