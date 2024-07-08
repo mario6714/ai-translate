@@ -9,7 +9,7 @@ export interface IConfig {
     caching: boolean
     targetLanguage: string
     providers: IProviders
-    getM: (provider?: string, name?: string) => IModel | undefined
+    getM: (provider?: string | null, name?: string | null) => IModel | undefined
 }
 
 

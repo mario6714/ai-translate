@@ -1,6 +1,6 @@
-import { Show, createSignal } from "solid-js"
-import { open_settings } from "../global/configs"
-import { enabledModels } from "../global/text"
+import { Show, createEffect, createSignal } from "solid-js"
+import { configs, open_settings, save_config } from "../global/configs"
+import { enabledModels, getEnabled } from "../global/text"
 import TextBox from "../components/TextBox"
 
 
@@ -8,18 +8,43 @@ import TextBox from "../components/TextBox"
 export default function TextBoxes() { 
     const [ hover, setHover ] = createSignal(false)
 
-    /* const enabledModels = createMemo<IExtendedModel[]>( () => { 
-        const enabled_models = getEnabled() ?? []
+    createEffect(() => { 
+        document.addEventListener("dragstart", (e: any) => {
+            e.target.classList.add("dragging");
+        });
 
-        enabled_models.forEach( (model, index) => { 
-            const { name, provider_name } = model
-            model.component = prev?.find(prevModel => (
-                (prevModel.name === name) && (prevModel.provider_name === provider_name)
-            ))?.component ?? <TextBox modelName={model.name} provider={model.provider_name} index={index} />
+        document.addEventListener('dragexit', (e) => { 
+            e.preventDefault()
         })
+    })
 
-        return enabled_models
-    } ) */
+
+    function dragHandler(e: DragEvent & {
+        currentTarget: HTMLElement;
+        target: Element;
+    }) { 
+
+        const dragging = document.querySelector('.dragging') as HTMLElement
+        for (let element of Array.from(e.currentTarget.children)) { 
+            const box = element.getBoundingClientRect()
+            //const boxCenterY = box.y + box.height / 2;
+            if (e.clientY >= box.y && e.clientY <= (box.y+box.height)) { 
+                const modelA = configs().getM(dragging?.getAttribute('providerKey'), dragging?.getAttribute('modelName'))
+                const modelB = configs().getM(element.getAttribute('providerKey'), element.getAttribute('modelName'))
+                if (typeof modelA?.index==="number" && typeof modelB?.index==="number" && modelA.index !== modelB.index) { 
+                    const valueA = modelA.index
+                    const valueB = modelB.index
+                    modelA.index = valueB
+                    modelB.index = valueA
+                    getEnabled()
+                    save_config(configs())
+                }
+            }
+        }
+
+        dragging?.classList.remove("dragging")
+        e.stopPropagation()
+    }
 
 
     return ( 
@@ -39,9 +64,11 @@ export default function TextBoxes() {
             </Show>
 
 
-            { enabledModels()?.map( (model, index) => 
-                <TextBox modelName={model.name} providerKey={model.provider_key} index={index} />
-            ) }
+            <div onDrop={ dragHandler } onDragOver={(e) => {e.preventDefault()}}>
+                { enabledModels()?.map( (model, index) => 
+                    <TextBox modelName={model.name} providerKey={model.provider_key} index={index} />
+                ) }
+            </div>
 
         </main>
     )

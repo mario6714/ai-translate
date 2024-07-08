@@ -13,3 +13,7 @@ button:hover > svg {
 button:active > svg { 
     color: rgb(255, 255, 255, .6);
 }
+
+.dragging {
+    opacity: 0.3;
+}

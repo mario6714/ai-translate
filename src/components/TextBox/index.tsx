@@ -1,4 +1,4 @@
-import { Show, createEffect, createMemo } from "solid-js"
+import { Show, createEffect, createMemo, createSignal } from "solid-js"
 import { SetStoreFunction, createStore } from "solid-js/store"
 import { IText, global_text, save_text } from "../../global/text"
 import Providers, { Handlers, TProviderKeys } from "../../providers"
@@ -17,6 +17,20 @@ type ITextStore = IText & {
     editing: boolean
 }
 
+export type ITextBoxSectionProps = { 
+    modelName?: string
+    providerKey?: string
+}
+
+declare module 'solid-js' {
+    namespace JSX { 
+        // JSX.HTMLElementTags.section: JSX.HTMLAttributes<HTMLElement>
+        interface IntrinsicElements {
+            section: JSX.HTMLAttributes<HTMLElement> & ITextBoxSectionProps
+        }
+    }
+}
+
 
 export default function TextBox( {modelName, providerKey, index}: ITextBoxProps ) { 
     const [ text, setText ] = createStore<ITextStore>({ 
@@ -24,10 +38,11 @@ export default function TextBox( {modelName, providerKey, index}: ITextBoxProps 
         translated: "Waiting for text...",
         untranslated: global_text().untranslated
     })
-    const textareaStyle = createMemo(() => text.translated==="Waiting for text..."? "italic text-zinc-100" : "")
+    const [ dragging, setDragging ] = createSignal(false)
     const handler = Handlers[providerKey as TProviderKeys]
     let textarea: HTMLTextAreaElement | undefined
     const provider = Providers[providerKey as TProviderKeys]
+    const textareaStyle = createMemo(() => text.translated==="Waiting for text..."? "italic text-zinc-100" : "")
 
 
     async function translate() { 
@@ -50,14 +65,14 @@ export default function TextBox( {modelName, providerKey, index}: ITextBoxProps 
 
             } else { await translate() }
 
-            console.log(modelName, ":", text.translated) 
+            //console.log(modelName, ":", text.translated) 
         }
 
     })
 
 
     return (
-        <section class="w-full flex justify-between">
+        <section class="w-full flex justify-between" modelName={modelName} providerKey={providerKey} draggable={dragging()}>
 
             <div class="w-full py-1 relative">
                 <textarea class={`w-full h-44 p-2 ${textareaStyle()} bg-inherit`} 
@@ -71,6 +86,15 @@ export default function TextBox( {modelName, providerKey, index}: ITextBoxProps 
             }>
                 <div class="flex flex-col justify-end items-center m-4">
                     <div class="flex flex-col gap-2 items-center">
+                            <button onMouseDown={ () => { 
+                                if (!dragging()) { setDragging(true) }
+                            } } onMouseUp={ () => { 
+                                if (dragging()) { setDragging(false) }
+                            } }>
+                                <svg class="w-6 h-6 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25" />
+                                </svg>
+                            </button>
                             <button onclick={ translate }>
                                 <svg class="w-6 h-6 text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
