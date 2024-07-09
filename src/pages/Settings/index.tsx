@@ -15,7 +15,7 @@ export default function Settings() {
 
     return( 
         <Show when={configs()}>
-            <main class="h-screen w-full px-10 flex flex-col justify-between">
+            <main class="w-full px-10 flex flex-col justify-between">
                 <section class="py-8 flex flex-col">
                     <h1 class="text-5xl font-bold">Settings</h1>
                     <div>

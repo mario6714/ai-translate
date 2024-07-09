@@ -1,11 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"syscall"
-	"unsafe"
-
-	"golang.org/x/sys/windows"
 )
 
 var user32 = syscall.NewLazyDLL("user32.dll")
@@ -28,36 +24,4 @@ func SetAlwaysOnTop(w uintptr, b bool) {
 	} else {
 		User32SetWindowPos.Call(w, HWND_NOTOPMOST, NEW_X, NEW_Y, NEW_W, NEW_H, SWP_NORESIZE|SWP_NOMOVE)
 	}
-}
-
-
-
-var procLoadImage = user32.NewProc("LoadImageW")
-
-const (
-	IMAGE_ICON      = 1
-	LR_LOADFROMFILE = 0x00000010
-)
-
-func LoadIcon(iconPath string) (uint, error) {
-	fmt.Println(iconPath)
-	var utf16Path, err = windows.UTF16PtrFromString(iconPath)
-	if err != nil { return 0, err }
-
-	hIcon, _, err := procLoadImage.Call(
-		0,
-		uintptr(unsafe.Pointer(utf16Path)),
-		IMAGE_ICON,
-		0,
-		0,
-		LR_LOADFROMFILE,
-	)
-
-	fmt.Println(hIcon)
-	return uint(hIcon), err
-}
-
-func ChangeIcon() { 
-	var hinstance windows.Handle
-	_ = windows.GetModuleHandleEx(0, nil, &hinstance)
 }

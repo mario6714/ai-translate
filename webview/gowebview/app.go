@@ -30,6 +30,7 @@ type App struct {}
 
 func (app *App) New(w Window) { 
 	bind(w)
+	//server.Listen(5173)
 	SetAlwaysOnTop(uintptr(unsafe.Pointer(w.Window())), true)
 }
 
