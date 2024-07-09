@@ -43,7 +43,6 @@ $ npm run pack
 ## todo
 
 translate a game  
-implement drag and drop models  
--  
+  
 finish the webview in go  
 search for more providers  
