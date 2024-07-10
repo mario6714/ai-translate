@@ -55,7 +55,7 @@ export async function CohereHandler(text: string, model_name: string, tag: HTMLT
     const response = await client.sendPrompt(Prompt(text))
     if (response) { 
         for await (const chunk of response) { 
-            if (chunk?.event_type==="text-generation" && chunk?.text) { tag.value += chunk.text }
+            if (chunk?.event_type==="text-generation" && chunk?.text && tag.value.length<=300) { tag.value += chunk.text }
         }
     }
 

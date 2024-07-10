@@ -142,7 +142,10 @@ export class CustomSSE {
         while(true) { 
             const result = await reader?.read();
             const content = result.value?.replaceAll('data:', "").replaceAll("\r", "").trim().split("\n")
-            .filter(item => item).map(item => JSON.parse(item))
+            .filter(item => item).map(item => { 
+                try { return JSON.parse(item) }
+                catch { console.log(item) }
+            })
 
             if (content) { 
                 for (let item of content) { yield item as T }

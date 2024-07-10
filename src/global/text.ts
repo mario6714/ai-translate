@@ -21,7 +21,10 @@ export const [ global_text, setGlobalText ] = createSignal<IGlobalText>({
 
 async function onTextChange( {window_title, text}: { window_title: string, text: string } ) { 
     if (text?.trim().length) {
-        if ( window_title && (window_title !== global_text().window_title) ) { global_text().window_title = window_title }
+        if ( window_title && window_title!=="AI Translate" && (window_title !== global_text().window_title) ) { 
+            global_text().window_title = window_title 
+        }
+
         const translation = await QueryTranslation({ 
             window_title,
             originalText: text
@@ -72,6 +75,7 @@ class Monitor {
                 const window_title = await GetActiveWindowTitle()
                 if (!document.hidden) { 
                     if ( (value !== tmp_value) && tmp_value && window_title && document.hidden===false ) { 
+                        console.log(value, tmp_value)
                         execute({ window_title, text: tmp_value })
                     }
                     else if (document.hidden) { console.log(document.hidden) }
