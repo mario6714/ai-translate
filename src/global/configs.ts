@@ -110,6 +110,8 @@ export class CustomSSE {
     public credentials: CustomSSEInit['credentials']
     public headers: CustomSSEInit['headers'] | undefined
     public request: Promise<Response> | undefined
+    private reader?: ReadableStreamDefaultReader<string> | null
+
 
     constructor( url: string | null, init?: CustomSSEInit ) {
         this.url = url
@@ -138,28 +140,34 @@ export class CustomSSE {
 
     async* getStream<T= unknown>(httpBody: IHttpBody, url?: string ): AsyncGenerator<T> { 
         this.sendPostRequest(httpBody, url)
-        const reader = await this.reader()
+        if (!this.reader) { this.reader = await this.getReader() }
         while(true) { 
-            const result = await reader?.read();
+            const result = await this.reader.read();
             const content = result.value?.replaceAll('data:', "").replaceAll("\r", "").trim().split("\n")
-            .filter(item => item).map(item => { 
-                try { return JSON.parse(item) }
-                catch { console.log(item) }
+            .filter(message => message).map(message => { 
+                try { return JSON.parse(message) }
+                catch { console.log(message) }
             })
 
             if (content) { 
                 for (let item of content) { yield item as T }
             }
-            if (result.done) { reader?.releaseLock() ; break }
+
+            if (result.done) { this.reader.releaseLock() ; break }
         }
     }
 
+    close() { 
+        this.reader?.cancel().catch(error => console.error("Error canceling reader:", error));
+        this.reader = null
+    }
 
-    private async reader() { //precisa ser o mesmo reader
+
+    private async getReader() { //precisa ser o mesmo reader
         const response = await this.request as Response
         const body = response.body
         if(!response || !body) { throw new Error("Request is empty!") }
-        return body?.pipeThrough(new TextDecoderStream()).getReader()
+        return body.pipeThrough(new TextDecoderStream()).getReader()
     }
 
 }

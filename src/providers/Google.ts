@@ -92,7 +92,8 @@ export async function GoogleHandler(text: string, model_name: string, tag: HTMLT
     });
     for await (const chunk of result.stream) {
         const chunkText = chunk.text();
-        if (tag.value.length <= 300) { tag.value += chunkText; }
+        tag.value += chunkText;
+        if (tag.value.length > 300) { break }
     }
 
     return tag.value

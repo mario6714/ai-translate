@@ -75,7 +75,7 @@ class Monitor {
                 const window_title = await GetActiveWindowTitle()
                 if (!document.hidden) { 
                     if ( (value !== tmp_value) && tmp_value && window_title && document.hidden===false ) { 
-                        console.log(value, tmp_value)
+                        console.log("texts: ", value, tmp_value)
                         execute({ window_title, text: tmp_value })
                     }
                     else if (document.hidden) { console.log(document.hidden) }
