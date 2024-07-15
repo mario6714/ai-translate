@@ -43,7 +43,5 @@ $ npm run pack
 ## todo
 
 translate a game  
-  
-finish the webview in go  
 search for more providers
 

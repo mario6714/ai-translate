@@ -62,7 +62,7 @@ class Monitor {
         if(this.interval) { this.stop() }
         if(this.callback) { 
             let value: string
-            for (let _=0; _<3; _++) { 
+            for (let _=0; _<5; _++) { 
                 value = await GetClipboardText()
                 if (value===undefined) { await new Promise(res => setTimeout(res, 60)) }
                 else { break }
@@ -73,9 +73,8 @@ class Monitor {
             this.interval = setInterval(async function() { 
                 const tmp_value = await GetClipboardText()
                 const window_title = await GetActiveWindowTitle()
-                if (!document.hidden) { 
+                if (!document.hidden && window_title !== "AI Translate") { 
                     if ( (value !== tmp_value) && tmp_value && window_title && document.hidden===false ) { 
-                        console.log("texts: ", value, tmp_value)
                         execute({ window_title, text: tmp_value })
                     }
                     else if (document.hidden) { console.log(document.hidden) }
@@ -83,7 +82,7 @@ class Monitor {
 
                 value = tmp_value
 
-            }, 300)
+            }, 250)
         }
     }
 
