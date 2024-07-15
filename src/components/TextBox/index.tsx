@@ -31,6 +31,14 @@ declare module 'solid-js' {
     }
 }
 
+type MyDragEvent = DragEvent & {
+    currentTarget: HTMLElement;
+    target: Element;
+}
+
+function setDragOverStyle(e: MyDragEvent) { e.currentTarget.style.border = "2px solid white" }
+function rmvDragOverStyle(e: MyDragEvent) { e.currentTarget.style.border = "" }
+
 
 export default function TextBox( {modelName, providerKey, index}: ITextBoxProps ) { 
     const [ text, setText ] = createStore<ITextStore>({ 
@@ -72,7 +80,9 @@ export default function TextBox( {modelName, providerKey, index}: ITextBoxProps 
 
 
     return (
-        <section class="w-full flex justify-between" modelName={modelName} providerKey={providerKey} draggable={dragging()}>
+        <section class="w-full flex justify-between" 
+         modelName={modelName} providerKey={providerKey} draggable={ dragging() }
+         onDragOver={setDragOverStyle} onDragLeave={rmvDragOverStyle} onDrop={rmvDragOverStyle}>
 
             <div class="w-full py-1 relative">
                 <textarea class={`w-full h-44 p-2 ${textareaStyle()} bg-inherit`} 
