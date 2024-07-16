@@ -82,11 +82,11 @@ export default {
     about_url: "https://huggingface.co/docs/hub/security-tokens",
     api_key: undefined,
     models: [
-        {
+        /*{
             name: "llama3-70b",
             owned_by: "Meta",
             enabled: undefined
-        }, /*{
+        }, {
             name: "command-r-plus",
             owned_by: "CohereForAI",
             enabled: undefined
