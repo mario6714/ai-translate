@@ -9,4 +9,7 @@ class Clipboard:
         title = win32gui.GetWindowText(hwnd)
         return title
 
-    def GetClipboardText(self) -> str: return pyperclip.paste()
+
+    def GetClipboardText(self) -> str: 
+        try: return pyperclip.paste()
+        except: return None
