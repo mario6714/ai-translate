@@ -36,7 +36,9 @@ type App struct {
 	Window webview2.WebView
 }
 
-func New(options AppOptions) App { 
+func New() App { return NewWithOptions(AppOptions{}) }
+
+func NewWithOptions(options AppOptions) App { 
 	app := App{ 
 		AppOptions: options,
 	}
