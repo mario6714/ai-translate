@@ -1,18 +1,18 @@
 package main
 
 import (
+	"gowebview/app"
 	"gowebview/server"
 )
 
 func main() { 
 	go server.Listen(5173)
-	app := App{ 
+	myApp := app.New(app.AppOptions{ 
 		AlwaysOnTop: true,
-	}
-	app.New()
-	defer app.Window.Terminate()
+	})
+	defer myApp.Window.Terminate()
 
-	app.Window.Navigate("http://localhost:5173/")
-	app.Window.Run()
+	myApp.Window.Navigate("http://localhost:5173/")
+	myApp.Window.Run()
 }
 

@@ -1,7 +1,8 @@
-package main
+package app
 
 import (
 	"gowebview/clipboard"
+	"gowebview/lib"
 	"gowebview/settings"
 	"gowebview/xlsx"
 	"log"
@@ -26,12 +27,20 @@ type API struct {
 	xlsx.XLSX
 }
 
-type App struct { 
+type AppOptions struct { 
 	AlwaysOnTop bool
+}
+
+type App struct { 
+	AppOptions
 	Window webview2.WebView
 }
 
-func (app *App) New() { 
+func New(options AppOptions) App { 
+	app := App{ 
+		AppOptions: options,
+	}
+
 	app.Window = webview2.NewWithOptions(webview2.WebViewOptions{ 
 		Debug: true,
 		AutoFocus: true,
@@ -42,7 +51,9 @@ func (app *App) New() {
 	} )
 
 	bind(app.Window)
-	if app.AlwaysOnTop { SetAlwaysOnTop(uintptr(unsafe.Pointer(app.Window.Window())), true) }
+	if app.AlwaysOnTop { lib.SetAlwaysOnTop(uintptr(unsafe.Pointer(app.Window.Window())), true) }
+
+	return app
 }
 
 func bind(w Window) { 
