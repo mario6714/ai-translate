@@ -3,6 +3,7 @@ from clipboard import Clipboard
 from settings import SettingsApi
 from xlsx import XLSX, os
 from server import server, distDir, PORT
+from window import get_screen_width
 #from binary_fs import FS, os
 
 
@@ -23,6 +24,10 @@ if __name__ == "__main__":
         js_api= Api(),
         url= server if os.path.exists(distDir) else "http://localhost:5173/",
         http_port= PORT,
+        width= 580,
+        height= 342,
+        y= 0,
+        x= abs(get_screen_width()-580)
     )
     main_window.on_top = True
 
@@ -33,7 +38,7 @@ if __name__ == "__main__":
         'OPEN_DEVTOOLS_IN_DEBUG': True,
     }
 
-    webview.start(debug=True)
+    webview.start()
 
 
 
