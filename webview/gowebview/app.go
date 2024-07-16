@@ -26,12 +26,23 @@ type API struct {
 	xlsx.XLSX
 }
 
-type App struct {}
+type App struct { 
+	AlwaysOnTop bool
+	Window webview2.WebView
+}
 
-func (app *App) New(w Window) { 
-	bind(w)
-	//server.Listen(5173)
-	SetAlwaysOnTop(uintptr(unsafe.Pointer(w.Window())), true)
+func (app *App) New() { 
+	app.Window = webview2.NewWithOptions(webview2.WebViewOptions{ 
+		Debug: true,
+		AutoFocus: true,
+		WindowOptions: webview2.WindowOptions{ 
+			Title: "AI Translate",
+			IconId: 1,
+		},
+	} )
+
+	bind(app.Window)
+	if app.AlwaysOnTop { SetAlwaysOnTop(uintptr(unsafe.Pointer(app.Window.Window())), true) }
 }
 
 func bind(w Window) { 
