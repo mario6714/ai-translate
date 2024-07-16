@@ -77,12 +77,12 @@ class Monitor {
                     if ( (value !== tmp_value) && tmp_value && window_title && document.hidden===false ) { 
                         execute({ window_title, text: tmp_value })
                     }
-                    else if (document.hidden) { console.log(document.hidden) }
+                    //else if (document.hidden) { console.log(document.hidden) }
                 }
 
                 value = tmp_value
 
-            }, 250)
+            }, 200)
         }
     }
 
