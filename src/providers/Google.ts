@@ -90,10 +90,11 @@ export async function GoogleHandler(text: string, model_name: string, tag: HTMLT
         generationConfig: { temperature: 0.2 },
         safetySettings,
     });
+
     for await (const chunk of result.stream) {
         const chunkText = chunk.text();
         tag.value += chunkText;
-        if (tag.value.length > 300) { break }
+        if (tag.value.length > 300) { location.reload() ; break }
     }
 
     return tag.value
