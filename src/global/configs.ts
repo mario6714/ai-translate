@@ -206,7 +206,7 @@ export const Prompt = (text: string) => `
     - Never include any notes, explanations, dislaimers, or anything similar in your response.
     - "..." can be a part of the dialogue. Translate it as it is and include it in your response.
 
-    now translate: ${text}
+    now translate: ${text.trim()}
 
 ` //: "Explain the importance of fast language models"
 
