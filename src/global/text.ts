@@ -5,7 +5,7 @@ import { GetActiveWindowTitle, GetClipboardText, QueryTranslation, SaveText } fr
 
 
 export interface IText { 
-    untranslated: string
+    untranslated: string | null
     translated?: string | null
 }
 
@@ -23,11 +23,14 @@ declare global {
 export const history: string[] = []
 const historyPrototype = Object.getPrototypeOf(history)
 historyPrototype.toPrompt = function() { 
-    return history.map( (content, i) => `<Text${i+1}>${content}</Text${i+1}>` ).join('\n');
+    if (!history.length) { return "" }
+    return `context: 
+        ${history.map( (content, i) => `<Text${i+1}>${content}</Text${i+1}>` ).join('\n')}
+    `
 }
 
 export const [ global_text, setGlobalText ] = createSignal<IGlobalText>({
-    untranslated: "とある王妃の閨事～貞淑な妻はいかにして孕んだか～"
+    untranslated: null//"とある王妃の閨事～貞淑な妻はいかにして孕んだか～"
 })
 
 
@@ -36,8 +39,11 @@ async function onTextChange( {window_title, text}: { window_title: string, text:
         if ( window_title && window_title !== "AI Translate" && (window_title !== global_text().window_title) ) { 
             global_text().window_title = window_title 
         }
-        history.push(text)
-        if (history.length>5) { history.shift() }
+
+        if (global_text().untranslated) { 
+            history.push(global_text().untranslated as string)
+            if (history.length>5) { history.shift() }
+        }
 
         const translation = await QueryTranslation({ 
             window_title,
@@ -194,7 +200,6 @@ export const Prompt = (text: string) => `
 
     now translate: ${text.trim()}
 
-    context: 
-        ${history.toPrompt()}
+    ${history.toPrompt()}
 
 `
