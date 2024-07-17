@@ -1,6 +1,8 @@
 "use strict";
 import { Groq, ClientOptions } from "groq-sdk";
-import { Prompt, configs } from "../global/configs";
+import { configs } from "../global/configs";
+import { Prompt } from "../global/text";
+
 
 
 class GroqChat extends Groq { 
@@ -59,7 +61,11 @@ export default {
             name: "mixtral-8x7b-32768",
             owned_by: "Mistral",
             enabled: undefined
-        }, 
+        }, { 
+            name: "gemma2-9b-it",
+            owned_by: "Google",
+            enabled: undefined
+        }
     ]
 }
 
