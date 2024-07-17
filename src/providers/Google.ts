@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold, } from "@google/generative-ai";
 import { configs } from "../global/configs";
-import { Prompt } from '../global/text'
+import { systemPrompt, userPrompt } from '../global/text'
 
 
 const safetySettings = [
@@ -27,7 +27,7 @@ function MyGoogleChat(key: string, model_name: string) {
     const genAI = new GoogleGenerativeAI(key)
     const model = genAI.getGenerativeModel({ 
         model: model_name,
-        systemInstruction: "Be the fastest as possible"
+        systemInstruction: "Be the fastest as possible\n\n\n"+systemPrompt
     })
     return model
 }
@@ -38,7 +38,7 @@ export async function GoogleHandler(text: string, model_name: string, tag: HTMLT
     if (!text || !tag || !model_name || !API_KEY) { return "" }
     const gemini = MyGoogleChat(API_KEY, model_name);
     const parts = [
-        { text: Prompt(text) },
+        { text: userPrompt(text) },
     ];
 
 

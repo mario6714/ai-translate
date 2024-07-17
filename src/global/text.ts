@@ -160,7 +160,7 @@ export class MyWs {
 
 
 
-export const Prompt = (text: string) => `
+export const systemPrompt = `
     You are an expert Eroge Game translator who translates Japanese text to ${configs().targetLanguage}.
     You are going to be translating text from a videogame. 
     I will give you game text lines, and you must translate each line to the best of your ability.
@@ -197,9 +197,12 @@ export const Prompt = (text: string) => `
     - Maintain any code text in brackets if given. (e.g "[Color_0]", "[Ascii_0]", etc)
     - Never include any notes, explanations, dislaimers, or anything similar in your response.
     - "..." can be a part of the dialogue. Translate it as it is and include it in your response.
+`
 
+export const userPrompt = (text: string) => `
     now translate: ${text.trim()}
 
     ${history.toPrompt()}
-
 `
+
+export const completePrompt = (text: string) => systemPrompt + userPrompt(text)

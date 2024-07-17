@@ -1,7 +1,7 @@
 "use strict";
 import { Groq, ClientOptions } from "groq-sdk";
 import { configs } from "../global/configs";
-import { Prompt } from "../global/text";
+import { systemPrompt, userPrompt } from "../global/text";
 
 
 
@@ -13,14 +13,17 @@ class GroqChat extends Groq {
     sendPrompt(prompt: string, model: string) {
         return this.chat.completions.create({
             messages: [
-                {
+                { 
+                    role: "system",
+                    content: systemPrompt
+                }, {
                     role: "user",
                     content: prompt
                 }
             ],
             model: model, 
             temperature: 0.2,
-            stream: true
+            stream: true,
         });
     }
 }
@@ -36,7 +39,7 @@ export async function GroqHandler(text: string, model_name: string, tag: HTMLTex
 
 
     tag.value = ""
-    const stream = await groq?.sendPrompt(Prompt(text), model_name) ?? []
+    const stream = await groq?.sendPrompt(userPrompt(text), model_name) ?? []
     for await (const chunk of stream) { 
         if(chunk.choices[0]?.delta?.content && tag) {
             tag.value += chunk.choices[0]?.delta?.content

@@ -1,7 +1,21 @@
-import { Prompt } from "../global/text";
+import { systemPrompt, userPrompt } from "../global/text";
 import { configs, CustomSSE, CustomSSEInit } from "../global/configs";
 
 
+
+type ICohereInit = { 
+    model: string
+    chat_history: { 
+        role: "system" | "user" | string
+        message: string
+    }[]
+    preamble: string
+    message: string
+    stream: boolean
+    temperature: number
+    /* connectors: []
+    prompt_truncation: "OFF" */
+}
 
 type ICohereResponse = {
     "is_finished": boolean,
@@ -33,10 +47,12 @@ class CohereChat extends CustomSSE {
 
     async sendPrompt(prompt: string) { 
         if (this._model) { 
-            return this.getStream<ICohereResponse>({ 
+            return this.getStream<ICohereResponse, ICohereInit>({ 
                 model: this._model,
                 message: prompt,
                 stream: true,
+                temperature: 0.2,
+                preamble: systemPrompt
             })
         }
     }
@@ -53,7 +69,7 @@ export async function CohereHandler(text: string, model_name: string, tag: HTMLT
     })
 
     tag.value = ""
-    const response = await client.sendPrompt(Prompt(text))
+    const response = await client.sendPrompt(userPrompt(text))
     if (response) { 
         for await (const chunk of response) { 
             if (chunk?.event_type==="text-generation" && chunk?.text) { tag.value += chunk.text }

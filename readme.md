@@ -44,4 +44,3 @@ $ npm run pack
 
 translate a game  
 search for more providers
-

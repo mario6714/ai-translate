@@ -138,8 +138,8 @@ export class CustomSSE {
         return this
     }
 
-    async* getStream<T= unknown>(httpBody: IHttpBody, url?: string ): AsyncGenerator<T> { 
-        this.sendPostRequest(httpBody, url)
+    async* getStream<T= unknown, U= unknown>(httpBody: U | IHttpBody, url?: string ): AsyncGenerator<T> { 
+        this.sendPostRequest(httpBody as never, url)
         if (!this.reader) { this.reader = await this.getReader() }
         while(true) { 
             const result = await this.reader.read();

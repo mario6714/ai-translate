@@ -1,9 +1,22 @@
 import { CustomSSE, CustomSSEInit, configs } from "../global/configs";
-import { Prompt } from "../global/text";
+import { systemPrompt, userPrompt } from "../global/text";
 
 
 
-type IResponse = {
+type HuggingSpacesInit = { 
+    model: string,
+    messages: { 
+        role: "system" | "user" | string,
+        content: string
+    }[]
+    temperature: number,
+    top_p: number,
+    max_tokens: number,
+    use_cache: boolean,
+    stream: boolean
+}
+
+type HuggingSpacesResponse = { 
     "created": number,
     "id": string
     "object": string
@@ -29,13 +42,16 @@ class HfSpace extends CustomSSE {
 
     async sendPrompt(prompt: string) { 
         if (this._model) { 
-            return this.getStream<IResponse>( { 
+            return this.getStream<HuggingSpacesResponse, HuggingSpacesInit>( { 
                 model: this._model,
                 messages: [
-                {
-                    role: "user",
-                    content: prompt
-                }
+                    { 
+                        role: "system",
+                        content: systemPrompt
+                    }, {
+                        role: "user",
+                        content: prompt
+                    }
                 ],
                 temperature: 0.2,
                 top_p: 0.45,
@@ -63,7 +79,7 @@ export async function HfSpaceHandler(text: string, model_name: string, tag: HTML
 
 
     tag.value = ""
-    const stream = await hf.sendPrompt(Prompt(text))
+    const stream = await hf.sendPrompt(userPrompt(text))
     if (stream) { 
         for await (const chunk of stream) { 
             if(chunk?.choices) {
