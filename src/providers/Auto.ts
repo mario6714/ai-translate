@@ -61,7 +61,7 @@ const translators = {
 
 export async function AutomaticHandler(text: string, engine: string, _: HTMLTextAreaElement) { 
     if (!text || !engine) { return null }
-    return await translators[engine as keyof typeof translators].execute(text)
+    return await translators[engine as keyof typeof translators].execute(text.trim())
 }
 
 export default { 

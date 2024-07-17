@@ -10,7 +10,7 @@ export async function DeepLHandler(text: string, ..._: any[]) {
         apiKey: API_KEY
     })
 
-    return await translator.translate(text, 'auto', languageCodes[configs().targetLanguage as keyof typeof languageCodes])
+    return await translator.translate(text.trim(), 'auto', languageCodes[configs().targetLanguage as keyof typeof languageCodes])
 }
 
 

@@ -1,4 +1,5 @@
-import { CustomSSE, CustomSSEInit, Prompt, configs } from "../global/configs";
+import { CustomSSE, CustomSSEInit, configs } from "../global/configs";
+import { Prompt } from "../global/text";
 
 
 
