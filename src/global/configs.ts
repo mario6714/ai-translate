@@ -49,10 +49,17 @@ export function getEnabled() {
         return 0
     } )
 
+    if (enabled_models[0] && enabled_models[0]?.index !== 0) { 
+        enabled_models[0].index = 0 
+        const { provider_key, name } = enabled_models[0]
+        const model = configs().getM(provider_key, name)
+        if(model) { model.index = 0 }
+    }
+
     let flag = false
     for (let i=0; i<enabled_models.length-1; i++) { 
         const a = enabled_models[i]; const b = enabled_models[i+1]
-        if (a.index && b.index) { 
+        if (typeof a.index==="number" && typeof b.index==="number") { 
             if (b.index > a.index + 1 || b.index === a.index) { 
                 b.index = a.index+1 
                 const modelB = configs().getM(b.provider_key, b.name) as IModel 
