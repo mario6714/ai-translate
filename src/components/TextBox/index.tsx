@@ -54,7 +54,7 @@ export default function TextBox( {modelName, providerKey, index}: ITextBoxProps 
 
 
     async function translate() { 
-        if (handler && textarea) { 
+        if (handler && textarea && text.untranslated) { 
             const translated = await handler(text.untranslated, modelName, textarea)
             .catch(e => { console.error(e) ; return "" })
             setText('translated', translated)

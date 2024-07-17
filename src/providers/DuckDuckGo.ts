@@ -1,5 +1,5 @@
 import { CustomSSE, CustomSSEInit } from "../global/configs";
-import { Prompt } from "../global/text";
+import { completePrompt } from "../global/text";
 
 
 
@@ -35,7 +35,7 @@ export async function DuckHandler(text: string, model_name: string, tag: HTMLTex
     })
 
     tag.value = ""
-    const response = await client.sendPrompt(Prompt(text))
+    const response = await client.sendPrompt(completePrompt(text))
     //console.log(response)
     if (response) { 
         for await (const chunk of response) { 

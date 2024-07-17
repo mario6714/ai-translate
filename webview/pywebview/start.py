@@ -24,10 +24,10 @@ if __name__ == "__main__":
         js_api= Api(),
         url= server if os.path.exists(distDir) else "http://localhost:5173/",
         http_port= PORT,
-        width= 580,
-        height= 342,
+        width= 342,
+        height= 615,
         y= 0,
-        x= abs(get_screen_width()-580)
+        x= abs(get_screen_width()-342)
     )
     main_window.on_top = True
 
