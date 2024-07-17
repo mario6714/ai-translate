@@ -112,7 +112,7 @@ export default {
             name: "zephyr-141b",
             owned_by: "Huggingface",
             enabled: undefined
-        }, */{ 
+        }, { 
             name: "openchat-3.5",
             owned_by: "OpenChat",
             enabled: undefined
@@ -124,7 +124,7 @@ export default {
             name: "gpt-3.5-turbo",
             owned_by: "OpenAI",
             enabled: undefined
-        }, {
+        },*/ {
             name: "yi-1.5-34b",
             owned_by: "01-ai",
             enabled: undefined

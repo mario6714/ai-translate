@@ -161,7 +161,7 @@ export class MyWs {
 
 
 export const systemPrompt = `
-    You are an expert Eroge Game translator who translates Japanese text to ${configs().targetLanguage}.
+    You are an expert Game translator who translates Japanese text to ${configs().targetLanguage}.
     You are going to be translating text from a videogame. 
     I will give you game text lines, and you must translate each line to the best of your ability.
 
