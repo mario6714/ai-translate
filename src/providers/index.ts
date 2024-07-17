@@ -1,5 +1,5 @@
 import GroqCloud, { GroqHandler } from './GroqCloud'
-import HfSpaces, { HfSpaceHandler } from './hf-spaces'
+import HfSpaces, { HfSpaceHandler } from './HuggingSpaces'
 import Google, { GoogleHandler } from './Google'
 import Cohere, { CohereHandler } from './Cohere'
 import Auto, { AutomaticHandler } from './Auto'
