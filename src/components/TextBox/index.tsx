@@ -53,12 +53,12 @@ export default function TextBox( {modelName, providerKey, index}: ITextBoxProps 
     const textareaStyle = createMemo(() => text.translated==="Waiting for text..."? "italic text-zinc-100" : "")
 
 
-    async function translate() { 
+    async function translate(options?: {save?: boolean}) { 
         if (handler && textarea && text.untranslated) { 
             const translated = await handler(text.untranslated, modelName, textarea)
-            .catch(e => { console.error(e) ; return "" })
+            .catch(e => { console.error(e) ; return "Error" })
             setText('translated', translated)
-            if (index===0) { save_text(text) }
+            if (index===0 && options?.save) { save_text(text) }
         }
     }
 
@@ -71,7 +71,7 @@ export default function TextBox( {modelName, providerKey, index}: ITextBoxProps 
                 if (index===0) { setText('translated', translated) }
                 else { setText('translated', "") }
 
-            } else { await translate() }
+            } else { await translate({ save: true }) }
 
             //console.log(modelName, ":", text.translated) 
         }
@@ -105,7 +105,7 @@ export default function TextBox( {modelName, providerKey, index}: ITextBoxProps 
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25" />
                                 </svg>
                             </button>
-                            <button onclick={ translate }>
+                            <button onclick={ () => translate() }>
                                 <svg class="w-6 h-6 text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
                                 </svg>

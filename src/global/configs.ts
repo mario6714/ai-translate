@@ -81,7 +81,7 @@ export async function save_config(config: IConfig) { return await SaveConfig(con
 
 export async function get_config(): Promise<IConfig | void> { 
     let response: unknown
-    for (let _=0; _<3; _++) { 
+    for (let _=0; _<5; _++) { 
         response = await GetConfig()
         if (!response) { await new Promise(res => setTimeout(res, 60)) }
         else { break }

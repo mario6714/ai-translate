@@ -20,11 +20,11 @@ declare global {
     }
 }
 
-export const history: string[] = []
+export let history: string[] = []
 const historyPrototype = Object.getPrototypeOf(history)
 historyPrototype.toPrompt = function() { 
     if (!history.length) { return "" }
-    return `context: 
+    return `context (FOR CONTEXT ONLY, DO NOT TRANSLATE THIS): 
         ${history.map( (content, i) => `<Text${i+1}>${content}</Text${i+1}>` ).join('\n')}
     `
 }
@@ -38,17 +38,20 @@ async function onTextChange( {window_title, text}: { window_title: string, text:
     if (text?.trim().length) {
         if ( window_title && window_title !== "AI Translate" && (window_title !== global_text().window_title) ) { 
             global_text().window_title = window_title 
-        }
-
-        if (global_text().untranslated) { 
-            history.push(global_text().untranslated as string)
-            if (history.length>5) { history.shift() }
+            history = []
         }
 
         const translation = await QueryTranslation({ 
             window_title,
             originalText: text
         } )
+
+        if (translation && history.length) { history = [] }
+        else if (!translation && global_text().untranslated) { 
+            history.push(global_text().untranslated as string)
+            if (history.length>5) { history.shift() }
+        }
+
         if(translation) { global_text().translated = translation }
         else if (global_text().translated) { global_text().translated = null }
         global_text().untranslated = text
@@ -200,7 +203,7 @@ export const systemPrompt = `
 `
 
 export const userPrompt = (text: string) => `
-    now translate: ${text.trim()}
+    now translate this: <InputText>${text.trim()}</InputText>
 
     ${history.toPrompt()}
 `
