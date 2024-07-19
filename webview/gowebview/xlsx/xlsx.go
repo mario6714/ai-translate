@@ -44,6 +44,7 @@ func myFilePath() string {
 	cleanPath := filepath.Clean(rawPath)
 	return sanitizePath(cleanPath)
 }
+
 func sheetName() string { return "Translation" }
 
 func queryEntry(textDTO map[string]interface{}) int { 
@@ -63,8 +64,25 @@ func queryEntry(textDTO map[string]interface{}) int {
 	return -1
 }
 
+func GetHistory(lastRowNumber int) []string { 
+	history := make([]string, 0)
+	rowNumber := lastRowNumber
+	for len(history) < 5 { 
+		rowNumber = rowNumber-1
+		if (rowNumber) > 0 { 
+			rowNumberStr := strconv.Itoa(rowNumber)
+			value, err := workbook.GetCellValue(sheetName(), "A"+rowNumberStr)
+			if err == nil && value != "" { history = append(history, value) }
+
+		} else { break }
+	}
+
+	return history
+}
+
 
 func (X XLSX) QueryTranslation(textDTO map[string]interface{}) string { 
+	if textDTO == nil { return "" }
 	defer func() { 
 		if workbook != nil {
 			if err := workbook.Close(); err != nil {
@@ -81,6 +99,7 @@ func (X XLSX) QueryTranslation(textDTO map[string]interface{}) string {
 			log.Printf(`error in "GetCellValue", failed to get cell value: %v`, err) 
 			return ""
 		}
+
 		return val
 	}
 
@@ -110,6 +129,8 @@ func (X XLSX) SaveText(textDTO map[string]interface{}) {
 			newRowStr := strconv.Itoa(newRowNumber)
 			err := workbook.SetCellValue(sheetName(), "A"+newRowStr, originalText)
 			err2 := workbook.SetCellValue(sheetName(), "B"+newRowStr, translatedText)
+
+
 			if err != nil { fmt.Println(err) }
 			if err2 != nil { fmt.Println(err2) }
 			if err3 := workbook.Save(); err3 != nil { fmt.Println(err) }

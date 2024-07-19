@@ -1,4 +1,4 @@
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 import openpyxl, os
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
@@ -11,6 +11,7 @@ file_name: str | None = None
 workbook: Workbook | None = None
 
 class TextDTO:
+    history: List[str]
     def __init__(self, DTO: Dict[str, str]):
         self.window_title = DTO["window_title"]
         self.originalText = DTO["originalText"]
@@ -33,11 +34,23 @@ def filePath() -> str: return os.path.join(APPDATA, 'ai-translate', file_name+'.
 def queryEntry(textDTO: Dict[str, str]):
     if isinstance(textDTO, dict) and textDTO['window_title'] is not None: 
         textDTO: TextDTO = TextDTO(textDTO)
-        if textDTO.window_title != file_name: loadFile(textDTO.window_title)
+        if textDTO.window_title != file_name or worksheet() is None: loadFile(textDTO.window_title)
         if worksheet() is not None:
             column: Tuple[Cell] = worksheet()['A']
             for cell in column:
                 if cell.value is not None and textDTO.originalText in cell.value: return cell.row
+
+def get_history(lastRowNumber: int):
+    history = []
+    rowNumber = lastRowNumber
+    while len(history) < 5:
+        rowNumber = rowNumber-1
+        if rowNumber > 0:
+            cell = worksheet().cell(row= rowNumber, column=1)
+            if cell.value is not None and cell.value is not "": history.append(cell.value)
+        else: break
+    
+    return history
 
 
 
