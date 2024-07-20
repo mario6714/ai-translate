@@ -36,6 +36,14 @@ type App struct {
 	Window webview2.WebView
 }
 
+func (api API) OpenConfigWindow() { 
+	myApp := New()
+	defer myApp.Window.Terminate()
+
+	myApp.Window.Navigate("http://localhost:5173/")
+	go myApp.Window.Run()
+}
+
 func New() App { return NewWithOptions(AppOptions{}) }
 
 func NewWithOptions(options AppOptions) App { 

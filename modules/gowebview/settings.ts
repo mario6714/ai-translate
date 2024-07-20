@@ -24,5 +24,7 @@ export async function OpenConfigDir() {
 
 export async function OpenConfigWindow() {
     //return window.open(`/settings`, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=100, left=450, width=600, height=900")
-    //setEnabledN(-1)
+    if ('OpenConfigWindow' in window) { 
+        return await window.OpenConfigWindow()
+    }
 }
