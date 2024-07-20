@@ -47,7 +47,7 @@ def get_history(lastRowNumber: int):
         rowNumber = rowNumber-1
         if rowNumber > 0:
             cell = worksheet().cell(row= rowNumber, column=1)
-            if cell.value is not None and cell.value is not "": history.append(cell.value)
+            if cell.value is not None and cell.value != "": history.append(cell.value)
         else: break
     
     return history

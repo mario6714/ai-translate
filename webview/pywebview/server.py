@@ -21,7 +21,7 @@ distDir = os.path.join(resource_path, 'dist')
 server = Flask(__name__, static_folder= distDir)
 PORT = 36567
 print(distDir)
-os.system("dir "+distDir)
+#os.system("dir "+distDir)
 
 @server.route('/')
 @server.route('/<route>')
