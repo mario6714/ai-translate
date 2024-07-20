@@ -12,4 +12,4 @@ class Clipboard:
 
     def GetClipboardText(self) -> str: 
         try: return pyperclip.paste()
-        except: return None
+        except: return self.GetClipboardText()
