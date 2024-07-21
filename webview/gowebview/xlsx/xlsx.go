@@ -64,7 +64,7 @@ func queryEntry(textDTO map[string]interface{}) int {
 	return -1
 }
 
-func GetHistory(lastRowNumber int) []string { 
+func getHistory(lastRowNumber int) []string { 
 	history := make([]string, 0)
 	rowNumber := lastRowNumber
 	for len(history) < 10 { 
@@ -91,6 +91,9 @@ func (X XLSX) QueryTranslation(textDTO map[string]interface{}) map[string]interf
 		}
 	}()
 
+
+	rows, err := workbook.GetRows(sheetName())
+	if err == nil { textDTO["history"] = getHistory( len(rows)+1 ) }
 	var e = queryEntry(textDTO)
 	if e != -1 { 
 		var entry = strconv.Itoa(e)
@@ -104,8 +107,6 @@ func (X XLSX) QueryTranslation(textDTO map[string]interface{}) map[string]interf
 		return textDTO
 	}
 
-	rows, err := workbook.GetRows(sheetName())
-	if err == nil { textDTO["history"] = GetHistory( len(rows)+1 ) }
 	return textDTO
 }
 

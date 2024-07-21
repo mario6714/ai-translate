@@ -45,8 +45,8 @@ async function onTextChange( {window_title, text}: { window_title: string, text:
             originalText: text
         })
 
-        if (translatedText && history?.length) { history = [] }
-        else if (!translatedText && history_texts?.length) { history = history_texts }
+        if (translatedText && history?.length && !history_texts?.length) { history = [] }
+        else if (history_texts?.length) { history = history_texts }
 
         if(translatedText) { global_text().translated = translatedText }
         else if (global_text().translated) { global_text().translated = null }

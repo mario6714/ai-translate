@@ -57,13 +57,12 @@ def get_history(lastRowNumber: int):
 class XLSX:
     def QueryTranslation(self, textDTO: Dict[str, str]) -> TextDTO: 
         textDTO: TextDTO = TextDTO(textDTO)
+        textDTO.history = get_history(worksheet().max_row+1)
         entry = queryEntry(textDTO)
         if entry is not None: 
             cell = worksheet().cell(row= entry, column=2)
             textDTO.translatedText = cell.value
-            return textDTO.__dict__
-        
-        textDTO.history = get_history(worksheet().max_row+1)
+
         return textDTO.__dict__
 
 
