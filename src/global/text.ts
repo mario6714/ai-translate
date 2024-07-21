@@ -91,10 +91,11 @@ class Monitor {
 
             const execute = this.callback
             this.interval = setInterval(async function() { 
+                const documentVisibilityStatus = !document.hidden
                 const tmp_value = await GetClipboardText()
                 const window_title = await GetActiveWindowTitle()
-                if (!document.hidden && window_title !== "AI Translate") { 
-                    if ( (value !== tmp_value) && tmp_value && window_title && document.hidden===false ) { 
+                if (documentVisibilityStatus && window_title !== "AI Translate") { 
+                    if ( (value !== tmp_value) && tmp_value && window_title ) { 
                         execute({ window_title, text: tmp_value })
                     }
                     //else if (document.hidden) { console.log(document.hidden) }
