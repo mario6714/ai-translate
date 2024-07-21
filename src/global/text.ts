@@ -37,22 +37,18 @@ export const [ global_text, setGlobalText ] = createSignal<IGlobalText>({
 async function onTextChange( {window_title, text}: { window_title: string, text: string } ) { 
     if (text?.trim().length) {
         if ( window_title && window_title !== "AI Translate" && (window_title !== global_text().window_title) ) { 
-            global_text().window_title = window_title 
-            history = []
+            global_text().window_title = window_title
         }
 
-        const translation = await QueryTranslation({ 
+        const { translatedText, history: history_texts } = await QueryTranslation({ 
             window_title,
             originalText: text
-        } )
+        })
 
-        if (translation && history.length) { history = [] }
-        else if (!translation && global_text().untranslated) { 
-            history.push(global_text().untranslated as string)
-            if (history.length>5) { history.shift() }
-        }
+        if (translatedText && history?.length) { history = [] }
+        else if (!translatedText && history_texts?.length) { history = history_texts }
 
-        if(translation) { global_text().translated = translation }
+        if(translatedText) { global_text().translated = translatedText }
         else if (global_text().translated) { global_text().translated = null }
         global_text().untranslated = text
         setGlobalText({ ...global_text() })

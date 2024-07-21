@@ -42,7 +42,5 @@ $ npm run pack
 
 ## todo
 
-translate a game  
-implement "GetHistory"
 search for more providers
 make a release (python)

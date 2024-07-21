@@ -31,9 +31,8 @@ def worksheet() -> Worksheet:
 
 def filePath() -> str: return os.path.join(APPDATA, 'ai-translate', file_name+'.xlsx')
 
-def queryEntry(textDTO: Dict[str, str]):
-    if isinstance(textDTO, dict) and textDTO['window_title'] is not None: 
-        textDTO: TextDTO = TextDTO(textDTO)
+def queryEntry(textDTO: TextDTO):
+    if isinstance(textDTO, TextDTO) and textDTO.window_title is not None:
         if textDTO.window_title != file_name or worksheet() is None: loadFile(textDTO.window_title)
         if worksheet() is not None:
             column: Tuple[Cell] = worksheet()['A']
@@ -41,30 +40,36 @@ def queryEntry(textDTO: Dict[str, str]):
                 if cell.value is not None and textDTO.originalText in cell.value: return cell.row
 
 def get_history(lastRowNumber: int):
-    history = []
-    rowNumber = lastRowNumber
-    while len(history) < 5:
-        rowNumber = rowNumber-1
-        if rowNumber > 0:
-            cell = worksheet().cell(row= rowNumber, column=1)
-            if cell.value is not None and cell.value != "": history.append(cell.value)
-        else: break
-    
-    return history
+    if isinstance(lastRowNumber, int) and lastRowNumber is not None:
+        history = []
+        rowNumber = lastRowNumber
+        while len(history) < 10:
+            rowNumber = rowNumber-1
+            if rowNumber > 0:
+                cell = worksheet().cell(row= rowNumber, column=2)
+                if cell.value is not None and cell.value != "": history.append(cell.value)
+            else: break
+        
+        return history
 
 
 
 class XLSX:
-    def QueryTranslation(self, textDTO: Dict[str, str]) -> str | None: 
+    def QueryTranslation(self, textDTO: Dict[str, str]) -> TextDTO: 
+        textDTO: TextDTO = TextDTO(textDTO)
         entry = queryEntry(textDTO)
         if entry is not None: 
             cell = worksheet().cell(row= entry, column=2)
-            return cell.value
+            textDTO.translatedText = cell.value
+            return textDTO.__dict__
+        
+        textDTO.history = get_history(worksheet().max_row+1)
+        return textDTO.__dict__
 
 
     def SaveText(self, textDTO: Dict[str, str]):
-        entry = queryEntry(textDTO)
         textDTO: TextDTO = TextDTO(textDTO)
+        entry = queryEntry(textDTO)
         if entry is not None and worksheet() is not None: 
             cell = worksheet().cell(row= entry, column=2)
             cell.value = textDTO.translatedText

@@ -14,7 +14,7 @@ import (
 )
 
 type IXLSX interface { 
-	QueryTranslation(textDTO map[string]interface{}) string
+	QueryTranslation(textDTO map[string]interface{}) map[string]interface{}
 	SaveText(textDTO map[string]interface{})
 }
 
@@ -67,11 +67,11 @@ func queryEntry(textDTO map[string]interface{}) int {
 func GetHistory(lastRowNumber int) []string { 
 	history := make([]string, 0)
 	rowNumber := lastRowNumber
-	for len(history) < 5 { 
+	for len(history) < 10 { 
 		rowNumber = rowNumber-1
 		if (rowNumber) > 0 { 
 			rowNumberStr := strconv.Itoa(rowNumber)
-			value, err := workbook.GetCellValue(sheetName(), "A"+rowNumberStr)
+			value, err := workbook.GetCellValue(sheetName(), "B"+rowNumberStr)
 			if err == nil && value != "" { history = append(history, value) }
 
 		} else { break }
@@ -81,8 +81,8 @@ func GetHistory(lastRowNumber int) []string {
 }
 
 
-func (X XLSX) QueryTranslation(textDTO map[string]interface{}) string { 
-	if textDTO == nil { return "" }
+func (X XLSX) QueryTranslation(textDTO map[string]interface{}) map[string]interface{} { 
+	if textDTO == nil { return textDTO }
 	defer func() { 
 		if workbook != nil {
 			if err := workbook.Close(); err != nil {
@@ -97,13 +97,16 @@ func (X XLSX) QueryTranslation(textDTO map[string]interface{}) string {
 		val, err := workbook.GetCellValue(sheetName(), "B"+entry)
 		if err != nil { 
 			log.Printf(`error in "GetCellValue", failed to get cell value: %v`, err) 
-			return ""
+			return textDTO
 		}
 
-		return val
+		textDTO["translatedText"] = val
+		return textDTO
 	}
 
-	return ""
+	rows, err := workbook.GetRows(sheetName())
+	if err == nil { textDTO["history"] = GetHistory( len(rows)+1 ) }
+	return textDTO
 }
 
 func (X XLSX) SaveText(textDTO map[string]interface{}) { 
