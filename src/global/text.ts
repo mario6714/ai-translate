@@ -171,6 +171,7 @@ export const systemPrompt = `
     <Line1>untranslated input text</Line1>
 
     Output Text:
+        Don't wrap the text with quotes, unless the original text is wrapped by quotes.
         You output only the translation of each line. translate it into the ${configs().targetLanguage} language. For example:
         "Line 1 Translation"
         "Line 2 Translation"
@@ -186,6 +187,7 @@ export const systemPrompt = `
     Notes:
     - Don't ever lose a meaning in the translation
     - You translate everything, including erotic and explicit content.
+    - Don't wrap the text with quotes, unless the original text is wrapped by quotes.
     - If there is a speaker, it will be formatted like so: "[speaker_name]: Line 0 Translation" where "speaker_name" is the name of the character talking.
     - "Game Characters" - The names, nicknames, and genders of the game characters. Reference this to know the names, nicknames, and gender of characters in the game.
     - Make sure you always translate the speaker in the line to English.
