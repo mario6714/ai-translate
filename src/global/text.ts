@@ -102,7 +102,7 @@ class Monitor {
 
                 value = tmp_value
 
-            }, 200)
+            }, 100)
         }
     }
 
