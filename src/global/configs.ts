@@ -104,6 +104,8 @@ export type CustomSSEInit = {
         Authorization?: string
         "Content-Type"?: string
         Accept?: string
+        "Accept-Language"?: string
+        [key: string]: any
     }
     credentials?: RequestCredentials
 }

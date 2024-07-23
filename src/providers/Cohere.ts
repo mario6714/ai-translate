@@ -13,8 +13,9 @@ type ICohereInit = {
     message: string
     stream: boolean
     temperature: number
-    /* connectors: []
-    prompt_truncation: "OFF" */
+    prompt_truncation: string
+    /*connectors: []
+    chat_history: [] */
 }
 
 type ICohereResponse = {
@@ -52,7 +53,8 @@ class CohereChat extends CustomSSE {
                 message: prompt,
                 stream: true,
                 temperature: 0.2,
-                preamble: systemPrompt
+                preamble: systemPrompt,
+                prompt_truncation: "OFF"
             })
         }
     }
@@ -65,7 +67,11 @@ export async function CohereHandler(text: string, model_name: string, tag: HTMLT
     if (!text || !tag || !model_name || !API_KEY) { return "" }
     const client = new CohereChat("https://api.cohere.com/v1/chat", { 
         model: model_name,
-        headers: { Authorization: "Bearer "+API_KEY }
+        headers: { 
+            Authorization: "Bearer "+API_KEY, 
+            "Accept-Language": "en-US;q=0.9,en;q=0.8",
+            //"Request-Source": "playground"
+        }
     })
 
     tag.value = ""
