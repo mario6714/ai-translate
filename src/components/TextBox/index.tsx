@@ -1,7 +1,7 @@
 import { Show, createEffect, createMemo, createSignal } from "solid-js"
 import { SetStoreFunction, createStore } from "solid-js/store"
 import { IText, global_text, save_text } from "../../global/text"
-import Providers, { Handlers, TProviderKeys } from "../../providers"
+import Providers, { getHandler, TProviderKeys } from "../../providers"
 import SaveIcon from "../SaveIcon"
 import './style.css'
 
@@ -47,7 +47,7 @@ export default function TextBox( {modelName, providerKey, index}: ITextBoxProps 
         untranslated: global_text().untranslated
     })
     const [ dragging, setDragging ] = createSignal(false)
-    const handler = Handlers[providerKey as TProviderKeys]
+    const handler = getHandler(providerKey, modelName)
     let textarea: HTMLTextAreaElement | undefined
     const provider = Providers[providerKey as TProviderKeys]
     const textareaStyle = createMemo(() => text.translated==="Waiting for text..."? "italic text-zinc-100" : "")
@@ -95,11 +95,12 @@ export default function TextBox( {modelName, providerKey, index}: ITextBoxProps 
                 <ConfirmationControls store={[ text, setText ]} textarea={textarea} />
             }>
                 <div class="flex flex-col justify-end items-center m-4">
-                    <div class="flex flex-col gap-2 items-center">
+                    <div class="flex flex-col gap-2 items-center"
+                     onDragOver={ e => {e.stopPropagation();e.preventDefault()} }>
                             <button onMouseDown={ () => { 
                                 if (!dragging()) { setDragging(true) }
                             } } onMouseUp={ () => { 
-                                if (dragging()) { setDragging(false) }
+                                if (dragging())  { setDragging(false) }
                             } }>
                                 <svg class="w-6 h-6 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25" />

@@ -1,147 +1,108 @@
-import { CustomSSE, CustomSSEInit, configs } from "../global/configs";
 import { systemPrompt, userPrompt } from "../global/text";
+import { Client } from "@gradio/client";
 
 
-
-type HuggingSpacesInit = { 
-    model: string,
-    messages: { 
-        role: "system" | "user" | string,
-        content: string
-    }[]
-    temperature: number,
-    top_p: number,
-    max_tokens: number,
-    use_cache: boolean,
-    stream: boolean
+const models = { 
+    //"llama-3.1-405b": "aifeifei798/Meta-Llama-3.1-405B-Instruct",
+    //"llama-3.1-70b": "aifeifei798/llama-3.1-70b-instruct",
+    "llama-3.1-405b": "Nymbo/Llama-3.1-405B-Instruct",
+    "llama-3.1-405b-fp8": "as-cle-bert/Llama-3.1-405B-FP8"
 }
 
-type HuggingSpacesResponse = { 
-    "created": number,
-    "id": string
-    "object": string
-    "model": string
-    "choices": {
-        "index": number,
-        "delta": {
-            "content": string
-        },
-        "finish_reason": any
-    }[]
-}
+/* const endpoints = { 
+    "llama-3.1-405b": "/chat",
+    "llama-3.1-70b": "/chat",
+    "llama-3.1-405b-fp8": "/chat"
+} */
 
-class HfSpace extends CustomSSE { 
-    private _model?: string
-    constructor( url: string, init?: CustomSSEInit & { model: string } ) { 
-        super(url, init)
-        if (init?.model) { this._model = init.model }
-    }
+async function test() {
+    const client = await Client.connect(`CohereForAI/c4ai-command-r-plus`, { 
+        hf_token: "hf_"
+    });
 
-    get model() { return this._model }
-
-
-    async sendPrompt(prompt: string) { 
-        if (this._model) { 
-            return this.getStream<HuggingSpacesResponse, HuggingSpacesInit>( { 
-                model: this._model,
-                messages: [
-                    { 
-                        role: "system",
-                        content: systemPrompt
-                    }, {
-                        role: "user",
-                        content: prompt
-                    }
-                ],
-                temperature: 0.2,
-                top_p: 0.45,
-                max_tokens: -1,
-                use_cache: false,
-                stream: true
-            });
-        }
-    }
-
-}
-
-
-
-export async function HfSpaceHandler(text: string, model_name: string, tag: HTMLTextAreaElement): Promise<string> { 
-    // https://shuddho-hfllmapi.hf.space/api/v1/chat/completions
-    // https://hansimov-hf-llm-api.hf.space/api/v1/chat/completions
-    // https://lintasmediadanawa-hf-llm-api.hf.space/api/v1/chat/completions
-    const API_KEY = configs().providers?.HfSpaces?.api_key
-    if (!text || !tag || !model_name || !API_KEY) { return "" }
-    const hf = new HfSpace("https://lintasmediadanawa-hf-llm-api.hf.space/api/v1/chat/completions", { 
-        headers: { "Authorization": "Bearer"+" "+API_KEY },
-        model: model_name
+    console.log(client.view_api())
+    const result = await client.predict("/generate_response", { 
+        user_message: "O que é um derivado vetorial?",
+        //input: "O que é um derivado vetorial?"
     })
 
-
-    tag.value = ""
-    const stream = await hf.sendPrompt(userPrompt(text))
-    if (stream) { 
-        for await (const chunk of stream) { 
-            if(chunk?.choices) {
-                const text = chunk?.choices?.[0]?.delta?.content
-                if(tag && text) { tag.value += text }
-            }
+    console.log(result)
+    /* for await (const msg of result) { 
+        if (msg.type === "data") { 
+            console.log(msg.data); 
         }
-    }
-
-    return tag.value
-
+    } */
 }
 
+declare global { 
+    interface Window { test: typeof test }
+}
+window.test = test
+
+
+export interface ISpacesHandler { 
+    client: Client | null
+    handler(text: string, model_name: string, tag: HTMLTextAreaElement): Promise<string>
+    connect(model_name: string): Promise<Client | null>
+}
+
+export class SpacesHandler implements ISpacesHandler { 
+    client: Client | null = null
+
+    async connect(model_name: string) { 
+        const API_KEY = "hf_"
+        if (!API_KEY || !model_name) { return null }
+        const client = await Client.connect(models[model_name as never], { 
+            hf_token: API_KEY
+        });
+        this.client = client
+        return client
+    }
+
+    async handler(text: string, _: string, tag: HTMLTextAreaElement): Promise<string> { 
+        tag.value = ""
+        const result = this.client?.submit("/chat", { 		
+                message: userPrompt(text), 
+                system_message: systemPrompt, 
+                max_tokens: 2048, 
+                temperature: 0.1, 
+                top_p: 0.1, 
+        });
+
+
+        if (result) { 
+            for await (const msg of result) { 
+                if (msg.type === "data") { 
+                    tag.value = msg.data[0] as string
+                    //if (tag.value.length > 300) { result.cancel() ; break }
+                }
+            }
+        }
+
+        return tag.value
+    }
+}
+
+export const spacesHandler = new SpacesHandler()
 
 
 export default { 
-    provider_name: "HfSpaces",
-    about_url: "https://huggingface.co/docs/hub/security-tokens",
+    provider_name: "HuggingSpaces",
+    about_url: null,//"https://huggingface.co/docs/hub/security-tokens",
     api_key: undefined,
     models: [
-        /*{
-            name: "llama3-70b",
+        {
+            name: "llama-3.1-405b",
             owned_by: "Meta",
             enabled: undefined
-        }, {
-            name: "command-r-plus",
-            owned_by: "CohereForAI",
-            enabled: undefined
-        }, {
-            name: "zephyr-141b",
-            owned_by: "Huggingface",
-            enabled: undefined
         }, { 
-            name: "openchat-3.5",
-            owned_by: "OpenChat",
+            name: "llama-3.1-405b-fp8",
+            owned_by: "Meta",
             enabled: undefined
-        }, { 
-            name: "Qwen2-72B",
-            owned_by: "Qwen",
+        }, /* {
+            name: "llama-3.1-70b",
+            owned_by: "Meta",
             enabled: undefined
-        }, {
-            name: "gpt-3.5-turbo",
-            owned_by: "OpenAI",
-            enabled: undefined
-        },*/ {
-            name: "yi-1.5-34b",
-            owned_by: "01-ai",
-            enabled: undefined
-        }, {
-            name: "mixtral-8x7b",
-            owned_by: "mistralai",
-            enabled: undefined
-        }, {
-            name: "nous-mixtral-8x7b",
-            owned_by: "NousResearch",
-            enabled: undefined
-        }, 
+        },  */
     ]
 }
-
-
-// https://huggingface.co/spaces/lintasmediadanawa/hf-llm-api
-// https://huggingface.co/spaces/Hansimov/hf-llm-api
-// https://huggingface.co/spaces/Shuddho/HFLLMAPI
-// https://huggingface.co/spaces/kenken999/fastapi_django_main

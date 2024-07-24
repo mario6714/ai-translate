@@ -68,6 +68,10 @@ export default {
             name: "gemma2-9b-it",
             owned_by: "Google",
             enabled: undefined
+        }, { 
+            name: "llama-3.1-70b-versatile",
+            owned_by: "Meta",
+            enabled: undefined
         }
     ]
 }

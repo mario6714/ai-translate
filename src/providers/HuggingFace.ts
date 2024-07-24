@@ -1,4 +1,5 @@
-import { CustomSSE, CustomSSEInit } from "../global/configs";
+import { completePrompt } from "../global/text";
+import { configs, CustomSSE, CustomSSEInit } from "../global/configs";
 
 
 
@@ -21,14 +22,29 @@ class HfChat extends CustomSSE {
     get conversationId() { return this._conversationId }
     get lastId() { return this._lastId }
     get model() { return this._model }
+    getInit(prompt: string) { 
+        if (this.lastId) { 
+            return {
+                "inputs": prompt, 
+                "id": this.lastId, 
+                "is_retry": false, 
+                "is_continue": false, 
+                "web_search": false, 
+                "tools": {}
+            }
+        }
+    }
 
     async createConversation() { 
         const { name, owned_by } = HuggingModels.find(m => m.name === this._model) ?? {}
         const { conversationId } = await this.sendPostRequest({ 
             model: owned_by+"/"+name,
             preprompt: ""
-        }, "https://huggingface.co/chat/conversation")
-        .request?.then(response => response.status===200? response.json() : response.text())
+        }, "https://corsproxy.io/?" + encodeURI("https://huggingface.co/chat/conversation"))
+        .request?.then(response => { 
+            if (response.status===200) { return response.json() }
+            console.error(response.status+": "+response.text())
+        })
         this._conversationId = conversationId
         return conversationId
     }
@@ -48,13 +64,26 @@ class HfChat extends CustomSSE {
         }
     }
 
+    async delete() { 
+        if (this._conversationId) { return await fetch(`https://huggingface.co/chat/conversation/${this._conversationId}`, { 
+            method: "DELETE"
+        } ) }
+    }
+
     async sendPrompt(prompt: string) { 
         if(!this._conversationId) { await this.createConversation() }
         this.url = ` https://huggingface.co/chat/conversation/${this._conversationId}`
         await this.getLastId()
 
-        if(this._conversationId && this._lastId) { prompt
-            return this.getStream("")
+        if(this._conversationId && this._lastId) { 
+            const init = this.getInit(prompt)
+            return this.getStream(`
+                ------WebKitFormBoundaryZc27c6AKupTirprV
+                Content-Disposition: form-data; name="data"
+
+                ${init}
+                ------WebKitFormBoundaryZc27c6AKupTirprV--
+            `)
         }
     }
 
@@ -63,21 +92,25 @@ class HfChat extends CustomSSE {
 
 
 
-export async function HfHandler(text: string, model_name: string, _?: HTMLTextAreaElement): Promise<string> { 
-    const API_KEY = ""//configs().providers?.HuggingFace?.api_key
-    //if (!text || !tag || !model_name || !API_KEY) { return "" }
+export async function HfHandler(text: string, model_name: string, tag?: HTMLTextAreaElement): Promise<string> { 
+    const API_KEY = configs().providers?.HuggingFace?.api_key
+    if (!text || !tag || !model_name || !API_KEY) { return "" }
     const hf = new HfChat(null, { 
-        headers: { "Authorization": "Bearer "+API_KEY },
+        headers: { 
+            "Authorization": "Bearer "+API_KEY, 
+            "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundaryZc27c6AKupTirprV"
+        },
         model: model_name
     })
 
 
-    const response = await hf.sendPrompt(text)
-    if(response) { 
+    const response = await hf.sendPrompt(completePrompt(text))
+    if (response) { 
         for await (const chunk of response) { console.log(chunk) }
     }
 
-    return ""
+    hf.delete()
+    return "End"
 }
 
 
@@ -114,3 +147,5 @@ export default {
     models: HuggingModels
 }
 
+
+// multipart/form-data; boundary=----WebKitFormBoundaryPsA63SBZsBWh4qwC

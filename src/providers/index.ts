@@ -1,9 +1,11 @@
 import GroqCloud, { GroqHandler } from './GroqCloud'
-import HfSpaces, { HfSpaceHandler } from './HuggingSpaces'
+import HuggingSpacesB, { HfSpaceHandler } from './HuggingSpacesB'
 import Google, { GoogleHandler } from './Google'
 import Cohere, { CohereHandler } from './Cohere'
 import Auto, { AutomaticHandler } from './Auto'
 import DeepL, { DeepLHandler } from './DeepL'
+import { ISpacesHandler, spacesHandler } from './HuggingSpaces'
+import HuggingFace, { HfHandler } from './HuggingFace'
 
 
 
@@ -21,29 +23,45 @@ export interface IProvider {
     api_key?: string
 }
 
+type IHandler = ((text: string, model_name: string, tag: HTMLTextAreaElement) => Promise<string>) | ISpacesHandler
 
-export { GroqCloud, Google, HfSpaces, Cohere, Auto, DeepL }
-
-export const Handlers: { 
-    [key: string]: (text: string, model_name: string, tag: HTMLTextAreaElement) => Promise<string>
-} = { 
+const Handlers = { 
     GroqCloud: GroqHandler,
-    HfSpaces: HfSpaceHandler,
+    HuggingSpacesB: HfSpaceHandler,
     Google: GoogleHandler,
     Cohere: CohereHandler,
     Auto: AutomaticHandler,
-    DeepL: DeepLHandler
+    DeepL: DeepLHandler,
+    HuggingSpaces: spacesHandler,
+    HuggingFace: HfHandler
 }
 
+export function getHandler(provider_key: string, model_name: string): 
+    (text: string, model_name: string, tag: HTMLTextAreaElement) => Promise<string> { 
+
+        const obj: IHandler = Handlers[provider_key as keyof typeof Handlers]
+        if (typeof obj !== "function" && obj) { 
+            obj.connect(model_name)
+            return obj.handler.bind(obj)
+        }
+
+        console.log(obj)
+        return obj
+}
+
+export { GroqCloud, Google, HuggingSpacesB, Cohere, Auto, DeepL, HuggingFace }
+
 const Providers: { 
+    HuggingSpaces?: IProvider
     GroqCloud: IProvider
     Google: IProvider
-    HfSpaces: IProvider
+    HuggingSpacesB: IProvider
     Cohere: IProvider
     Auto: IProvider
     DeepL: IProvider
+    HuggingFace: IProvider
 
-} = { GroqCloud, Google, HfSpaces, Cohere, Auto, DeepL }
+} = { GroqCloud, Google, HuggingSpacesB, Cohere, Auto, DeepL, HuggingFace }
 
 export type TProviderKeys = Exclude<keyof typeof Providers, "getM">
 
@@ -53,5 +71,3 @@ export type IProviders = {
 
 export default Providers
 
-// https://ai.google.dev/
-// https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct

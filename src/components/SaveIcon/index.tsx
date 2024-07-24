@@ -5,8 +5,8 @@ export default function SaveIcon( {onClick}: JSX.ButtonHTMLAttributes<HTMLButton
 
     return( 
         <button class="" onClick={onClick}>
-            <svg class="w-5 h-5" version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64.000000 64.000000" preserveAspectRatio="xMidYMid meet">
-                <g class="fill-primary hover:fill-white active:fill-white/60" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)" stroke="none">
+            <svg class="w-5 h-5 fill-primary hover:fill-white active:fill-white/60" version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64.000000 64.000000" preserveAspectRatio="xMidYMid meet">
+                <g class="fill-inherit hover:fill-inherit active:fill-inherit" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)" stroke="none">
                     <path d="M40 600 c-19 -19 -20 -33 -20 -280 0 -247 1 -261 20 -280 11 -11 33
                     -20 50 -20 l30 0 0 100 c0 143 -4 140 200 140 204 0 200 3 200 -140 l0 -100
                     30 0 c17 0 39 9 50 20 19 19 20 33 20 233 l0 213 -68 67 c-43 42 -76 67 -90

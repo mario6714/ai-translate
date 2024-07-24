@@ -70,7 +70,7 @@ export async function CohereHandler(text: string, model_name: string, tag: HTMLT
         headers: { 
             Authorization: "Bearer "+API_KEY, 
             "Accept-Language": "en-US;q=0.9,en;q=0.8",
-            //"Request-Source": "playground"
+            "Request-Source": "playground"
         }
     })
 
