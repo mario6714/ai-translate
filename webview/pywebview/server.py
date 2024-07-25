@@ -1,4 +1,5 @@
 import os, sys
+from typing import Dict
 from flask import Flask, send_from_directory, Response, request
 import http.client
 from http.client import HTTPResponse
@@ -14,6 +15,24 @@ def connection(server):
         yield conn
     finally:
         conn.close()
+
+def Headers(headers: Dict[str, str]): 
+    default = { 
+        "Accept": "*/*",
+        "Accept-Language": "*",
+        "Sec-Fetch-Mode": "cors",
+        "User-Agent": "node",
+        "Accept-Encoding": "gzip, deflate"
+    }
+
+    if isinstance(headers, dict):
+        default["Content-Length"] = headers["Content-Length"]
+        default["Content-Type"] = headers["Content-Type"]
+        default["Connection"] = headers["Connection"]
+        default["Authorization"] = headers["Authorization"]
+    
+        return default
+
 
 
 resource_path = sys._MEIPASS if "_MEIPASS" in dir(sys) else os.getcwd()
@@ -35,33 +54,33 @@ def assets(name: str): return send_from_directory(server.static_folder, 'assets/
 
 
 
-#@server.route("/proxy", methods=['GET', 'POST'])
+@server.route("/proxy", methods=['GET', 'POST'])
 def proxy_client():
     #query = request.args
     method = request.method
-    headers = request.headers
+    headers = Headers(dict(request.headers))
+    print(headers)
     body = request.json
-    url = body['url']
+    url = dict(request.headers)['Url']
     if not url: return Response("Error: URL not provided in headers", status= 400)
     parsed_url = urllib.parse.urlsplit(url)
     server = parsed_url.netloc
     endpoint = parsed_url.path
-    del body['url']
     body = str(body).encode('utf-8')
 
 
-    #try:
     with connection(server) as conn:
-        conn.request(method, endpoint, body=body, headers=dict(headers))
+        conn.request(method, endpoint, body=body, headers=headers)
         response = conn.getresponse()
         if 200 <= response.status < 300:
             if response.headers.get_content_type() == "text/event-stream": 
                 return Response(sse_client(response), mimetype="text/event-stream")
             else: Response(response.read().decode(response.headers.get_content_charset('utf-8')))
         
-        else: return Response(f"Request failed: {response.reason}", status= response.status)
+        else: return Response(f"Request failed: {response.read().decode('utf-8')}", status= response.status)
 
 
+    #try:
     #except Exception as e: return Response(f"Error: cannot establish the connection: {e}", status= 500)
 
 

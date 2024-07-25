@@ -45,14 +45,13 @@ export function getHandler(provider_key: string, model_name: string):
             return obj.handler.bind(obj)
         }
 
-        console.log(obj)
         return obj
 }
 
 export { GroqCloud, Google, HuggingSpacesB, Cohere, Auto, DeepL, HuggingFace }
 
 const Providers: { 
-    HuggingSpaces?: IProvider
+    //HuggingSpaces?: IProvider
     GroqCloud: IProvider
     Google: IProvider
     HuggingSpacesB: IProvider

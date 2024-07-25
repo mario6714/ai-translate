@@ -9,14 +9,21 @@ function isUuid(string: string) {
 }
 
 
+type HuggingInit = CustomSSEInit & { 
+    headers: Exclude<CustomSSEInit['headers'], undefined>
+    model: string
+}
+
 class HfChat extends CustomSSE { 
     private _conversationId: string | undefined
     private _lastId: string | undefined
     private _model: string
+    headers: HuggingInit['headers'] = {} as any
 
-    constructor( url: string | null, init: CustomSSEInit & { model: string } ) { 
+    constructor( url: string, init: HuggingInit ) { 
         super(url, init)
         this._model = init.model
+        this.headers = init.headers
     }
 
     get conversationId() { return this._conversationId }
@@ -37,10 +44,12 @@ class HfChat extends CustomSSE {
 
     async createConversation() { 
         const { name, owned_by } = HuggingModels.find(m => m.name === this._model) ?? {}
+        this.headers.url = "https://huggingface.co/chat/conversation"
+        this.headers["Content-Type"] = "application/json"
         const { conversationId } = await this.sendPostRequest({ 
             model: owned_by+"/"+name,
-            preprompt: ""
-        }, "https://corsproxy.io/?" + encodeURI("https://huggingface.co/chat/conversation"))
+            preprompt: "", 
+        }, "/proxy")
         .request?.then(response => { 
             if (response.status===200) { return response.json() }
             console.error(response.status+": "+response.text())
@@ -66,13 +75,15 @@ class HfChat extends CustomSSE {
 
     async delete() { 
         if (this._conversationId) { return await fetch(`https://huggingface.co/chat/conversation/${this._conversationId}`, { 
+            headers: this.headers,
             method: "DELETE"
         } ) }
     }
 
     async sendPrompt(prompt: string) { 
         if(!this._conversationId) { await this.createConversation() }
-        this.url = ` https://huggingface.co/chat/conversation/${this._conversationId}`
+        this.headers.url = `https://huggingface.co/chat/conversation/${this._conversationId}`
+        this.headers["Content-Type"] = "multipart/form-data; boundary=----WebKitFormBoundaryZc27c6AKupTirprV"
         await this.getLastId()
 
         if(this._conversationId && this._lastId) { 
@@ -95,10 +106,9 @@ class HfChat extends CustomSSE {
 export async function HfHandler(text: string, model_name: string, tag?: HTMLTextAreaElement): Promise<string> { 
     const API_KEY = configs().providers?.HuggingFace?.api_key
     if (!text || !tag || !model_name || !API_KEY) { return "" }
-    const hf = new HfChat(null, { 
+    const hf = new HfChat("/proxy", { 
         headers: { 
             "Authorization": "Bearer "+API_KEY, 
-            "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundaryZc27c6AKupTirprV"
         },
         model: model_name
     })
