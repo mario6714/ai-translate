@@ -1,20 +1,10 @@
 import os, sys
 from typing import Dict
 from flask import Flask, send_from_directory, Response, request
-import http.client
+import requests
 from http.client import HTTPResponse
-import urllib.parse
-from contextlib import contextmanager
 
 
-
-@contextmanager
-def connection(server):
-    conn = http.client.HTTPSConnection(server)
-    try:
-        yield conn
-    finally:
-        conn.close()
 
 def Headers(headers: Dict[str, str]): 
     default = { 
@@ -26,12 +16,12 @@ def Headers(headers: Dict[str, str]):
     }
 
     if isinstance(headers, dict):
-        default["Content-Length"] = headers["Content-Length"]
-        default["Content-Type"] = headers["Content-Type"]
-        default["Connection"] = headers["Connection"]
-        default["Authorization"] = headers["Authorization"]
-    
-        return default
+        if "Content-Length" in headers: default["Content-Length"] = headers["Content-Length"]
+        if "Authorization" in headers: default["Authorization"] = headers["Authorization"]
+        if "Content-Type" in headers: default["Content-Type"] = headers["Content-Type"]
+        if "Connection" in headers: default["Connection"] = headers["Connection"]
+
+    return default
 
 
 
@@ -57,31 +47,21 @@ def assets(name: str): return send_from_directory(server.static_folder, 'assets/
 @server.route("/proxy", methods=['GET', 'POST'])
 def proxy_client():
     #query = request.args
-    method = request.method
+    url = request.headers.get('Url')
+    if not url: return Response("Error: URL not provided in headers", status=400)
     headers = Headers(dict(request.headers))
-    print(headers)
-    body = request.json
-    url = dict(request.headers)['Url']
-    if not url: return Response("Error: URL not provided in headers", status= 400)
-    parsed_url = urllib.parse.urlsplit(url)
-    server = parsed_url.netloc
-    endpoint = parsed_url.path
-    body = str(body).encode('utf-8')
+    body = request.get_data()
 
-
-    with connection(server) as conn:
-        conn.request(method, endpoint, body=body, headers=headers)
-        response = conn.getresponse()
-        if 200 <= response.status < 300:
-            if response.headers.get_content_type() == "text/event-stream": 
-                return Response(sse_client(response), mimetype="text/event-stream")
-            else: Response(response.read().decode(response.headers.get_content_charset('utf-8')))
+    try:
+        response = requests.request(method=request.method, url=url, headers=headers, data=body)
+        content_type = response.headers.get('Content-Type', 'text/plain')
         
-        else: return Response(f"Request failed: {response.read().decode('utf-8')}", status= response.status)
+        if 'text/event-stream' in content_type:
+            return Response(response.iter_content(chunk_size=1024), mimetype="text/event-stream")
+        return Response(response.text, mimetype= content_type, status= response.status_code)
 
 
-    #try:
-    #except Exception as e: return Response(f"Error: cannot establish the connection: {e}", status= 500)
+    except requests.RequestException as e: return Response(f"Request failed: {str(e)}", status=500)
 
 
 

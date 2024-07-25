@@ -3,4 +3,5 @@ pyperclip
 pywin32
 openpyxl
 flask
+requests
 pyinstaller

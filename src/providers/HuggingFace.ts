@@ -60,7 +60,8 @@ class HfChat extends CustomSSE {
 
     async getLastId() { 
         if(this._conversationId && this.headers?.Authorization) { 
-            const items: string[] = await fetch(`https://huggingface.co/chat/conversation/${this._conversationId}/__data.json?x-sveltekit-invalidated=11`, { 
+            this.headers.url = `https://huggingface.co/chat/conversation/${this._conversationId}/__data.json?x-sveltekit-invalidated=11`
+            const items: string[] = await fetch("/proxy", { 
                 headers: this.headers
 
             }).then(response => response.status===200? response.json() : null)
@@ -74,10 +75,13 @@ class HfChat extends CustomSSE {
     }
 
     async delete() { 
-        if (this._conversationId) { return await fetch(`https://huggingface.co/chat/conversation/${this._conversationId}`, { 
-            headers: this.headers,
-            method: "DELETE"
-        } ) }
+        if (this._conversationId) { 
+            this.headers.url = `https://huggingface.co/chat/conversation/${this._conversationId}`
+            return await fetch("/proxy", { 
+                headers: this.headers,
+                method: "DELETE"
+            } ) 
+        }
     }
 
     async sendPrompt(prompt: string) { 
@@ -104,7 +108,8 @@ class HfChat extends CustomSSE {
 
 
 export async function HfHandler(text: string, model_name: string, tag?: HTMLTextAreaElement): Promise<string> { 
-    const API_KEY = configs().providers?.HuggingFace?.api_key
+    configs()
+    const API_KEY = ""//configs().providers?.HuggingFace?.api_key
     if (!text || !tag || !model_name || !API_KEY) { return "" }
     const hf = new HfChat("/proxy", { 
         headers: { 
