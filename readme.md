@@ -1,21 +1,18 @@
 # About
 
-### How to get it
+## How to get it
 download it in the releases section
 
-### How it works
+## How it works
 it receives text through clipboard changes (if the document is visible) or a configured websocket server, and then translate it with AI models. it is this way so it could receive text from tools like [textractor](https://github.com/Artikash/Textractor).
 
 #### AI Models
 in all models available you can get a free API key. I want this repo to be also a hub of nice and free AI models. if you have a suggestion of a model with a good provider, feel free to suggest me or open a PR.
 
-### Caching
+## Caching
 the translation of your favorite AI model (the first) is cached by default in **%appdata%\ai-translate**. it's cached in a **.xlsx** file, so it can be imported to translator++
 
-### Demo
-WIP
-
-### Build
+## Build
 if you want to create your own build
 
 ```bash
@@ -42,5 +39,5 @@ $ npm run pack
 
 ## todo
 
-search for more providers
+search for more providers  
 make a release (python)
