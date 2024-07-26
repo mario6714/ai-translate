@@ -10,6 +10,8 @@ import (
 	"strings"
 	"unicode"
 
+	"gowebview/lib"
+
 	"github.com/xuri/excelize/v2"
 )
 
@@ -77,6 +79,7 @@ func getHistory(lastRowNumber int) []string {
 		} else { break }
 	}
 
+	lib.ReverseSlice(history)
 	return history
 }
 
@@ -92,8 +95,6 @@ func (X XLSX) QueryTranslation(textDTO map[string]interface{}) map[string]interf
 	}()
 
 
-	rows, err := workbook.GetRows(sheetName())
-	if err == nil { textDTO["history"] = getHistory( len(rows)+1 ) }
 	var e = queryEntry(textDTO)
 	if e != -1 { 
 		var entry = strconv.Itoa(e)
@@ -103,8 +104,12 @@ func (X XLSX) QueryTranslation(textDTO map[string]interface{}) map[string]interf
 			return textDTO
 		}
 
+		textDTO["history"] = getHistory(e)
 		textDTO["translatedText"] = val
-		return textDTO
+
+	} else { 
+		rows, err := workbook.GetRows(sheetName())
+		if err == nil { textDTO["history"] = getHistory( len(rows)+1 ) }
 	}
 
 	return textDTO
@@ -152,3 +157,4 @@ func sanitizePath(path string) string {
 	}
 	return sanitizedPath.String()
 }
+

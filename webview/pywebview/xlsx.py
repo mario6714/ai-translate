@@ -37,7 +37,7 @@ def queryEntry(textDTO: TextDTO):
         if worksheet() is not None:
             column: Tuple[Cell] = worksheet()['A']
             for cell in column:
-                if cell.value is not None and textDTO.originalText in cell.value: return cell.row
+                if cell.value is not None and textDTO.originalText == cell.value: return cell.row
 
 def get_history(lastRowNumber: int):
     if isinstance(lastRowNumber, int) and lastRowNumber is not None:
@@ -49,7 +49,8 @@ def get_history(lastRowNumber: int):
                 cell = worksheet().cell(row= rowNumber, column=2)
                 if cell.value is not None and cell.value != "": history.append(cell.value)
             else: break
-        
+
+        history.reverse()
         return history
 
 
@@ -57,11 +58,12 @@ def get_history(lastRowNumber: int):
 class XLSX:
     def QueryTranslation(self, textDTO: Dict[str, str]) -> TextDTO: 
         textDTO: TextDTO = TextDTO(textDTO)
-        if worksheet() is not None: textDTO.history = get_history(worksheet().max_row+1)
         entry = queryEntry(textDTO)
         if entry is not None: 
+            textDTO.history = get_history(entry)
             cell = worksheet().cell(row= entry, column=2)
             textDTO.translatedText = cell.value
+        elif worksheet() is not None: textDTO.history = get_history(worksheet().max_row+1)
 
         return textDTO.__dict__
 

@@ -25,3 +25,11 @@ func SetAlwaysOnTop(w uintptr, b bool) {
 		User32SetWindowPos.Call(w, HWND_NOTOPMOST, NEW_X, NEW_Y, NEW_W, NEW_H, SWP_NORESIZE|SWP_NOMOVE)
 	}
 }
+
+func ReverseSlice(slice []string) {
+    for i, j := 0, len(slice)-1; i < j; i, j = i+1, j-1 {
+        slice[i], slice[j] = slice[j], slice[i]
+    }
+}
+
+
