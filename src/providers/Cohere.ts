@@ -1,4 +1,4 @@
-import { systemPrompt, userPrompt } from "../global/text";
+import { userPrompt } from "../global/text";
 import { configs, CustomSSE, CustomSSEInit } from "../global/configs";
 
 
@@ -53,7 +53,7 @@ class CohereChat extends CustomSSE {
                 message: prompt,
                 stream: true,
                 temperature: 0.2,
-                preamble: systemPrompt,
+                //preamble: systemPrompt,
                 prompt_truncation: "OFF"
             })
         }

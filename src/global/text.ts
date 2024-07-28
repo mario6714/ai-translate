@@ -202,9 +202,9 @@ export const systemPrompt = `
 `
 
 export const userPrompt = (text: string) => `
-    now translate this: <InputText>${text.trim()}</InputText>
-
     ${history.toPrompt()}
+
+    now translate this to ${configs().targetLanguage}: <InputText>${text.trim()}</InputText>
 `
 
 export const completePrompt = (text: string) => systemPrompt + userPrompt(text)
