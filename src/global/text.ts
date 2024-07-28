@@ -64,7 +64,7 @@ export async function save_text( {untranslated, translated}: IText)  {
         SaveText({ 
             window_title,
             originalText: untranslated,
-            translatedText: translated,
+            translatedText: translated?.replaceAll("\n", "").replaceAll("  ", " ").trim(),
         })
     }
 }
