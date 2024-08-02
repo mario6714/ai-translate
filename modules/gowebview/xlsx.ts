@@ -11,6 +11,9 @@ export async function QueryTranslation(data: ITextDTO): Promise<ITextDTO> {
 
 export async function SaveText(data: ITextDTO) { 
     if ('SaveText' in window) { 
-        return await window.SaveText(data)
+        const response = await window.SaveText< ({ error: string } | void)[] >(data)
+        if (response?.[0]?.error) { alert(response[0].error) }
+        return response
     }
 }
+

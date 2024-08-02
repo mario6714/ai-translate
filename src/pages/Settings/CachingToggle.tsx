@@ -1,4 +1,4 @@
-import { configs, save_config, setConfigs } from "../../global/configs";
+import { configs, save_config } from "../../global/configs";
 
 
 
@@ -7,11 +7,8 @@ function change_handler(e: Event & {
     target: HTMLInputElement;
 } ) { 
 
-    if (e.currentTarget.checked) { 
-        configs().caching = e.currentTarget.checked
-        setConfigs({ ...configs() })
-        save_config(configs())
-    }
+    configs().caching = e.currentTarget.checked
+    save_config(configs())
 }
 
 export default function CachingToggle() { 

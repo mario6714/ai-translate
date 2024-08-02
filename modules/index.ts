@@ -19,7 +19,7 @@ export interface IExternalAPI {
     OpenConfigDir(): Promise<void>
     OpenConfigWindow(): Promise<void>
 
-    SaveText(data: ITextDTO): Promise<void>
+    SaveText<T= { error: string } | void>(data: ITextDTO): Promise<T>
     QueryTranslation<T= ITextDTO>(data: ITextDTO): Promise<T>
 }
 

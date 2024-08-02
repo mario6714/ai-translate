@@ -5,5 +5,7 @@ export async function QueryTranslation(data: ITextDTO) {
 }
 
 export async function SaveText(data: ITextDTO ) { 
-    return await window.pywebview?.api?.SaveText(data)
+    const response = await window.pywebview?.api?.SaveText(data)
+    if (response?.error) { alert(response.error) }
+    return response
 }

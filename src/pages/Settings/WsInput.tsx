@@ -1,4 +1,4 @@
-import { configs, setConfigs } from "../../global/configs";
+import { configs, save_config, setConfigs } from "../../global/configs";
 
 function change_handler(e: InputEvent & {
     currentTarget: HTMLInputElement;
@@ -8,6 +8,7 @@ function change_handler(e: InputEvent & {
     if (e.currentTarget.value) { 
         configs().wsServerUrl = e.currentTarget.value
         setConfigs({ ...configs() })
+        save_config(configs())
     }
 }
 

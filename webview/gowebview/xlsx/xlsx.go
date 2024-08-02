@@ -17,7 +17,7 @@ import (
 
 type IXLSX interface { 
 	QueryTranslation(textDTO map[string]interface{}) map[string]interface{}
-	SaveText(textDTO map[string]interface{})
+	SaveText(textDTO map[string]interface{}) interface{}
 }
 
 type XLSX struct {}
@@ -98,14 +98,12 @@ func (X XLSX) QueryTranslation(textDTO map[string]interface{}) map[string]interf
 	var e = queryEntry(textDTO)
 	if e != -1 { 
 		var entry = strconv.Itoa(e)
-		val, err := workbook.GetCellValue(sheetName(), "B"+entry)
-		if err != nil { 
-			log.Printf(`error in "GetCellValue", failed to get cell value: %v`, err) 
-			return textDTO
-		}
+		value, err := workbook.GetCellValue(sheetName(), "B"+entry)
+		if err == nil { 
+			textDTO["history"] = getHistory(e)
+			textDTO["translatedText"] = value
 
-		textDTO["history"] = getHistory(e)
-		textDTO["translatedText"] = val
+		} else { log.Printf(`error in "GetCellValue", failed to get cell value: %v`, err) }
 
 	} else { 
 		rows, err := workbook.GetRows(sheetName())
@@ -115,7 +113,7 @@ func (X XLSX) QueryTranslation(textDTO map[string]interface{}) map[string]interf
 	return textDTO
 }
 
-func (X XLSX) SaveText(textDTO map[string]interface{}) { 
+func (X XLSX) SaveText(textDTO map[string]interface{}) interface{} { 
 	defer func() { 
 		if workbook != nil {
 			if err := workbook.Close(); err != nil {
@@ -138,14 +136,17 @@ func (X XLSX) SaveText(textDTO map[string]interface{}) {
 			newRowStr := strconv.Itoa(newRowNumber)
 			err := workbook.SetCellValue(sheetName(), "A"+newRowStr, originalText)
 			err2 := workbook.SetCellValue(sheetName(), "B"+newRowStr, translatedText)
+			err3 := workbook.Save()
 
-
-			if err != nil { fmt.Println(err) }
-			if err2 != nil { fmt.Println(err2) }
-			if err3 := workbook.Save(); err3 != nil { fmt.Println(err) }
+			if err != nil || err2 != nil || err3 != nil { 
+				return map[string]string{ 
+					"error": "failed to save text",
+				}
+			}
 		}
 	}
 
+	return nil
 }
 
 func sanitizePath(path string) string {

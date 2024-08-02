@@ -81,9 +81,12 @@ class XLSX:
             cellB = worksheet().cell(row= lastRow, column=2)
             cellA.value = textDTO.originalText
             cellB.value = textDTO.translatedText
-        
+
         else: return
 
         workbook.save(filePath())
+        response = self.QueryTranslation(textDTO.__dict__)
+        if response is None:
+            return { "error": "failed to save text" }
 
 

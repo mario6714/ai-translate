@@ -1,4 +1,4 @@
-import { configs, save_config, setConfigs } from "../../global/configs"
+import { configs, save_config } from "../../global/configs"
 import { For } from "solid-js"
 
 const languages = [ 
@@ -28,7 +28,6 @@ export default function Lang() {
              class="text-black px-2" value={configs().targetLanguage} onChange={ (e) => { 
                 if (e.currentTarget.value !== configs().targetLanguage) { 
                     configs().targetLanguage = e.currentTarget.value
-                    setConfigs({ ...configs() })
                     save_config(configs())
                 }
              } } />
