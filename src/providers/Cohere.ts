@@ -95,27 +95,33 @@ export default {
         { 
             name: "command-r",
             owned_by: "Cohere",
-            enabled: undefined
+            enabled: undefined,
+            auto_fetch: false
         }, { 
             name: "command-r-plus",
             owned_by: "Cohere",
-            enabled: undefined
+            enabled: undefined,
+            auto_fetch: false
         }, { 
             name: "command",
             owned_by: "Cohere",
-            enabled: undefined
+            enabled: undefined,
+            auto_fetch: false
         }, { 
             name: "command-nightly",
             owned_by: "Cohere",
-            enabled: undefined
+            enabled: undefined,
+            auto_fetch: false
         }, { 
             name: "command-light",
             owned_by: "Cohere",
-            enabled: undefined
+            enabled: undefined,
+            auto_fetch: false
         }, { 
             name: "command-light-nightly",
             owned_by: "Cohere",
-            enabled: undefined
+            enabled: undefined,
+            auto_fetch: false
         }, 
     ]
 }

@@ -68,15 +68,18 @@ export default {
         {
             name: "gemini-1.5-pro-latest", // "gemini-pro"
             owned_by: "Google",
-            enabled: undefined
+            enabled: undefined,
+            auto_fetch: true
         }, {
             name: "gemini-1.5-flash",
             owned_by: "Google",
-            enabled: undefined
+            enabled: undefined,
+            auto_fetch: true
         }, {
             name: "gemini-1.0-pro",
             owned_by: "Google",
-            enabled: undefined
+            enabled: undefined,
+            auto_fetch: true
         }, 
     ]
 }

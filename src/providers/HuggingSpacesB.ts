@@ -126,15 +126,18 @@ export default {
         },*/ {
             name: "yi-1.5-34b",
             owned_by: "01-ai",
-            enabled: undefined
+            enabled: undefined,
+            auto_fetch: true
         }, {
             name: "mixtral-8x7b",
             owned_by: "mistralai",
-            enabled: undefined
+            enabled: undefined,
+            auto_fetch: true
         }, {
             name: "nous-mixtral-8x7b",
             owned_by: "NousResearch",
-            enabled: undefined
+            enabled: undefined,
+            auto_fetch: true
         }, 
     ]
 }

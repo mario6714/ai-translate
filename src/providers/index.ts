@@ -11,6 +11,7 @@ import { ISpacesHandler, spacesHandler } from './HuggingSpaces'
 export interface IModel { 
     owned_by: string
     name: string
+    auto_fetch?: boolean
     enabled?: boolean
     index?: number
 }
