@@ -60,13 +60,12 @@ async function onTextChange( {window_title, text}: { window_title: string, text:
 export async function save_text( {untranslated, translated}: IText) { 
     const window_title = global_text().window_title
     if (!configs().caching || !untranslated || !window_title) { return null }
-    if(typeof translated === "string") { 
-        SaveText({ 
-            window_title,
-            originalText: untranslated,
-            translatedText: translated?.replaceAll("\n", "").replaceAll("  ", " ").trim(),
-        })
-    }
+    if(typeof translated !== "string") { translated = "" }
+    SaveText({ 
+        window_title,
+        originalText: untranslated,
+        translatedText: translated?.replaceAll("\n", "").replaceAll("  ", " ").trim(),
+    })
 }
 
 
