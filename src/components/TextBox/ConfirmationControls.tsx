@@ -1,5 +1,5 @@
-import { IText, save_text } from "../../global/text"
 import { SetStoreFunction } from "solid-js/store"
+import { IText, save_text } from "../../global/text"
 
 
 
