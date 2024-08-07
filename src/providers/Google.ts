@@ -66,17 +66,27 @@ export default {
     api_key: undefined,
     models: [
         {
-            name: "gemini-1.5-pro-latest", // "gemini-pro"
+            name: "gemini-1.0-pro",
+            owned_by: "Google",
+            enabled: undefined,
+            auto_fetch: true
+        }, {
+            name: "gemini-1.5-pro-latest", 
+            owned_by: "Google",
+            enabled: undefined,
+            auto_fetch: true
+        }, {
+            name: "gemini-1.5-pro", 
+            owned_by: "Google",
+            enabled: undefined,
+            auto_fetch: true
+        }, {
+            name: "gemini-1.5-pro-exp-0801", 
             owned_by: "Google",
             enabled: undefined,
             auto_fetch: true
         }, {
             name: "gemini-1.5-flash",
-            owned_by: "Google",
-            enabled: undefined,
-            auto_fetch: true
-        }, {
-            name: "gemini-1.0-pro",
             owned_by: "Google",
             enabled: undefined,
             auto_fetch: true
