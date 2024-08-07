@@ -67,8 +67,9 @@ export default function ModelsList( {provider: provider_key}: {provider: string}
                         provider: {provider_name: provider_key, api_key: e.currentTarget.value}
                     } ) }/>
                 </div>
+                <p class="px-8 py-1 text-xs text-zinc-500">Don't have a key? Get a free key <a href={provider.about_url as string} class="text-primary">here.</a></p>
             </Show>
-            <div>
+            <div class="py-3">
                 <For each={ Provider[provider_key as TProviderKeys]?.models }>
                     { (model: IModel) => <ModelItem providerName={provider_key} model={model} textInputRef={text_input} /> }
                 </For>
