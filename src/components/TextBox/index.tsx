@@ -107,7 +107,7 @@ export default function TextBox( {model, providerKey, index}: ITextBoxProps ) {
                                 </svg>
                             </button>
 
-                            <button class={`${autoFetchStyle()} text-sm`}
+                            <button class={`${autoFetchStyle()} text-sm active:opacity-60`}
                              onClick={ () => { 
                                 const m = configs().getM(providerKey, model?.name)
                                 if(m) { 
