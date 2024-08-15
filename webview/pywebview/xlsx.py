@@ -6,7 +6,7 @@ from openpyxl.cell.cell import Cell
 
 
 
-APPDATA = os.getenv('appdata')
+save_dir = os.getenv('appdata')
 file_name: str | None = None
 workbook: Workbook | None = None
 
@@ -29,7 +29,7 @@ def loadFile(name: str):
 def worksheet() -> Worksheet: 
     if workbook is not None: return workbook['Translation']
 
-def filePath() -> str: return os.path.join(APPDATA, 'ai-translate', file_name+'.xlsx')
+def filePath() -> str: return os.path.join(save_dir, 'ai-translate', file_name+'.xlsx')
 
 def queryEntry(textDTO: TextDTO):
     if isinstance(textDTO, TextDTO) and textDTO.window_title is not None:
