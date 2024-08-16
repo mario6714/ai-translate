@@ -1,4 +1,4 @@
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 import openpyxl, os
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
@@ -7,8 +7,8 @@ from openpyxl.cell.cell import Cell
 
 
 save_dir = os.getenv('appdata')
-file_name: str | None = None
-workbook: Workbook | None = None
+file_name: Optional[str] = None
+workbook: Optional[Workbook] = None
 
 class TextDTO:
     history: List[str]
