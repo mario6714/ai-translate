@@ -17,6 +17,31 @@ export type IExtendedModel = IModel & {
     component?: JSX.Element
 }
 
+declare global {
+    interface String {
+        replaceAll(search: string | RegExp, replacement: string): string;
+    }
+}
+
+// Verifica se a função replaceAll já está disponível no ambiente
+if (!String.prototype.replaceAll) {
+    String.prototype.replaceAll = function (search: string | RegExp, replacement: string): string {
+        // Verifica se o valor de busca é uma expressão regular
+        if (search instanceof RegExp) {
+            // Se for uma expressão regular, garante que o flag global esteja presente
+            if (!search.global) {
+                throw new TypeError('A expressão regular deve ter a flag "g"');
+            }
+            // Usa o método replace com uma função de substituição
+            return this.replace(search, replacement);
+        } else {
+            // Se for uma string, usa o método replace com a string de busca e o valor de substituição
+            return this.split(search).join(replacement);
+        }
+    };
+}
+
+
 export const [ enabledModels, setEnabledM ] = createSignal<IExtendedModel[] | null>(null)
 
 export const [ configs, setConfigs ] = createSignal<IConfig>({

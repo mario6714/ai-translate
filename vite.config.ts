@@ -3,7 +3,6 @@ import solid from 'vite-plugin-solid'
 
 export default defineConfig({
   plugins: [solid()],
-  build: { 
-      //
-  }
+  build: { target: "ES2019" },
+  esbuild: { target: "ES2019" }
 })
