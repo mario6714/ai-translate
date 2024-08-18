@@ -39,7 +39,10 @@ if (Object.keys(providerEntry ?? {})?.length) {
 }
 
 
-if (!addedModel && model?.enabled && providerEntry) { providerEntry.models.push(model) }
+if (!addedModel && model?.enabled && providerEntry) { 
+    const model_default = providerEntry.models.find(m => m.name === model.name) ?? {}
+    providerEntry.models.push( Object.assign(model_default, model) ) 
+}
 
 setConfigs(newConfigs)
 save_config(configs())
