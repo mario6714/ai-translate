@@ -71,7 +71,7 @@ export default function TextBox( {model, providerKey, index}: ITextBoxProps ) {
                 if (index===0) { setText('translated', translated) }
                 else { setText('translated', "") }
 
-            } else if (model.auto_fetch) { await translate({ save: true }) }
+            } else if (auto_fetch()) { await translate({ save: true }) }
 
             //console.log(modelName, ":", text.translated) 
         }
@@ -107,7 +107,7 @@ export default function TextBox( {model, providerKey, index}: ITextBoxProps ) {
                                 </svg>
                             </button>
 
-                            <button class={`${autoFetchStyle()} text-xs p-2 active:opacity-60`}
+                            <button class={`${autoFetchStyle()} text-xs p-1 active:opacity-60`}
                              onClick={ () => { 
                                 const m = configs().getM(providerKey, model?.name)
                                 if(m) { 
