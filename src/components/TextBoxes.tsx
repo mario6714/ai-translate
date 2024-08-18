@@ -65,7 +65,7 @@ export default function TextBoxes() {
 
             <div class="flex flex-col flex-wrap" onDrop={ dragHandler } onDragOver={(e) => {e.preventDefault()}}>
                 { enabledModels()?.map( (model, index) => 
-                    <TextBox model={model} providerKey={model.provider_key} index={index} />
+                    <TextBox modelName={model.name} providerKey={model.provider_key} index={index} />
                 ) }
             </div>
 

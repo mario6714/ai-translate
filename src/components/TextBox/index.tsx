@@ -1,7 +1,7 @@
 import { Show, createEffect, createMemo, createSignal } from "solid-js"
 import { createStore } from "solid-js/store"
 import { global_text, save_text } from "../../global/text"
-import { configs, IExtendedModel, save_config, setConfigs } from "../../global/configs"
+import { configs, save_config, setConfigs } from "../../global/configs"
 import Providers, { getHandler, TProviderKeys } from "../../providers"
 import ConfirmationControls, { ITextStore } from "./ConfirmationControls"
 import SaveIcon from "../SaveIcon"
@@ -10,7 +10,7 @@ import './style.css'
 
 
 type ITextBoxProps = { 
-    model: IExtendedModel 
+    modelName: string //IExtendedModel 
     providerKey: string
     index: number
 }
@@ -38,24 +38,24 @@ function setDragOverStyle(e: MyDragEvent) { e.currentTarget.style.border = "2px 
 function rmvDragOverStyle(e: MyDragEvent) { e.currentTarget.style.border = "" }
 
 
-export default function TextBox( {model, providerKey, index}: ITextBoxProps ) { 
+export default function TextBox( {modelName: model_name, providerKey, index}: ITextBoxProps ) { 
     const [ text, setText ] = createStore<ITextStore>({ 
         editing: false,
         translated: "Waiting for text...",
         untranslated: global_text().untranslated
     })
     const [ dragging, setDragging ] = createSignal(false)
-    const handler = getHandler(providerKey, model.name)
+    const handler = getHandler(providerKey, model_name)
     let textarea: HTMLTextAreaElement | undefined
     const provider = Providers[providerKey as TProviderKeys]
-    const auto_fetch = createMemo(() => configs().getM(providerKey, model.name)?.auto_fetch)
+    const auto_fetch = createMemo(() => configs().getM(providerKey, model_name)?.auto_fetch)
     const textareaStyle = createMemo(() => text.translated==="Waiting for text..."? "italic text-zinc-100" : "")
     const autoFetchStyle = () => auto_fetch()? "text-green-500" : "text-zinc-500"
 
 
     async function translate(options?: {save?: boolean}) { 
         if (handler && textarea && text.untranslated) { 
-            const translated = await handler(text.untranslated, model.name, textarea)
+            const translated = await handler(text.untranslated, model_name, textarea)
             .catch(e => e)
             setText('translated', translated)
             if (index===0 && options?.save) { save_text(text) }
@@ -81,14 +81,14 @@ export default function TextBox( {model, providerKey, index}: ITextBoxProps ) {
 
     return (
         <section class="w-full flex justify-between" 
-         modelName={model.name} providerKey={providerKey} draggable={ dragging() }
+         modelName={model_name} providerKey={providerKey} draggable={ dragging() }
          onDragOver={setDragOverStyle} onDragLeave={rmvDragOverStyle} onDrop={rmvDragOverStyle}>
 
             <div class="w-full py-1 relative">
                 <textarea class={`w-full h-44 p-2 ${textareaStyle()} bg-inherit`} 
                  value={text.translated as string} ref={textarea} readonly={!text.editing}
                  name="" id="" cols="30" rows="10" />
-                <p class="py-1 px-2 absolute bottom-0 text-sm text-placeholder italic">{model.name} - {provider.provider_name}</p>
+                <p class="py-1 px-2 absolute bottom-0 text-sm text-placeholder italic">{model_name} - {provider.provider_name}</p>
             </div>
 
             <Show when={!text.editing} fallback={
@@ -109,7 +109,7 @@ export default function TextBox( {model, providerKey, index}: ITextBoxProps ) {
 
                             <button class={`${autoFetchStyle()} text-xs p-1 active:opacity-60`}
                              onClick={ () => { 
-                                const m = configs().getM(providerKey, model?.name)
+                                const m = configs().getM(providerKey, model_name)
                                 if(m) { 
                                     m.auto_fetch = !auto_fetch()
                                     setConfigs({ ...configs() })
