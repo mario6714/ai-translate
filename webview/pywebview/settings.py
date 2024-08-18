@@ -29,6 +29,7 @@ class SettingsApi:
     def SaveConfig(self, dic):
         if isinstance(dic, dict):
             if len(dic.keys()):
+                if not os.path.exists(self._configDir): os.makedirs(self._configDir)
                 with open(os.path.join(self._configDir, "config.json"), encoding= "utf-8", mode= "w") as file: json.dump(dic, file)
 
 
