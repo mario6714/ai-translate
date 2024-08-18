@@ -107,11 +107,11 @@ export default function TextBox( {model, providerKey, index}: ITextBoxProps ) {
                                 </svg>
                             </button>
 
-                            <button class={`${autoFetchStyle()} text-sm active:opacity-60`}
+                            <button class={`${autoFetchStyle()} text-xs p-2 active:opacity-60`}
                              onClick={ () => { 
                                 const m = configs().getM(providerKey, model?.name)
                                 if(m) { 
-                                    m.auto_fetch = !auto_fetch
+                                    m.auto_fetch = !auto_fetch()
                                     setConfigs({ ...configs() })
                                     save_config(configs())
                                 }
