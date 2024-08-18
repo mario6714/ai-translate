@@ -1,4 +1,4 @@
-textarea:focus-visible {
+textarea:focus {
     outline: 0;
 }
 
