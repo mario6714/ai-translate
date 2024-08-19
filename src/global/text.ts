@@ -64,7 +64,7 @@ export async function save_text( {untranslated, translated}: IText) {
     SaveText({ 
         window_title,
         originalText: untranslated,
-        translatedText: translated?.replaceAll("\n", "").replaceAll("  ", " ").trim(),
+        translatedText: translated
     })
 }
 
@@ -92,7 +92,7 @@ class Monitor {
             this.interval = setInterval(async function() { 
                 const documentVisibilityStatus = !document.hidden
                 const tmp_value = await GetClipboardText()
-                const window_title = await GetActiveWindowTitle()
+                const window_title = (await GetActiveWindowTitle())?.replaceAll(/[\/\\:\*?"<>|]/g, "-")
                 if (documentVisibilityStatus && window_title !== "AI Translate") { 
                     if ( (value !== tmp_value) && tmp_value && window_title ) { 
                         execute({ window_title, text: tmp_value.replace("　", "") })
