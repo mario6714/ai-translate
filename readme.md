@@ -12,6 +12,9 @@ in all models available you can get a free API key. I want this repo to be also 
 ## Caching
 the translation of your favorite AI model (the first) is cached by default in **%appdata%\ai-translate**. it's cached in a **.xlsx** file, so it can be imported to translator++
 
+#### Demo
+![app screenshot](imgs/screenshot-01.png)
+
 ## Build
 if you want to create your own build
 
@@ -39,5 +42,5 @@ $ npm run pack
 
 ## todo
 
-search for more providers  
-make a release (python)
+finish the webview in go
+search for more providers
