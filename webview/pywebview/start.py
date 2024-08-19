@@ -15,6 +15,8 @@ class Api(Clipboard, XLSX, SettingsApi):
         window = webview.create_window("Settings", 
             js_api= Api(),
             url= f"http://localhost:{port}/settings",
+            width= screen_res()[0],
+            height= screen_res()[0]
         )
         window.show()
         window.focus = True
