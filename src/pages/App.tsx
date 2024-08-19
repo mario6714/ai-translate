@@ -35,7 +35,9 @@ export default function App() {
             }
         }
 
-        //setInterval(() => console.log(document.hidden), 1000)
+        window.onblur = function() { 
+            document.querySelector('html')?.scrollTo({ top: 0 })
+        }
     } )
 
 
