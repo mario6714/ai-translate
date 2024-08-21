@@ -23,8 +23,7 @@ declare global {
     }
 }
 
-// Verifica se a função replaceAll já está disponível no ambiente
-if (!String.prototype.replaceAll) {
+/* if (!String.prototype.replaceAll) {
     String.prototype.replaceAll = function (search: string | RegExp, replacement: string): string {
         // Verifica se o valor de busca é uma expressão regular
         if (search instanceof RegExp) {
@@ -39,7 +38,7 @@ if (!String.prototype.replaceAll) {
             return this.split(search).join(replacement);
         }
     };
-}
+} */
 
 
 export const [ enabledModels, setEnabledM ] = createSignal<IExtendedModel[] | null>(null)
