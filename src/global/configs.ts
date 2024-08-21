@@ -17,13 +17,13 @@ export type IExtendedModel = IModel & {
     component?: JSX.Element
 }
 
-declare global {
+/* declare global {
     interface String {
         replaceAll(search: string | RegExp, replacement: string): string;
     }
 }
 
-/* if (!String.prototype.replaceAll) {
+if (!String.prototype.replaceAll) {
     String.prototype.replaceAll = function (search: string | RegExp, replacement: string): string {
         // Verifica se o valor de busca é uma expressão regular
         if (search instanceof RegExp) {

@@ -57,7 +57,7 @@ export default function TextBox( {modelName: model_name, providerKey, index}: IT
         if (handler && textarea && text.untranslated) { 
             const result = await handler(text.untranslated, model_name, textarea)
             .catch(e => e)
-            const translated = result?.replaceAll("\n", "").replaceAll("  ", " ").trim().replaceAll(/^"(.*?)"$/, '$1')
+            const translated = result?.replaceAll("\n", "").replaceAll("  ", " ").trim().replace(/^"(.*?)"$/, '$1')
             setText('translated', translated)
             if (index===0 && options?.save) { save_text(text) }
         }
@@ -69,7 +69,7 @@ export default function TextBox( {modelName: model_name, providerKey, index}: IT
             setText('untranslated', global_text().untranslated) 
             let translated = global_text().translated
             if (translated) { 
-                if (index===0) { setText('translated', translated) }
+                if (index===0) { console.log(model_name);setText('translated', translated) }
                 else { setText('translated', "") }
 
             } else if (auto_fetch()) { await translate({ save: true }) }
