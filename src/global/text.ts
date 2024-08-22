@@ -50,8 +50,10 @@ async function onTextChange( {window_title, text}: { window_title: string, text:
 
         if(translatedText) { global_text().translated = translatedText }
         else if (global_text().translated) { global_text().translated = null }
-        global_text().untranslated = text
-        setGlobalText({ ...global_text() })
+        if (global_text().untranslated !== text) { 
+            global_text().untranslated = text
+            setGlobalText({ ...global_text() })
+        }
     }
 
 }
