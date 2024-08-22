@@ -72,7 +72,7 @@ export async function save_text( {untranslated, translated}: IText) {
 
 
 class Monitor { 
-    private interval?: NodeJS.Timeout
+    private interval?: NodeJS.Timeout | number
 
     constructor( private callback?: (data: { window_title: string, text: string }) => unknown ) {}
 
@@ -105,7 +105,8 @@ class Monitor {
                 value = tmp_value
                 this.interval = setTimeout(loop, 100)
             }
-            
+
+            this.interval = 1
             loop.call(this)
         }
     }
