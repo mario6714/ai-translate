@@ -91,20 +91,22 @@ class Monitor {
 
 
             const execute = this.callback
-            this.interval = setInterval(async function() { 
+            async function loop(this: Monitor) { 
                 const documentVisibilityStatus = !document.hidden
                 const tmp_value = await GetClipboardText()
                 const window_title = (await GetActiveWindowTitle())?.replaceAll(/[\/\\:\*?"<>|]/g, "-")
                 if (documentVisibilityStatus && window_title !== "AI Translate") { 
                     if ( (value !== tmp_value) && tmp_value && window_title ) { 
-                        execute({ window_title, text: tmp_value.replace("　", "") })
+                        await execute({ window_title, text: tmp_value.replace("　", "") })
                     }
                     //else if (document.hidden) { console.log(document.hidden) }
                 }
 
                 value = tmp_value
-
-            }, 100)
+                this.interval = setTimeout(loop, 100)
+            }
+            
+            loop.call(this)
         }
     }
 
