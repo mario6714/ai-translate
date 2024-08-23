@@ -50,7 +50,7 @@ export default function TextBox( {modelName: model_name, providerKey, index}: IT
     const provider = Providers[providerKey as TProviderKeys]
     const auto_fetch = createMemo(() => configs().getM(providerKey, model_name)?.auto_fetch)
     const textareaStyle = createMemo(() => text.translated==="Waiting for text..."? "italic text-zinc-100" : "")
-    const autoFetchStyle = () => auto_fetch()? "text-green-500" : "text-zinc-500"
+    const autoFetchStyle = () => auto_fetch()? "text-green-500" : "text-red-600"
 
 
     async function translate(options?: {save?: boolean}) { 
