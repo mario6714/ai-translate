@@ -16,10 +16,10 @@ const safetySettings = [
     }, {
       category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
       threshold: HarmBlockThreshold.BLOCK_NONE,
-    }, { 
+    }, /* { 
         category: HarmCategory.HARM_CATEGORY_UNSPECIFIED,
         threshold: HarmBlockThreshold.BLOCK_NONE
-    }
+    } */
 ]
 
 
