@@ -15,7 +15,7 @@ class Api(Clipboard, XLSX, SettingsApi):
         window = webview.create_window("Settings", 
             js_api= Api(),
             url= f"http://localhost:{port}/settings",
-            width= 500,
+            width= 750,
             height= 500
         )
         window.show()
@@ -23,7 +23,7 @@ class Api(Clipboard, XLSX, SettingsApi):
 
 
 def screen_res() -> Tuple[int]:
-    return (342,615) if SettingsApi().GetConfig() is not None else (500,500)
+    return (342,615) if SettingsApi().GetConfig() is not None else (750,500)
 
 if __name__ == "__main__":
     main_window = webview.create_window("AI Translate", 
