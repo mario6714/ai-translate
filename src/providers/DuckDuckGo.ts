@@ -35,7 +35,7 @@ export async function DuckHandler(text: string, model_name: string, tag: HTMLTex
     })
 
     tag.value = ""
-    const response = await client.sendPrompt(completePrompt(text))
+    const response = await client.sendPrompt(completePrompt({ text }))
     //console.log(response)
     if (response) { 
         for await (const chunk of response) { 

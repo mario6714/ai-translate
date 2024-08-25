@@ -38,7 +38,7 @@ export async function GoogleHandler(text: string, model_name: string, tag: HTMLT
     if (!text || !tag || !model_name || !API_KEY) { return "" }
     const gemini = MyGoogleChat(API_KEY, model_name);
     const parts = [
-        { text: userPrompt(text) },
+        { text: userPrompt({ text }) },
     ];
 
 

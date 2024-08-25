@@ -205,10 +205,15 @@ export const systemPrompt = `
     - "..." can be a part of the dialogue. Translate it as it is and include it in your response.
 `
 
-export const userPrompt = (text: string) => `
-    ${history.toPrompt()}
+type IUserPromptOptions = { 
+    text: string
+    enableContext?: boolean
+}
+
+export const userPrompt = ( {text, enableContext}: IUserPromptOptions ) => `
+    ${enableContext!==false? history.toPrompt() : ""}
 
     now translate this to ${configs().targetLanguage}: <InputText>${text.trim()}</InputText>
 `
 
-export const completePrompt = (text: string) => systemPrompt + userPrompt(text)
+export const completePrompt = (options: IUserPromptOptions) => systemPrompt + userPrompt(options)

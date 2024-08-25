@@ -78,7 +78,7 @@ export async function HfSpaceHandler(text: string, model_name: string, tag: HTML
 
 
     tag.value = ""
-    const stream = await hf.sendPrompt(userPrompt(text))
+    const stream = await hf.sendPrompt(userPrompt({ text }))
     if (stream) { 
         for await (const chunk of stream) { 
             if(chunk?.choices) {

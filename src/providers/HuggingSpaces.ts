@@ -62,7 +62,7 @@ export class SpacesHandler implements ISpacesHandler {
     async handler(text: string, _: string, tag: HTMLTextAreaElement): Promise<string> { 
         tag.value = ""
         const result = this.client?.submit("/chat", { 		
-                message: userPrompt(text), 
+                message: userPrompt({ text }), 
                 system_message: systemPrompt, 
                 max_tokens: 2048, 
                 temperature: 0.1, 

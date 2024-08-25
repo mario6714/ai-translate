@@ -39,7 +39,7 @@ export async function GroqHandler(text: string, model_name: string, tag: HTMLTex
 
 
     tag.value = ""
-    const stream = await groq?.sendPrompt(userPrompt(text), model_name) ?? []
+    const stream = await groq?.sendPrompt(userPrompt({ text }), model_name) ?? []
     for await (const chunk of stream) { 
         if(chunk.choices[0]?.delta?.content && tag) {
             tag.value += chunk.choices[0]?.delta?.content

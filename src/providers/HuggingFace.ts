@@ -119,7 +119,7 @@ export async function HfHandler(text: string, model_name: string, tag?: HTMLText
     })
 
 
-    const response = await hf.sendPrompt(completePrompt(text))
+    const response = await hf.sendPrompt(completePrompt({ text }))
     if (response) { 
         for await (const chunk of response) { console.log(chunk) }
     }
