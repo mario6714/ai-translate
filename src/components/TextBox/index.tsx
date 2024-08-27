@@ -56,10 +56,7 @@ export default function TextBox( {modelName: model_name, providerKey, index}: IT
     async function translate(options?: {save?: boolean}) { 
         if (handler && textarea && text.untranslated) { 
             const result = await handler(text.untranslated, model_name, textarea)
-            .catch(e => { 
-                console.log(e)
-                return e
-            })
+            .catch(e => e)
             const translated = typeof result !== "string"? result : result?.replaceAll("\n", "").replaceAll("  ", " ").trim().replace(/^"(.*?)"$/, '$1')
             setText('translated', translated)
             if (index===0 && options?.save) { save_text(text) }

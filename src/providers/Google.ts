@@ -1,7 +1,16 @@
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold, } from "@google/generative-ai";
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold, PromptFeedback, GoogleGenerativeAIResponseError, GenerativeModel } from "@google/generative-ai";
 import { configs } from "../global/configs";
 import { systemPrompt, userPrompt } from '../global/text'
 
+
+
+export interface IGoogleFilterBlock { 
+    text: CallableFunction
+    functionCall: CallableFunction
+    functionCalls: CallableFunction
+    usageMetadata: Record<string, unknown>
+    promptFeedback: PromptFeedback
+}
 
 const safetySettings = [
     {
@@ -23,40 +32,59 @@ const safetySettings = [
 ]
 
 
-function MyGoogleChat(key: string, model_name: string) { 
-    const genAI = new GoogleGenerativeAI(key)
-    const model = genAI.getGenerativeModel({ 
-        model: model_name,
-        systemInstruction: "Be the fastest as possible\n\n\n"+systemPrompt
-    })
-    return model
-}
+class GoogleChat extends GoogleGenerativeAI { 
+    public readonly modelName: string
+    public readonly model: GenerativeModel
+    constructor(key: string, model_name: string) { 
+        super(key)
+        this.modelName = model_name
+        this.model = this.getGenerativeModel({ 
+            model: model_name,
+            systemInstruction: "Be the fastest as possible\n\n\n"+systemPrompt
+        })
+    }
 
+    async sendPrompt(prompt: string, tag: HTMLTextAreaElement): Promise<string> { 
+        const parts = [
+            { text: prompt },
+        ];
+
+        tag.value = ""
+        const result = await this.model.generateContentStream({ 
+            contents: [{ role: "user", parts }],
+            generationConfig: { temperature: 0.2 },
+            safetySettings,
+        } )
+
+        for await (const chunk of result.stream) {
+            const chunkText = chunk.text();
+            tag.value += chunkText;
+            if (tag.value.length > 300) { location.reload() ; break }
+        }
+    
+        return tag.value
+    }
+}
 
 export async function GoogleHandler(text: string, model_name: string, tag: HTMLTextAreaElement): Promise<string> { 
     const API_KEY = configs().providers?.Google?.api_key;
     if (!text || !tag || !model_name || !API_KEY) { return "" }
-    const gemini = MyGoogleChat(API_KEY, model_name);
-    const parts = [
-        { text: userPrompt({ text }) },
-    ];
-
-
-    tag.value = ""
-    const result = await gemini.generateContentStream({ 
-        contents: [{ role: "user", parts }],
-        generationConfig: { temperature: 0.2 },
-        safetySettings,
-    });
-
-    for await (const chunk of result.stream) {
-        const chunkText = chunk.text();
-        tag.value += chunkText;
-        if (tag.value.length > 300) { location.reload() ; break }
-    }
-
-    return tag.value
-
+    const chat = new GoogleChat(API_KEY, model_name);
+    return await chat.sendPrompt(userPrompt({ text }), tag)
+    .catch(async(e: GoogleGenerativeAIResponseError<IGoogleFilterBlock>) => { 
+        // @ts-ignore
+        window.googleError = e
+        // @ts-ignore
+        console.log(e.response.text())
+        // @ts-ignore
+        console.log(e.response.promptFeedback.blockReason)
+        console.log(e.response)
+        if (e.response?.promptFeedback?.blockReason) { 
+            tag.value = "Retrying without context..."
+            return await chat.sendPrompt(userPrompt({ text, enableContext: false }), tag)
+        }
+        throw new GoogleGenerativeAIResponseError<IGoogleFilterBlock>(e.message, e.response)
+    })
 }
 
 
