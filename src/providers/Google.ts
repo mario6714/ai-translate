@@ -5,7 +5,7 @@ import { systemPrompt, userPrompt } from '../global/text'
 
 
 export interface IGoogleFilterBlock { 
-    text: CallableFunction
+    text: CallableFunction // throws the error
     functionCall: CallableFunction
     functionCalls: CallableFunction
     usageMetadata: Record<string, unknown>
@@ -74,10 +74,6 @@ export async function GoogleHandler(text: string, model_name: string, tag: HTMLT
     .catch(async(e: GoogleGenerativeAIResponseError<IGoogleFilterBlock>) => { 
         // @ts-ignore
         window.googleError = e
-        // @ts-ignore
-        console.log(e.response.text())
-        // @ts-ignore
-        console.log(e.response.promptFeedback.blockReason)
         console.log(e.response)
         if (e.response?.promptFeedback?.blockReason) { 
             tag.value = "Retrying without context..."
