@@ -72,12 +72,13 @@ export async function GoogleHandler(text: string, model_name: string, tag: HTMLT
     const chat = new GoogleChat(API_KEY, model_name);
     return await chat.sendPrompt(userPrompt({ text }), tag)
     .catch(async(e: GoogleGenerativeAIResponseError<IGoogleFilterBlock>) => { 
-        // @ts-ignore
-        window.googleError = e
-        console.log(e.response)
         if (e.response?.promptFeedback?.blockReason) { 
-            tag.value = "Retrying without context..."
+            tag.placeholder = "Retrying without context..."
             return await chat.sendPrompt(userPrompt({ text, enableContext: false }), tag)
+            .then(translatedText => { 
+                tag.placeholder = ""
+                return translatedText
+            })
         }
         throw new GoogleGenerativeAIResponseError<IGoogleFilterBlock>(e.message, e.response)
     })
