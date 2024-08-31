@@ -65,7 +65,7 @@ export class SpacesHandler implements ISpacesHandler {
                 message: userPrompt({ text }), 
                 system_message: systemPrompt, 
                 max_tokens: 2048, 
-                temperature: 0.1, 
+                temperature: 0,
                 top_p: 0.1, 
         });
 

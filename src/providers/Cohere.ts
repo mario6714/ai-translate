@@ -52,7 +52,7 @@ class CohereChat extends CustomSSE {
                 model: this._model,
                 message: prompt,
                 stream: true,
-                temperature: 0.2,
+                temperature: 0,
                 //preamble: systemPrompt,
                 prompt_truncation: "OFF"
             })

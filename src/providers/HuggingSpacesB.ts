@@ -53,7 +53,7 @@ class HfSpace extends CustomSSE {
                         content: prompt
                     }
                 ],
-                temperature: 0.2,
+                temperature: 0,
                 top_p: 0.45,
                 max_tokens: -1,
                 use_cache: false,

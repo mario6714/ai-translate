@@ -22,7 +22,7 @@ class GroqChat extends Groq {
                 }
             ],
             model: model, 
-            temperature: 0.2,
+            temperature: 0,
             stream: true,
         });
     }

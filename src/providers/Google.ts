@@ -52,7 +52,7 @@ class GoogleChat extends GoogleGenerativeAI {
         tag.value = ""
         const result = await this.model.generateContentStream({ 
             contents: [{ role: "user", parts }],
-            generationConfig: { temperature: 0.2 },
+            generationConfig: { temperature: 0 },
             safetySettings,
         } )
 
