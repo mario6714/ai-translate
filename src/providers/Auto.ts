@@ -1,4 +1,4 @@
-import { GoogleTranslator } from '@translate-tools/core/translators/GoogleTranslator';
+import { GoogleTranslatorTokenFree } from '@translate-tools/core/translators/GoogleTranslator';
 import { YandexTranslator } from '@translate-tools/core/translators/YandexTranslator'
 import { TartuNLPTranslator } from '@translate-tools/core/translators/TartuNLPTranslator'
 import { configs } from '../global/configs';
@@ -22,7 +22,8 @@ export const languageCodes = {
     "한국어": "ko",
     "简体中文": "zh",
     "繁體中文": "zh",
-    "ﺎﻠﻋﺮﺒﻳﺓ": "ar"
+    "ﺎﻠﻋﺮﺒﻳﺓ": "ar",
+    "Japanese": "ja"
 };
 
 const lang = () => { 
@@ -36,8 +37,8 @@ const fetcher: Fetcher = async (url, options) => {
 	return basicFetcher('https://corsproxy.io/?' + encodeURIComponent(url), options);
 };
 
-async function GoogleHandler(text: string) { 
-    const translator = new GoogleTranslator({ fetcher });
+export async function GoogleHandler2(text: string) { 
+    const translator = new GoogleTranslatorTokenFree({ fetcher });
     return await translator.translate(text, 'auto', lang())
 }
 
@@ -51,17 +52,43 @@ async function TartuHandler(text: string) {
     return await translator.translate(text, 'auto', lang())
 }
 
+async function GoogleHandler(text: string) { 
+    return await fetch("https://google-translate-serverless-puce.vercel.app/api/translate", { 
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+            to: lang(),
+            text
+        })
+    })
+    .then(response => response.json())
+    .then(response => response?.trans_result)
+}
+
+async function DeepLXHandler(text: string) { 
+    return await fetch("https://deep-lx-vercel-coral.vercel.app/api/translate", { 
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+            text,
+            target_lang: lang()
+        })
+    }).then(response => response.json())
+    .then(response => response?.data)
+}
+
 const translators = { 
-    "Google-Translate": { execute(text: string) { return GoogleHandler(text) } },
+    "google-translate": { execute(text: string) { return GoogleHandler(text) } },
     Yandex: { execute(text: string) { return YandexHandler(text) } },
-    TartuNLP: { execute(text: string) { return TartuHandler(text) } }
+    TartuNLP: { execute(text: string) { return TartuHandler(text) } },
+    DeepLX: { execute(text: string) { return DeepLXHandler(text) } }
 }
 
 
 
 export async function AutomaticHandler(text: string, engine: string, _: HTMLTextAreaElement) { 
     if (!text || !engine) { return null }
-    return await translators[engine as keyof typeof translators].execute(text.trim())
+    return await translators[engine as keyof typeof translators]?.execute(text.trim())
 }
 
 export default { 
@@ -70,9 +97,13 @@ export default {
     api_key: undefined,
     models: [
         { 
-            name: "Google-Translate",
+            name: "google-translate",
             owned_by: "Google",
             enabled: undefined
+        }, { 
+            name: "DeepLX",
+            owned_by: "DeepL",
+            //
         }, { 
             name: "Yandex",
             owned_by: "Yandex",
@@ -81,6 +112,6 @@ export default {
             name: "TartuNLP",
             owned_by: "Tartu University",
             enabled: undefined
-        }, 
+        }
     ]
 }

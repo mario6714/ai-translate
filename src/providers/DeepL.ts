@@ -15,7 +15,7 @@ export async function DeepLHandler(text: string, ..._: any[]) {
 
 
 export default { 
-    provider_name: "DeepL",
+    provider_name: "DeepL Pro",
     about_url: "https://www.deepl.com/pt-BR/pro-api?cta=header-pro-api",
     api_key: undefined,
     models: [
