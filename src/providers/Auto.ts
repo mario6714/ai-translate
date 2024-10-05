@@ -62,7 +62,7 @@ async function GoogleHandler(text: string) {
         })
     })
     .then(response => response.json())
-    .then(response => response?.trans_result)
+    .then(response => response?.text)
 }
 
 async function DeepLXHandler(text: string) { 
