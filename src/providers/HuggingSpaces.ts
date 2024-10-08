@@ -7,7 +7,8 @@ const models = {
     //"llama-3.1-70b": "aifeifei798/llama-3.1-70b-instruct",
     "llama-3.1-405b": "Nymbo/Llama-3.1-405B-Instruct",
     "llama-3.1-405b-fp8": "as-cle-bert/Llama-3.1-405B-FP8",
-    "Qwen-2.5-72B-Instruct": "Nymbo/Qwen-2.5-72B-Instruct"
+    "Qwen-2.5-72B-Instruct": "Nymbo/Qwen-2.5-72B-Instruct",
+    "Command-R-Plus-08-2024": "Nymbo/Command-R-Plus-08-2024"
 }
 
 /* const endpoints = { 
@@ -47,11 +48,11 @@ class HugSpacesChat implements IHugSpacesChat {
         const conn_status = await this.conn
         if (conn_status) { 
             return await this.client?.submit("/chat", { 		
-                    message: userPrompt({ text }), 
-                    system_message: systemPrompt, 
-                    max_tokens: 2048, 
-                    temperature: 0,
-                    top_p: 0.1, 
+                message: userPrompt({ text }), 
+                system_message: systemPrompt, 
+                max_tokens: 1, 
+                temperature: 0,
+                top_p: 0.1, 
             } as any) as any;
         }
     }
