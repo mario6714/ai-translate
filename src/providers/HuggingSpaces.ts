@@ -19,7 +19,7 @@ const models = {
 
 
 
-export interface IHugSpacesChat { 
+interface IHugSpacesChat { 
     model_name: string
     sendPrompt(text: string): Promise<unknown>
 }

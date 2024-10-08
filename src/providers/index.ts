@@ -3,7 +3,6 @@ import HuggingFace, { HuggingFaceHandler } from './HuggingFace'
 import Google, { GoogleHandler } from './Google'
 import Cohere, { CohereHandler } from './Cohere'
 import Auto, { AutomaticHandler } from './Auto'
-import DeepL, { DeepLHandler } from './DeepL-pro'
 import HuggingSpaces, { HuggingSpacesHandler } from './HuggingSpaces'
 
 
@@ -31,7 +30,6 @@ const Handlers = {
     Google: GoogleHandler,
     Cohere: CohereHandler,
     Auto: AutomaticHandler,
-    DeepL: DeepLHandler,
     HuggingSpaces: HuggingSpacesHandler,
 }
 
@@ -40,7 +38,7 @@ export function getHandler(provider_key: string, _: string):
         return Handlers[provider_key as keyof typeof Handlers]
 }
 
-export { GroqCloud, Google, HuggingFace, Cohere, Auto, DeepL, HuggingSpaces }
+export { GroqCloud, Google, HuggingFace, Cohere, Auto, HuggingSpaces }
 
 const Providers: { 
     HuggingSpaces: IProvider
@@ -49,9 +47,8 @@ const Providers: {
     HuggingFace: IProvider
     Cohere: IProvider
     Auto: IProvider
-    DeepL: IProvider
 
-} = { GroqCloud, Google, HuggingFace, Cohere, Auto, DeepL, HuggingSpaces }
+} = { GroqCloud, Google, HuggingFace, Cohere, Auto, HuggingSpaces }
 
 export type TProviderKeys = Exclude<keyof typeof Providers, "getM">
 

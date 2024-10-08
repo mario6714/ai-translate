@@ -1,9 +1,4 @@
-import { GoogleTranslatorTokenFree } from '@translate-tools/core/translators/GoogleTranslator';
-import { YandexTranslator } from '@translate-tools/core/translators/YandexTranslator'
-import { TartuNLPTranslator } from '@translate-tools/core/translators/TartuNLPTranslator'
 import { configs } from '../global/configs';
-import { Fetcher } from '@translate-tools/core/utils/Fetcher';
-import { basicFetcher } from '@translate-tools/core/utils/Fetcher/basicFetcher';
 
 
 
@@ -33,25 +28,6 @@ const lang = () => {
     return lang
 }
 
-const fetcher: Fetcher = async (url, options) => {
-	return basicFetcher('https://corsproxy.io/?' + encodeURIComponent(url), options);
-};
-
-export async function GoogleHandler2(text: string) { 
-    const translator = new GoogleTranslatorTokenFree({ fetcher });
-    return await translator.translate(text, 'auto', lang())
-}
-
-async function YandexHandler(text: string) {
-    const translator = new YandexTranslator()
-    return await translator.translate(text, 'auto', lang())
-}
-
-async function TartuHandler(text: string) {
-    const translator = new TartuNLPTranslator()
-    return await translator.translate(text, 'auto', lang())
-}
-
 async function GoogleHandler(text: string) { 
     return await fetch("https://google-translate-serverless-puce.vercel.app/api/translate", { 
         method: "POST",
@@ -79,8 +55,6 @@ async function DeepLXHandler(text: string) {
 
 const translators = { 
     "google-translate": { execute(text: string) { return GoogleHandler(text) } },
-    Yandex: { execute(text: string) { return YandexHandler(text) } },
-    TartuNLP: { execute(text: string) { return TartuHandler(text) } },
     DeepLX: { execute(text: string) { return DeepLXHandler(text) } }
 }
 
@@ -98,20 +72,10 @@ export default {
     models: [
         { 
             name: "google-translate",
-            owned_by: "Google",
-            enabled: undefined
+            owned_by: "Google"
         }, { 
             name: "DeepLX",
-            owned_by: "DeepL",
-            //
-        }, { 
-            name: "Yandex",
-            owned_by: "Yandex",
-            enabled: undefined
-        }, { 
-            name: "TartuNLP",
-            owned_by: "Tartu University",
-            enabled: undefined
+            owned_by: "DeepL"
         }
     ]
 }
