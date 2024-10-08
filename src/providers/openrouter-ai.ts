@@ -52,7 +52,7 @@ class OpenRouterChat extends CustomSSE {
 
 
 export async function OpenRouterHandler(text: string, model_name: string, tag: HTMLTextAreaElement) { 
-    const API_KEY = configs().providers?.Cohere?.api_key
+    const API_KEY = configs().providers?.OpenRouter?.api_key
     if (!text || !tag || !model_name || !API_KEY) { return "" }
     const client = new OpenRouterChat("https://openrouter.ai/api/v1/chat/completions", { 
         model: model_name,
@@ -63,7 +63,8 @@ export async function OpenRouterHandler(text: string, model_name: string, tag: H
     const stream = await client.sendPrompt(userPrompt({ text }))
     if (stream) { 
         for await (const chunk of stream) { 
-          console.log(chunk.choices[0].delta.content);
+          const text = chunk.choices[0].delta.content;
+          tag.value = text;
         }
     }
 
