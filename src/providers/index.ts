@@ -4,7 +4,7 @@ import Google, { GoogleHandler } from './Google'
 import Cohere, { CohereHandler } from './Cohere'
 import Auto, { AutomaticHandler } from './Auto'
 import DeepL, { DeepLHandler } from './DeepL'
-import { ISpacesHandler, spacesHandler } from './HuggingSpaces'
+import HuggingSpaces, { HuggingSpacesHandler } from './HuggingSpaces'
 
 
 
@@ -23,7 +23,7 @@ export interface IProvider {
     api_key?: string
 }
 
-type IHandler = ((text: string, model_name: string, tag: HTMLTextAreaElement) => Promise<string>) | ISpacesHandler
+//type IHandler = ((text: string, model_name: string, tag: HTMLTextAreaElement) => Promise<string>)
 
 const Handlers = { 
     GroqCloud: GroqHandler,
@@ -32,25 +32,18 @@ const Handlers = {
     Cohere: CohereHandler,
     Auto: AutomaticHandler,
     DeepL: DeepLHandler,
-    HuggingSpaces: spacesHandler,
+    HuggingSpaces: HuggingSpacesHandler,
 }
 
-export function getHandler(provider_key: string, model_name: string): 
+export function getHandler(provider_key: string, _: string): 
     (text: string, model_name: string, tag: HTMLTextAreaElement) => Promise<string> { 
-
-        const obj: IHandler = Handlers[provider_key as keyof typeof Handlers]
-        if (typeof obj !== "function" && obj) { 
-            obj.connect(model_name)
-            return obj.handler.bind(obj)
-        }
-
-        return obj
+        return Handlers[provider_key as keyof typeof Handlers]
 }
 
-export { GroqCloud, Google, HuggingFace, Cohere, Auto, DeepL }
+export { GroqCloud, Google, HuggingFace, Cohere, Auto, DeepL, HuggingSpaces }
 
 const Providers: { 
-    //HuggingSpaces?: IProvider
+    HuggingSpaces: IProvider
     GroqCloud: IProvider
     Google: IProvider
     HuggingFace: IProvider
@@ -58,7 +51,7 @@ const Providers: {
     Auto: IProvider
     DeepL: IProvider
 
-} = { GroqCloud, Google, HuggingFace, Cohere, Auto, DeepL }
+} = { GroqCloud, Google, HuggingFace, Cohere, Auto, DeepL, HuggingSpaces }
 
 export type TProviderKeys = Exclude<keyof typeof Providers, "getM">
 

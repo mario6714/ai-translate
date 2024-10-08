@@ -6,7 +6,8 @@ const models = {
     //"llama-3.1-405b": "aifeifei798/Meta-Llama-3.1-405B-Instruct",
     //"llama-3.1-70b": "aifeifei798/llama-3.1-70b-instruct",
     "llama-3.1-405b": "Nymbo/Llama-3.1-405B-Instruct",
-    "llama-3.1-405b-fp8": "as-cle-bert/Llama-3.1-405B-FP8"
+    "llama-3.1-405b-fp8": "as-cle-bert/Llama-3.1-405B-FP8",
+    "Qwen-2.5-72B-Instruct": "Nymbo/Qwen-2.5-72B-Instruct"
 }
 
 /* const endpoints = { 
@@ -15,83 +16,76 @@ const models = {
     "llama-3.1-405b-fp8": "/chat"
 } */
 
-async function test() {
-    const client = await Client.connect(`CohereForAI/c4ai-command-r-plus`, { 
-        hf_token: "hf_"
-    });
 
-    console.log(client.view_api())
-    const result = await client.predict("/generate_response", { 
-        user_message: "O que é um derivado vetorial?",
-        //input: "O que é um derivado vetorial?"
-    })
 
-    console.log(result)
-    /* for await (const msg of result) { 
-        if (msg.type === "data") { 
-            console.log(msg.data); 
-        }
-    } */
+export interface IHugSpacesChat { 
+    model_name: string
+    sendPrompt(text: string): Promise<unknown>
 }
 
-declare global { 
-    interface Window { test: typeof test }
-}
-window.test = test
+class HugSpacesChat implements IHugSpacesChat { 
+    readonly model_name: string
+    private client: Client | null = null
+    private conn: Promise<boolean | null>
 
-
-export interface ISpacesHandler { 
-    client: Client | null
-    handler(text: string, model_name: string, tag: HTMLTextAreaElement): Promise<string>
-    connect(model_name: string): Promise<Client | null>
-}
-
-export class SpacesHandler implements ISpacesHandler { 
-    client: Client | null = null
-
-    async connect(model_name: string) { 
-        const API_KEY = "hf_"
-        if (!API_KEY || !model_name) { return null }
-        const client = await Client.connect(models[model_name as never], { 
-            hf_token: API_KEY
-        });
-        this.client = client
-        return client
+    constructor(model_name: string) { 
+        this.model_name = model_name
+        this.conn = this.connect(model_name)
     }
 
-    async handler(text: string, _: string, tag: HTMLTextAreaElement): Promise<string> { 
-        tag.value = ""
-        const result = this.client?.submit("/chat", { 		
-                message: userPrompt({ text }), 
-                system_message: systemPrompt, 
-                max_tokens: 2048, 
-                temperature: 0,
-                top_p: 0.1, 
-        });
+    private async connect(model_name: string) { 
+        if (!model_name) { return null }
+        return await Client.connect(models[model_name as never])
+        .then(client => { 
+            this.client = client
+            return true
+
+        }).catch(() => false)
+    }
+
+    async sendPrompt(text: string) { 
+        const conn_status = await this.conn
+        if (conn_status) { 
+            return await this.client?.submit("/chat", { 		
+                    message: userPrompt({ text }), 
+                    system_message: systemPrompt, 
+                    max_tokens: 2048, 
+                    temperature: 0,
+                    top_p: 0.1, 
+            } as any) as any;
+        }
+    }
+
+}
+
+export async function HuggingSpacesHandler(text: string, model_name: string, tag: HTMLTextAreaElement): Promise<string> { 
+    const client = new HugSpacesChat(model_name)
+    const stream = await client.sendPrompt(text)
 
 
-        if (result) { 
-            for await (const msg of result) { 
-                if (msg.type === "data") { 
-                    tag.value = msg.data[0] as string
-                    //if (tag.value.length > 300) { result.cancel() ; break }
-                }
+    tag.value = ""
+    if (stream) { 
+        for await (const msg of stream) { 
+            if (msg.type === "data") { 
+                tag.value = msg.data[0] as string
+                //if (tag.value.length > 300) { result.cancel() ; break }
             }
         }
-
-        return tag.value
     }
-}
 
-export const spacesHandler = new SpacesHandler()
+    return tag.value
+}
 
 
 export default { 
     provider_name: "HuggingSpaces",
     about_url: null,//"https://huggingface.co/docs/hub/security-tokens",
     api_key: undefined,
-    models: [
+    models: [ 
         {
+            name: "Qwen-2.5-72B-Instruct",
+            owned_by: "Qwen",
+        }, /*{
             name: "llama-3.1-405b",
             owned_by: "Meta",
             enabled: undefined
@@ -99,7 +93,7 @@ export default {
             name: "llama-3.1-405b-fp8",
             owned_by: "Meta",
             enabled: undefined
-        }, /* {
+        }, {
             name: "llama-3.1-70b",
             owned_by: "Meta",
             enabled: undefined
