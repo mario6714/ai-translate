@@ -153,6 +153,7 @@ export class CustomSSE {
         this.credentials = init?.credentials
 
         if (!this.headers?.["Content-Type"]) { this.headers["Content-Type"] = "application/json" }
+        //if (!this.headers?.["Accept-Language"]) {  }
     }
 
     sendPostRequest(httpBody: IHttpBody, url?: string ) { 

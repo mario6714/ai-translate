@@ -1,9 +1,10 @@
-import GroqCloud, { GroqHandler } from './GroqCloud'
-import HuggingFace, { HuggingFaceHandler } from './HuggingFace'
 import Google, { GoogleHandler } from './Google'
-import Cohere, { CohereHandler } from './Cohere'
-import Auto, { AutomaticHandler } from './Auto'
+import GroqCloud, { GroqHandler } from './GroqCloud'
 import HuggingSpaces, { HuggingSpacesHandler } from './HuggingSpaces'
+import Cohere, { CohereHandler } from './Cohere'
+import HuggingFace, { HuggingFaceHandler } from './HuggingFace'
+import Auto, { AutomaticHandler } from './Auto'
+import OpenRouter, { OpenRouterHandler } from './openrouter-ai'
 
 
 
@@ -31,6 +32,7 @@ const Handlers = {
     Cohere: CohereHandler,
     Auto: AutomaticHandler,
     HuggingSpaces: HuggingSpacesHandler,
+    OpenRouter: OpenRouterHandler
 }
 
 export function getHandler(provider_key: string, _: string): 
@@ -38,7 +40,7 @@ export function getHandler(provider_key: string, _: string):
         return Handlers[provider_key as keyof typeof Handlers]
 }
 
-export { GroqCloud, Google, HuggingFace, Cohere, Auto, HuggingSpaces }
+export { GroqCloud, Google, HuggingFace, Cohere, Auto, HuggingSpaces, OpenRouter }
 
 const Providers: { 
     HuggingSpaces: IProvider
@@ -47,8 +49,9 @@ const Providers: {
     HuggingFace: IProvider
     Cohere: IProvider
     Auto: IProvider
+    OpenRouter: IProvider
 
-} = { GroqCloud, Google, HuggingFace, Cohere, Auto, HuggingSpaces }
+} = { GroqCloud, Google, HuggingFace, Cohere, Auto, HuggingSpaces, OpenRouter }
 
 export type TProviderKeys = Exclude<keyof typeof Providers, "getM">
 

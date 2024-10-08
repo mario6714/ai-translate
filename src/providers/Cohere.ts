@@ -38,18 +38,16 @@ type ICohereResponse = {
 }
 
 class CohereChat extends CustomSSE { 
-    private _model?: string
+    readonly model?: string
     constructor(url: string, init: CustomSSEInit & { model: string }) { 
         super(url, init)
-        if (init?.model) { this._model = init.model }
+        if (init?.model) { this.model = init.model }
     }
 
-    get model() { return this._model }
-
     async sendPrompt(prompt: string) { 
-        if (this._model) { 
+        if (this.model) { 
             return this.getStream<ICohereResponse, ICohereInit>({ 
-                model: this._model,
+                model: this.model,
                 message: prompt,
                 stream: true,
                 temperature: 0,
@@ -95,32 +93,26 @@ export default {
         { 
             name: "command-r",
             owned_by: "Cohere",
-            enabled: undefined,
             auto_fetch: false
         }, { 
             name: "command-r-plus",
             owned_by: "Cohere",
-            enabled: undefined,
             auto_fetch: false
         }, { 
             name: "command",
             owned_by: "Cohere",
-            enabled: undefined,
             auto_fetch: false
         }, { 
             name: "command-nightly",
             owned_by: "Cohere",
-            enabled: undefined,
             auto_fetch: false
         }, { 
             name: "command-light",
             owned_by: "Cohere",
-            enabled: undefined,
             auto_fetch: false
         }, { 
             name: "command-light-nightly",
             owned_by: "Cohere",
-            enabled: undefined,
             auto_fetch: false
         }, 
     ]
