@@ -3,7 +3,7 @@ import HuggingFace, { HuggingFaceHandler } from './HuggingFace'
 import Google, { GoogleHandler } from './Google'
 import Cohere, { CohereHandler } from './Cohere'
 import Auto, { AutomaticHandler } from './Auto'
-import DeepL, { DeepLHandler } from './DeepL'
+import DeepL, { DeepLHandler } from './DeepL-pro'
 import HuggingSpaces, { HuggingSpacesHandler } from './HuggingSpaces'
 
 
