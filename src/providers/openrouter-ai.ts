@@ -71,8 +71,8 @@ export async function OpenRouterHandler(text: string, model_name: string, tag: H
     const stream = await client.sendPrompt(userPrompt({ text }))
     if (stream) { 
         for await (const chunk of stream) { 
-          const text = chunk.choices[0].delta.content;
-          tag.value = text;
+          const text = chunk?.choices?.[0]?.delta?.content;
+          if (text) { tag.value += text; }
         }
     }
 
