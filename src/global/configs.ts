@@ -246,7 +246,9 @@ export class OpenAIChat extends CustomSSE {
                       content: prompt
                     }
                 ],
-                stream: true
+                stream: true,
+                temperature: 0,
+                top_p: 0.3
             })
 
         }
