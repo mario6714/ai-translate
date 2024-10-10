@@ -146,7 +146,7 @@ export class CustomSSE {
     private reader?: ReadableStreamDefaultReader<string> | null
 
 
-    constructor( url: string | null, init?: CustomSSEInit ) {
+    constructor(url: string | null, init?: CustomSSEInit) {
         this.url = url
         this.method = init?.method ?? "POST"
         this.headers = init?.headers ?? {} as never
@@ -154,22 +154,6 @@ export class CustomSSE {
 
         if (!this.headers?.["Content-Type"]) { this.headers["Content-Type"] = "application/json" }
         //if (!this.headers?.["Accept-Language"]) {  }
-    }
-
-    sendPostRequest(httpBody: IHttpBody, url?: string ) { 
-        const requestUrl = url ?? this.url
-        const { headers, credentials } = this
-
-        if(httpBody && requestUrl) {
-            this.request = fetch(requestUrl, { 
-                method: "POST",
-                credentials,
-                headers,
-                body: typeof httpBody!=="string"? JSON.stringify(httpBody) : httpBody
-            } )
-        }
-
-        return this
     }
 
     async* getStream<T= unknown, U= unknown>(httpBody: U | IHttpBody, url?: string ): AsyncGenerator<T> { 
@@ -197,6 +181,22 @@ export class CustomSSE {
     }
 
 
+    sendPostRequest(httpBody: IHttpBody, url?: string ) { 
+        const requestUrl = url ?? this.url
+        const { headers, credentials } = this
+
+        if(httpBody && requestUrl) {
+            this.request = fetch(requestUrl, { 
+                method: "POST",
+                credentials,
+                headers,
+                body: typeof httpBody!=="string"? JSON.stringify(httpBody) : httpBody
+            } )
+        }
+
+        return this
+    }
+
     private async getReader() { //precisa ser o mesmo reader
         const response = await this.request as Response
         const body = response.body
@@ -206,5 +206,48 @@ export class CustomSSE {
 
 }
 
+
+export interface OpenAIChatCompletionChunk { 
+    id: string;                        // Identificador único do chunk
+    object: string;                    // Geralmente 'chat.completion.chunk'
+    created: number;                   // Timestamp da criação do chunk
+    model: string;                     // Nome do modelo usado (ex: "gpt-4-0314")
+    choices: Array<{
+        index: number;                   // Índice da escolha (geralmente 0 para uma única resposta)
+        delta: {
+          content?: string;              // Conteúdo parcial da resposta (incremental)
+        };
+        finish_reason: string | null;    // Motivo para terminar (ex: 'stop' ou null durante o stream)
+    }>;
+}
+
+export class OpenAIChat extends CustomSSE { 
+    readonly model: string
+
+    constructor(url: string, init: CustomSSEInit & { model: string }) { 
+        super(url, init)
+        this.model = init?.model
+    }
+
+    async sendPrompt(prompt: string, systemPrompt: string) { 
+        if (this.model) { 
+            return this.getStream<any, OpenAIChatCompletionChunk>({ 
+                model: this.model,
+                messages: [ 
+                    { 
+                      role: "system", 
+                      content: systemPrompt 
+                    }, { 
+                      role: "user",
+                      content: prompt
+                    }
+                ],
+                stream: true
+            })
+
+        }
+    }
+
+}
 
 

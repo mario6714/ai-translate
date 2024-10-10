@@ -1,21 +1,7 @@
 import { systemPrompt, userPrompt } from "../global/text";
-import { configs, CustomSSE, CustomSSEInit } from "../global/configs";
+import { configs, CustomSSEInit, OpenAIChat } from "../global/configs";
 
 
-
-export interface ChatCompletionChunk { 
-  id: string;                        // Identificador único do chunk
-  object: string;                    // Geralmente 'chat.completion.chunk'
-  created: number;                   // Timestamp da criação do chunk
-  model: string;                     // Nome do modelo usado (ex: "gpt-4-0314")
-  choices: Array<{
-      index: number;                   // Índice da escolha (geralmente 0 para uma única resposta)
-      delta: {
-        content?: string;              // Conteúdo parcial da resposta (incremental)
-      };
-      finish_reason: string | null;    // Motivo para terminar (ex: 'stop' ou null durante o stream)
-  }>;
-}
 
 const models = { 
     "llama-3.2-90b-vision-instruct": "meta-llama/llama-3.2-90b-vision-instruct",
@@ -30,32 +16,15 @@ const models = {
 }
 
 
-class OpenRouterChat extends CustomSSE { 
-    readonly model?: string
+class OpenRouterChat extends OpenAIChat { 
     constructor(url: string, init: CustomSSEInit & { model: string }) { 
-        super(url, init)
-        if (init?.model) { this.model = models[init.model as keyof typeof models] }
+        const model = models[init.model as keyof typeof models]
+        super( url, Object.assign(init, {model}) )
     }
 
     async sendPrompt(prompt: string) { 
-        if (this.model) { 
-            return this.getStream<any, ChatCompletionChunk>({ 
-                model: this.model,
-                messages: [ 
-                    { 
-                      role: "system", 
-                      content: systemPrompt 
-                    }, { 
-                      role: "user",
-                      content: prompt
-                    }
-                ],
-                stream: true
-            })
-
-        }
+        return await super.sendPrompt(prompt, systemPrompt)
     }
-
 }
 
 
