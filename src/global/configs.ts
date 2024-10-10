@@ -127,7 +127,7 @@ export type CustomSSEInit = {
     headers?: { 
         Authorization?: string
         "Content-Type"?: string
-        Accept?: string
+        Accept?: string // application/json, text/event-stream"
         "Accept-Language"?: string
         [key: string]: any
     }
@@ -221,22 +221,26 @@ export interface OpenAIChatCompletionChunk {
     }>;
 }
 
+export type OpenAIChatInit = CustomSSEInit & { model: string, system_prompt: string }
+
 export class OpenAIChat extends CustomSSE { 
     readonly model: string
+    readonly system_prompt: string
 
-    constructor(url: string, init: CustomSSEInit & { model: string }) { 
+    constructor(url: string, init: OpenAIChatInit) { 
         super(url, init)
         this.model = init?.model
+        this.system_prompt = init?.system_prompt
     }
 
-    async sendPrompt(prompt: string, systemPrompt: string) { 
-        if (this.model) { 
+    async sendPrompt(prompt: string) { 
+        if (this.model && this.system_prompt && prompt) { 
             return this.getStream<any, OpenAIChatCompletionChunk>({ 
                 model: this.model,
                 messages: [ 
                     { 
                       role: "system", 
-                      content: systemPrompt 
+                      content: this.system_prompt 
                     }, { 
                       role: "user",
                       content: prompt

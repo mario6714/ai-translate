@@ -1,9 +1,9 @@
 import { systemPrompt, userPrompt } from "../global/text";
-import { configs, CustomSSEInit, OpenAIChat } from "../global/configs";
+import { configs, OpenAIChat } from "../global/configs";
 
 
 
-const models = { 
+export const OpenRouterModels = { 
     "llama-3.2-90b-vision-instruct": "meta-llama/llama-3.2-90b-vision-instruct",
     "llama-3.1-405b-instruct:free": "meta-llama/llama-3.1-405b-instruct:free",
     "gpt-3.5-turbo": "openai/gpt-3.5-turbo",
@@ -16,23 +16,12 @@ const models = {
 }
 
 
-class OpenRouterChat extends OpenAIChat { 
-    constructor(url: string, init: CustomSSEInit & { model: string }) { 
-        const model = models[init.model as keyof typeof models]
-        super( url, Object.assign(init, {model}) )
-    }
-
-    async sendPrompt(prompt: string) { 
-        return await super.sendPrompt(prompt, systemPrompt)
-    }
-}
-
-
 export async function OpenRouterHandler(text: string, model_name: string, tag: HTMLTextAreaElement) { 
     const API_KEY = configs().providers?.OpenRouter?.api_key
     if (!text || !tag || !model_name || !API_KEY) { return "" }
-    const client = new OpenRouterChat("https://openrouter.ai/api/v1/chat/completions", { 
-        model: model_name,
+    const client = new OpenAIChat("https://openrouter.ai/api/v1/chat/completions", { 
+        model: OpenRouterModels[model_name as keyof typeof OpenRouterModels],
+        system_prompt: systemPrompt,
         headers: { Authorization: "Bearer "+API_KEY }
     })
 
