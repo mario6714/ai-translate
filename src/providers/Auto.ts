@@ -53,12 +53,21 @@ async function DeepLXHandler(text: string) {
     .then(response => response?.data)
 }
 
-const translators = { 
-    "google-translate": { execute(text: string) { return GoogleHandler(text) } },
-    DeepLX: { execute(text: string) { return DeepLXHandler(text) } }
+async function SugoiHandler(text: string) { 
+    return await fetch(`https://playmak3r-sugoi-v4.hf.space/api/translate?text=${text}`, { method: "POST" }).then(response => { 
+        if (response.status === 200) { return response.json() }
+
+    }).then(response => response?.[0])
+    .catch(e => e)
 }
 
 
+
+const translators = { 
+    "google-translate": { execute(text: string) { return GoogleHandler(text) } },
+    DeepLX: { execute(text: string) { return DeepLXHandler(text) } },
+    "Sugoi-V4": { execute(text:string) { return SugoiHandler(text) } }
+}
 
 export async function AutomaticHandler(text: string, engine: string, _: HTMLTextAreaElement) { 
     if (!text || !engine) { return null }
@@ -76,6 +85,9 @@ export default {
         }, { 
             name: "DeepLX",
             owned_by: "DeepL"
+        }, { 
+            name: "Sugoi-V4",
+            owned_by: "Sugoi"
         }
     ]
 }
