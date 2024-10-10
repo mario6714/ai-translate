@@ -156,7 +156,7 @@ const HuggingModels = [
 
 
 export default { 
-    provider_name: "HuggingFace",
+    provider_name: "HuggingChat",
     about_url: "https://huggingface.co/docs/hub/security-tokens",
     api_key: undefined,
     models: HuggingModels

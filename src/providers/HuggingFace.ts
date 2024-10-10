@@ -30,7 +30,7 @@ export async function HuggingFaceHandler(text: string, model_name: string, tag: 
 
 
 export default { 
-    provider_name: "HuggingSpacesB",
+    provider_name: "HuggingFace",
     about_url: "https://huggingface.co/docs/hub/security-tokens",
     api_key: undefined,
     models: [
