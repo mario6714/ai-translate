@@ -18,7 +18,15 @@ export interface ChatCompletionChunk {
 }
 
 const models = { 
-    "meta-llama": "meta-llama/llama-3.2-90b-vision-instruct"
+    "llama-3.2-90b-vision-instruct": "meta-llama/llama-3.2-90b-vision-instruct",
+    "llama-3.1-405b-instruct:free": "meta-llama/llama-3.1-405b-instruct:free",
+    "gpt-3.5-turbo": "openai/gpt-3.5-turbo",
+    "gpt-3.5-turbo-instruct": "openai/gpt-3.5-turbo-instruct",
+    "gpt-4o": "openai/gpt-4o",
+    "gpt-4o-mini": "openai/gpt-4o-mini",
+    "gpt-4o-mini-2024-07-18": "openai/gpt-4o-mini-2024-07-18",
+    "o1-min": "openai/o1-mini",
+    "o1-mini-2024-09-12": "openai/o1-mini-2024-09-12",
 }
 
 
@@ -78,39 +86,39 @@ export default {
     api_key: undefined,
     models: [ 
         { 
-          name: "meta-llama/llama-3.2-90b-vision-instruct",
+          name: "llama-3.2-90b-vision-instruct",
           owned_by: "meta-llama",
           auto_fetch: false
         }, { 
-          name: "meta-llama/llama-3.1-405b-instruct:free",
+          name: "llama-3.1-405b-instruct:free",
           owned_by: "meta-llama",
           auto_fetch: false
         }, { 
-          name: "openai/gpt-3.5-turbo",
+          name: "gpt-3.5-turbo",
           owned_by: "openai",
           auto_fetch: false
         }, { 
-          name: "openai/gpt-3.5-turbo-instruct",
+          name: "gpt-3.5-turbo-instruct",
           owned_by: "openai",
           auto_fetch: false
         }, { 
-          name: "openai/gpt-4o",
+          name: "gpt-4o",
           owned_by: "openai",
           auto_fetch: false
         }, { 
-          name: "openai/gpt-4o-mini",
+          name: "gpt-4o-mini",
           owned_by: "openai",
           auto_fetch: false
         }, { 
-          name: "openai/gpt-4o-mini-2024-07-18",
+          name: "gpt-4o-mini-2024-07-18",
           owned_by: "openai",
           auto_fetch: false
         }, { 
-          name: "openai/o1-mini",
+          name: "o1-mini",
           owned_by: "openai",
           auto_fetch: false
         }, { 
-          name: "openai/o1-mini-2024-09-12",
+          name: "o1-mini-2024-09-12",
           owned_by: "openai",
           auto_fetch: false
         }, 
