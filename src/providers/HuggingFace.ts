@@ -1,6 +1,6 @@
 import { HfInference } from "@huggingface/inference";
-import { configs } from "@/global/configs";
-import { systemPrompt, userPrompt } from "@/global/text";
+import { configs } from "../global/configs";
+import { systemPrompt, userPrompt } from "../global/text";
 
 
 export async function HuggingFaceHandler(text: string, model_name: string, tag: HTMLTextAreaElement) { 
