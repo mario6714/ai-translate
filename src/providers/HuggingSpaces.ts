@@ -86,6 +86,9 @@ export default {
         {
             name: "Qwen-2.5-72B-Instruct",
             owned_by: "Qwen",
+        }, { 
+            name: "Command-R-Plus-08-2024",
+            owned_by: "Cohere"
         }, /*{
             name: "llama-3.1-405b",
             owned_by: "Meta",
