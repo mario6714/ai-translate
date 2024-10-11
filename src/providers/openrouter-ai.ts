@@ -1,5 +1,6 @@
+import { configs } from "../global/configs";
+import { OpenAIChat } from "../global/lib";
 import { systemPrompt, userPrompt } from "../global/text";
-import { configs, OpenAIChat } from "../global/configs";
 
 
 

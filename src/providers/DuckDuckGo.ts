@@ -1,4 +1,4 @@
-import { CustomSSE, CustomSSEInit } from "../global/configs";
+import { CustomSSE, CustomSSEInit } from "../global/lib";
 import { completePrompt } from "../global/text";
 
 

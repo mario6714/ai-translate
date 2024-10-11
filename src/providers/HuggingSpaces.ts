@@ -1,5 +1,5 @@
-import { systemPrompt, userPrompt } from "../global/text";
 import { Client } from "@gradio/client";
+import { systemPrompt, userPrompt } from "../global/text";
 
 
 const models = { 
