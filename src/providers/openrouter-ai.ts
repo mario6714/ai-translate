@@ -40,19 +40,11 @@ export default {
           owned_by: "meta-llama",
           auto_fetch: false
         }, { 
-          name: "anthropic/claude-3.5-sonnet",
-          owned_by: "anthropic",
-          auto_fetch: false
-        }, { 
           name: "openai/gpt-3.5-turbo",
           owned_by: "openai",
           auto_fetch: false
         }, { 
           name: "openai/gpt-3.5-turbo-instruct",
-          owned_by: "openai",
-          auto_fetch: false
-        }, { 
-          name: "openai/gpt-4o",
           owned_by: "openai",
           auto_fetch: false
         }, { 
@@ -63,6 +55,10 @@ export default {
           name: "openai/gpt-4o-mini-2024-07-18",
           owned_by: "openai",
           auto_fetch: false
+        }, /* { 
+          name: "openai/gpt-4o",
+          owned_by: "openai",
+          auto_fetch: false
         }, { 
           name: "openai/o1-mini",
           owned_by: "openai",
@@ -71,7 +67,11 @@ export default {
           name: "openai/o1-mini-2024-09-12",
           owned_by: "openai",
           auto_fetch: false
-        }, 
+        }, { 
+          name: "anthropic/claude-3.5-sonnet",
+          owned_by: "anthropic",
+          auto_fetch: false
+        },  */
     ]
 }
 
