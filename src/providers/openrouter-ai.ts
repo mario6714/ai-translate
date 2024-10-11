@@ -6,12 +6,13 @@ import { configs, OpenAIChat } from "../global/configs";
 export const OpenRouterModels = { 
     "llama-3.2-90b-vision-instruct": "meta-llama/llama-3.2-90b-vision-instruct",
     "llama-3.1-405b-instruct:free": "meta-llama/llama-3.1-405b-instruct:free",
+    "claude-3.5-sonnet": "anthropic/claude-3.5-sonnet",
     "gpt-3.5-turbo": "openai/gpt-3.5-turbo",
     "gpt-3.5-turbo-instruct": "openai/gpt-3.5-turbo-instruct",
     "gpt-4o": "openai/gpt-4o",
     "gpt-4o-mini": "openai/gpt-4o-mini",
     "gpt-4o-mini-2024-07-18": "openai/gpt-4o-mini-2024-07-18",
-    "o1-min": "openai/o1-mini",
+    "o1-mini": "openai/o1-mini",
     "o1-mini-2024-09-12": "openai/o1-mini-2024-09-12",
 }
 
@@ -31,6 +32,7 @@ export async function OpenRouterHandler(text: string, model_name: string, tag: H
         for await (const chunk of stream) { 
           const text = chunk?.choices?.[0]?.delta?.content;
           if (text) { tag.value += text; }
+          else if (chunk) { console.log(chunk) }
         }
     }
 
@@ -54,6 +56,10 @@ export default {
         }, { 
           name: "gpt-3.5-turbo",
           owned_by: "openai",
+          auto_fetch: false
+        }, { 
+          name: "claude-3.5-sonnet",
+          owned_by: "anthropic",
           auto_fetch: false
         }, { 
           name: "gpt-3.5-turbo-instruct",
