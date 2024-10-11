@@ -248,7 +248,9 @@ export class OpenAIChat extends CustomSSE {
                 ],
                 stream: true,
                 temperature: 0,
-                top_p: 0.3
+                top_p: 0.3,
+                frequency_penalty: 0,
+                presence_penalty: 0
             })
 
         }
