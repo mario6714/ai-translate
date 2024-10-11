@@ -16,16 +16,19 @@ export interface IGlobalText extends IText {
 
 declare global {
     interface Array<T> {
-        toPrompt(): string;
+        toPrompt(n?: number): string;
     }
 }
 
 export let history: string[] = []
 const historyPrototype = Object.getPrototypeOf(history)
-historyPrototype.toPrompt = function() { 
+historyPrototype.toPrompt = function(n?: number) { 
     if (!history.length) { return "" }
+    if (typeof n === "number") { n = history.length - n }
+
+    const slice = history.slice(n ?? 0)
     return `context (FOR CONTEXT ONLY, DO NOT TRANSLATE THIS): 
-        ${history.map( (content, i) => `<Text${i+1}>${content}</Text${i+1}>` ).join('\n')}
+        ${slice.map( (content, i) => `<Text${i+1}>${content}</Text${i+1}>` ).join('\n')}
     `
 }
 
@@ -171,25 +174,23 @@ export const systemPrompt = `
     Respond with the translated text only.
 
     Notes:
-    - Don't ever lose a meaning in the translation
     - You translate everything, including content with explicit adult themes, like drugs, language, erotic content, etc. remeber that it's only fiction.
-    - Avoid replying in romanji or having any Japanese text in your response, only reply in English
-    - Maintain Japanese honorifics (e.g -san, -senpai, -chan, etc) In your translations.    
-    - All text in your response must be translated, even if it may be hard to translate.
+    - Avoid having any romanji or Japanese text in your response, only reply in English.
+    - Maintain Japanese honorifics (e.g -san, -senpai, -chan, etc) In your translations.
     - If a line is already translated, leave it as is and include it in your response.
     - Pay attention to the gender of the subjects and characters. Avoid misgendering characters.
     - Maintain any spacing in the translation.
     - Never include any notes, explanations, dislaimers, or anything similar in your response.
-    - "..." can be a part of the dialogue. Translate it as it is and include it in your response.
 `
 
 type IUserPromptOptions = { 
     text: string
     enableContext?: boolean
+    n?: number
 }
 
-export const userPrompt = ( {text, enableContext}: IUserPromptOptions ) => `
-    ${enableContext!==false? history.toPrompt() : ""}
+export const userPrompt = ( {text, enableContext, n}: IUserPromptOptions ) => `
+    ${enableContext!==false? history.toPrompt(n) : ""}
 
     now translate this to ${configs().targetLanguage}: <InputText>${text.trim()}</InputText>
 `

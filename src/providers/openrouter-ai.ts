@@ -22,12 +22,12 @@ export async function OpenRouterHandler(text: string, model_name: string, tag: H
     if (!text || !tag || !model_name || !API_KEY) { return "" }
     const client = new OpenAIChat("https://openrouter.ai/api/v1/chat/completions", { 
         model: OpenRouterModels[model_name as keyof typeof OpenRouterModels],
-        system_prompt: systemPrompt,
+        system_prompt: model_name.includes('o1')? '' : systemPrompt,
         headers: { Authorization: "Bearer "+API_KEY }
     })
 
     tag.value = ""
-    const stream = await client.sendPrompt(userPrompt({ text }))
+    const stream = await client.sendPrompt(userPrompt({ text, n: 8 }))
     if (stream) { 
         for await (const chunk of stream) { 
           const text = chunk?.choices?.[0]?.delta?.content;
