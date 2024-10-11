@@ -1,4 +1,4 @@
-import webview
+import webview, sys
 from clipboard import Clipboard
 from settings import SettingsApi
 from xlsx import XLSX, os
@@ -44,7 +44,7 @@ if __name__ == "__main__":
         'OPEN_DEVTOOLS_IN_DEBUG': True,
     }
 
-    webview.start()
+    webview.start(debug= '-debug' in sys.argv)
 
 
 
