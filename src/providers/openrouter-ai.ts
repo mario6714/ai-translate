@@ -1,33 +1,19 @@
-import { systemPrompt, userPrompt } from "../global/text";
+import { userPrompt } from "../global/text";
 import { configs, OpenAIChat } from "../global/configs";
 
-
-
-export const OpenRouterModels = { 
-    "llama-3.2-90b-vision-instruct": "meta-llama/llama-3.2-90b-vision-instruct",
-    "llama-3.1-405b-instruct:free": "meta-llama/llama-3.1-405b-instruct:free",
-    "claude-3.5-sonnet": "anthropic/claude-3.5-sonnet",
-    "gpt-3.5-turbo": "openai/gpt-3.5-turbo",
-    "gpt-3.5-turbo-instruct": "openai/gpt-3.5-turbo-instruct",
-    "gpt-4o": "openai/gpt-4o",
-    "gpt-4o-mini": "openai/gpt-4o-mini",
-    "gpt-4o-mini-2024-07-18": "openai/gpt-4o-mini-2024-07-18",
-    "o1-mini": "openai/o1-mini",
-    "o1-mini-2024-09-12": "openai/o1-mini-2024-09-12",
-}
 
 
 export async function OpenRouterHandler(text: string, model_name: string, tag: HTMLTextAreaElement) { 
     const API_KEY = configs().providers?.OpenRouter?.api_key
     if (!text || !tag || !model_name || !API_KEY) { return "" }
     const client = new OpenAIChat("https://openrouter.ai/api/v1/chat/completions", { 
-        model: OpenRouterModels[model_name as keyof typeof OpenRouterModels],
-        system_prompt: systemPrompt,
+        model: model_name,
+        //system_prompt: systemPrompt,
         headers: { Authorization: "Bearer "+API_KEY }
     })
 
     tag.value = ""
-    const stream = await client.sendPrompt(userPrompt({ text, n: 4, enableContext: !model_name.includes('claude') }))
+    const stream = await client.sendPrompt(userPrompt({ text, enableContext: false }))
     if (stream) { 
         for await (const chunk of stream) { 
           const text = chunk?.choices?.[0]?.delta?.content;
@@ -46,43 +32,43 @@ export default {
     api_key: undefined,
     models: [ 
         { 
-          name: "llama-3.2-90b-vision-instruct",
+          name: "meta-llama/llama-3.2-90b-vision-instruct",
           owned_by: "meta-llama",
           auto_fetch: false
         }, { 
-          name: "llama-3.1-405b-instruct:free",
+          name: "meta-llama/llama-3.1-405b-instruct:free",
           owned_by: "meta-llama",
           auto_fetch: false
         }, { 
-          name: "gpt-3.5-turbo",
-          owned_by: "openai",
-          auto_fetch: false
-        }, { 
-          name: "claude-3.5-sonnet",
+          name: "anthropic/claude-3.5-sonnet",
           owned_by: "anthropic",
           auto_fetch: false
         }, { 
-          name: "gpt-3.5-turbo-instruct",
+          name: "openai/gpt-3.5-turbo",
           owned_by: "openai",
           auto_fetch: false
         }, { 
-          name: "gpt-4o",
+          name: "openai/gpt-3.5-turbo-instruct",
           owned_by: "openai",
           auto_fetch: false
         }, { 
-          name: "gpt-4o-mini",
+          name: "openai/gpt-4o",
           owned_by: "openai",
           auto_fetch: false
         }, { 
-          name: "gpt-4o-mini-2024-07-18",
+          name: "openai/gpt-4o-mini",
           owned_by: "openai",
           auto_fetch: false
         }, { 
-          name: "o1-mini",
+          name: "openai/gpt-4o-mini-2024-07-18",
           owned_by: "openai",
           auto_fetch: false
         }, { 
-          name: "o1-mini-2024-09-12",
+          name: "openai/o1-mini",
+          owned_by: "openai",
+          auto_fetch: false
+        }, { 
+          name: "openai/o1-mini-2024-09-12",
           owned_by: "openai",
           auto_fetch: false
         }, 
