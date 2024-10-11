@@ -1,4 +1,4 @@
-import { userPrompt } from "../global/text";
+import { systemPrompt, userPrompt } from "../global/text";
 import { configs, OpenAIChat } from "../global/configs";
 
 
@@ -8,7 +8,7 @@ export async function OpenRouterHandler(text: string, model_name: string, tag: H
     if (!text || !tag || !model_name || !API_KEY) { return "" }
     const client = new OpenAIChat("https://openrouter.ai/api/v1/chat/completions", { 
         model: model_name,
-        //system_prompt: systemPrompt,
+        system_prompt: systemPrompt,
         headers: { Authorization: "Bearer "+API_KEY }
     })
 
