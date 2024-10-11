@@ -13,7 +13,7 @@ export async function OpenRouterHandler(text: string, model_name: string, tag: H
     })
 
     tag.value = ""
-    const stream = await client.sendPrompt(userPrompt({ text, enableContext: false }))
+    const stream = await client.sendPrompt(userPrompt({ text }))
     if (stream) { 
         for await (const chunk of stream) { 
           const text = chunk?.choices?.[0]?.delta?.content;
@@ -32,11 +32,31 @@ export default {
     api_key: undefined,
     models: [ 
         { 
-          name: "meta-llama/llama-3.2-90b-vision-instruct",
+          name: "anthropic/claude-3-sonnet",
+          owned_by: "anthropic",
+          auto_fetch: false
+        }, { 
+          name: "cohere/command-r-plus",
+          owned_by: "cohere",
+          auto_fetch: false
+        }, { 
+          name: "cohere/command-r-plus-08-2024",
+          owned_by: "cohere",
+          auto_fetch: false
+        }, { 
+          name: "meta-llama/llama-3-70b-instruct",
+          owned_by: "meta-llama",
+          auto_fetch: false
+        }, { 
+          name: "meta-llama/llama-3.1-70b-instruct:free",
           owned_by: "meta-llama",
           auto_fetch: false
         }, { 
           name: "meta-llama/llama-3.1-405b-instruct:free",
+          owned_by: "meta-llama",
+          auto_fetch: false
+        }, { 
+          name: "meta-llama/llama-3.2-90b-vision-instruct",
           owned_by: "meta-llama",
           auto_fetch: false
         }, { 
