@@ -42,16 +42,7 @@ export function getHandler(provider_key: string, _: string):
 
 export { GroqCloud, Google, HuggingFace, Cohere, Auto, HuggingSpaces, OpenRouter }
 
-const Providers: { 
-    HuggingSpaces: IProvider
-    GroqCloud: IProvider
-    Google: IProvider
-    HuggingFace: IProvider
-    Cohere: IProvider
-    Auto: IProvider
-    OpenRouter: IProvider
-
-} = { GroqCloud, Google, HuggingFace, Cohere, Auto, HuggingSpaces, OpenRouter }
+const Providers = { GroqCloud, Google, HuggingFace, Cohere, Auto, HuggingSpaces, OpenRouter }
 
 export type TProviderKeys = Exclude<keyof typeof Providers, "getM">
 
@@ -59,5 +50,6 @@ export type IProviders = {
     [key in keyof typeof Providers]: IProvider
 }
 
-export default Providers
+export default Providers as Omit<typeof Providers, 'getM'>
+
 
