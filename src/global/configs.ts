@@ -221,11 +221,11 @@ export interface OpenAIChatCompletionChunk {
     }>;
 }
 
-export type OpenAIChatInit = CustomSSEInit & { model: string, system_prompt: string }
+export type OpenAIChatInit = CustomSSEInit & { model: string, system_prompt?: string }
 
 export class OpenAIChat extends CustomSSE { 
     readonly model: string
-    readonly system_prompt: string
+    readonly system_prompt?: string
 
     constructor(url: string, init: OpenAIChatInit) { 
         super(url, init)
@@ -234,13 +234,13 @@ export class OpenAIChat extends CustomSSE {
     }
 
     async sendPrompt(prompt: string) { 
-        if (this.model && this.system_prompt && prompt) { 
+        if (this.model && prompt) { 
             return this.getStream<any, OpenAIChatCompletionChunk>({ 
                 model: this.model,
                 messages: [ 
                     { 
                       role: "system", 
-                      content: this.system_prompt 
+                      content: this.system_prompt ?? 'Be as helpful as possible.'
                     }, { 
                       role: "user",
                       content: prompt
