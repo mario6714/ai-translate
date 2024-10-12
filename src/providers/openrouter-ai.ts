@@ -33,10 +33,6 @@ export default {
     api_key: undefined,
     models: [ 
         { 
-          name: "anthropic/claude-3-sonnet",
-          owned_by: "anthropic",
-          auto_fetch: false
-        }, { 
           name: "cohere/command-r-plus",
           owned_by: "cohere",
           auto_fetch: false
@@ -87,6 +83,10 @@ export default {
         }, { 
           name: "openai/o1-mini-2024-09-12",
           owned_by: "openai",
+          auto_fetch: false
+        }, { 
+          name: "anthropic/claude-3-sonnet",
+          owned_by: "anthropic",
           auto_fetch: false
         }, { 
           name: "anthropic/claude-3.5-sonnet",
