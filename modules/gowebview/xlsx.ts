@@ -1,5 +1,3 @@
-import { ITextDTO } from "..";
-
 export async function QueryTranslation(data: ITextDTO): Promise<ITextDTO> { 
     if ('QueryTranslation' in window) { 
         const response = await window.QueryTranslation<ITextDTO[]>(data)
