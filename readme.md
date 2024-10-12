@@ -19,6 +19,8 @@ the translation of your favorite AI model (the first) is cached by default in **
 the available models are gemini, gpt-3.5-turbo, gpt-4o-mini, llama, cohere models  
 other models: mixtral, nous mixtral, yi, qwen, and etc.  
 
+there's also available: DeepLX, google translate, and SugoiV4
+
 **Warning:** some providers or some big models have lower rate limits, don't use them with auto fetch enabled.  
 **auto fetch:** the toggle option to automatically fetch the translation when receiving the original text. this option allows you to add as many models as you want without burning your api keys, you can add heavier models and use them only for difficult lines.  
 
