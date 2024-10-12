@@ -4,13 +4,6 @@ import { QueryTranslation, SaveText } from "./pywebview/xlsx"
 
 
 
-export interface ITextDTO { 
-    window_title: string
-    originalText: string
-    translatedText?: string | null
-    history?: string[]
-}
-
 export interface IExternalAPI { 
     GetActiveWindowTitle<T= string>(): Promise<T>
     GetClipboardText<T= string>(): Promise<T>

@@ -1,5 +1,3 @@
-import { ITextDTO } from ".."
-
 export async function QueryTranslation(data: ITextDTO) { 
     return await window.pywebview?.api?.QueryTranslation(data)
 }
