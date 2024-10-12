@@ -3,6 +3,7 @@ import openpyxl, os
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
+from openpyxl.comments import Comment
 
 
 
@@ -16,6 +17,7 @@ class TextDTO:
         self.window_title = DTO["window_title"]
         self.originalText = DTO["originalText"]
         self.translatedText = DTO["translatedText"] if "translatedText" in DTO else None
+        self.speaker_name = DTO['speaker_name'] if 'speaker_name' in DTO else None
 
 
 def loadFile(name: str): 
@@ -39,6 +41,7 @@ def queryEntry(textDTO: TextDTO):
             for cell in column:
                 if cell.value is not None and textDTO.originalText == cell.value: return cell.row
 
+
 def get_history(lastRowNumber: int):
     if isinstance(lastRowNumber, int) and lastRowNumber is not None:
         history = []
@@ -47,7 +50,9 @@ def get_history(lastRowNumber: int):
             rowNumber = rowNumber-1
             if rowNumber > 0:
                 cell = worksheet().cell(row= rowNumber, column=2)
-                if cell.value is not None and cell.value != "": history.append(cell.value)
+                if cell.value is not None and cell.value != "": 
+                    speaker_name = f"[{cell.comment.text}]: " if cell.comment is not None else ""
+                    history.append(speaker_name + cell.value)
             else: break
 
         history.reverse()
@@ -74,6 +79,7 @@ class XLSX:
         if entry is not None and worksheet() is not None: 
             cell = worksheet().cell(row= entry, column=2)
             cell.value = textDTO.translatedText
+            if textDTO.speaker_name is not None: cell.comment = Comment(textDTO.speaker_name, textDTO.speaker_name)
 
         elif worksheet() is not None: 
             lastRow = worksheet().max_row+1 # same variable for both calls to avoid the "stairs" bug
@@ -81,6 +87,7 @@ class XLSX:
             cellB = worksheet().cell(row= lastRow, column=2)
             cellA.value = textDTO.originalText
             cellB.value = textDTO.translatedText
+            if textDTO.speaker_name is not None: cellB.comment = Comment(textDTO.speaker_name, textDTO.speaker_name)
 
         else: return
 
