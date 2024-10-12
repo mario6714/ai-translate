@@ -1,6 +1,6 @@
 import { createSignal } from "solid-js"
 import { configs } from "./configs"
-import { GetActiveWindowTitle, GetClipboardText, QueryTranslation, SaveText } from "../../modules/"
+import { GetActiveWindowTitle, GetClipboardText, QueryTranslation, SaveText } from "../../modules"
 
 
 
@@ -66,10 +66,13 @@ export async function save_text( {untranslated, translated}: IText) {
     const window_title = global_text().window_title
     if (!configs().caching || !untranslated || !window_title) { return null }
     if (typeof translated !== "string") { translated = "" }
+
+    const translated_line = translated.replace(/.*\]:\s(".*?").*/, '$1').replace(/^"(.*?)"$/, '$1')
+    //const speaker_name = translated.replace(/^\[(.*?)\]:.*/, '$1')
     SaveText({ 
         window_title,
         originalText: untranslated,
-        translatedText: translated
+        translatedText: translated_line
     })
 }
 
