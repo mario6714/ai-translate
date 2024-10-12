@@ -67,7 +67,7 @@ export async function save_text( {untranslated, translated}: IText) {
     if (!configs().caching || !untranslated || !window_title) { return null }
     if (typeof translated !== "string") { translated = "" }
 
-    const translated_line = translated.replace(/.*\]:\s(".*?").*/, '$1').replace(/^"(.*?)"$/, '$1')
+    const translated_line = translated?.replace(/.*\]:\s(.*?)$/, '$1').replace(/^"(.*?)"$/, '$1')
     //const speaker_name = translated.replace(/^\[(.*?)\]:.*/, '$1')
     SaveText({ 
         window_title,
