@@ -21,7 +21,7 @@ export async function HuggingFaceHandler(text: string, model_name: string, tag: 
     for await (const chunk of stream) {
         if (chunk.choices && chunk.choices.length > 0) {
             const newContent = chunk.choices[0].delta.content;
-            tag.value += newContent;
+            if (newContent) { tag.value += newContent; }
         }
     }
 
@@ -59,6 +59,10 @@ export default {
             owned_by: "OpenAI",
             enabled: undefined
         },*/ {
+            name: "Qwen/Qwen2.5-72B-Instruct",
+            owned_by: "Qwen",
+            auto_fetch: true
+        }, {
             name: "HuggingFaceH4/starchat2-15b-v0.1",
             owned_by: "HuggingFaceH4",
             auto_fetch: true
