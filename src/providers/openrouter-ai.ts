@@ -33,6 +33,14 @@ export default {
     api_key: undefined,
     models: [ 
         { 
+          name: "qwen/qwen-2.5-72b-instruct",
+          owned_by: "Qwen",
+          auto_fetch: false
+        }, { 
+          name: "deepseek/deepseek-chat",
+          owned_by: "DeepSeek",
+          auto_fetch: false
+        }, { 
           name: "cohere/command-r-plus",
           owned_by: "cohere",
           auto_fetch: false
@@ -58,6 +66,10 @@ export default {
           auto_fetch: false
         }, { 
           name: "openai/gpt-3.5-turbo",
+          owned_by: "openai",
+          auto_fetch: false
+        }, { 
+          name: "openai/gpt-3.5-turbo-1106",
           owned_by: "openai",
           auto_fetch: false
         }, { 
