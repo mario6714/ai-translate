@@ -30,7 +30,7 @@ export default function TextBoxes() {
             if (e.clientY >= box.y && e.clientY <= (box.y+box.height)) { 
                 const modelA = configs().getModel(dragging?.getAttribute('providerKey'), dragging?.getAttribute('modelName'))
                 const modelB = configs().getModel(element.getAttribute('providerKey'), element.getAttribute('modelName'))
-                if (typeof modelA?.index==="number" && typeof modelB?.index==="number" && modelA.index !== modelB.index) { 
+                if (typeof modelA?.index==="number" && typeof modelB?.index==="number") { 
                     modelA.index = modelB.index
                     modelB.index += 0.5
                     getEnabled()

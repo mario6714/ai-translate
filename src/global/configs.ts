@@ -86,7 +86,7 @@ export function getEnabled() {
     for (let i=0; i<enabled_models.length-1; i++) { 
         const a = enabled_models[i]; const b = enabled_models[i+1]
         if (typeof a.index==="number" && typeof b.index==="number") { 
-            if (b.index > a.index + 1 || b.index === a.index) { 
+            if (b.index !== a.index + 1) { 
                 b.index = a.index+1 
                 const modelB = configs().getModel(b.provider_key, b.name) as IModel 
                 modelB.index = a.index+1
