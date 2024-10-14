@@ -3,6 +3,6 @@ interface ITextDTO {
     originalText: string
     translatedText?: string | null
     history?: string[]
-    speaker_name?: string
+    speaker_name?: string | null
 }
 

@@ -67,12 +67,15 @@ export async function save_text( {untranslated, translated}: IText) {
     if (!configs().caching || !untranslated || !window_title) { return null }
     if (typeof translated !== "string") { translated = "" }
 
-    const translated_line = translated?.replace(/.*\]:\s(.*?)$/, '$1').replace(/^"(.*?)"$/, '$1')
-    //const speaker_name = translated.replace(/^\[(.*?)\]:.*/, '$1')
+    const originalText = untranslated.replace(/.*(\「.*?\」).*/, "$1").replace(/.*(\（.*?\）).*/, "$1")
+    const translatedText = translated?.replace(/^\[.*\]:(.*?)$/, '$1').trim().replace(/^"(.*?)"$/, '$1')
+    const hasSpeakerName = new RegExp(/^\[(.*?)\]:.*/).test(translated)
+    const speaker_name = hasSpeakerName? translated.replace(/^\[(.*?)\]:.*/, '$1') : null
     SaveText({ 
         window_title,
-        originalText: untranslated,
-        translatedText: translated_line
+        originalText,
+        translatedText,
+        speaker_name
     })
 }
 
@@ -147,6 +150,8 @@ export class MyWs {
             } )
         }
     }
+
+    get url() { return this._url }
 
     connect() { 
         if( this._url && (!this.socket || this.socket.CLOSED) ) { 
