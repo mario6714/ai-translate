@@ -9,7 +9,7 @@ export interface IConfig {
     caching: boolean
     targetLanguage: string
     providers: IProviders
-    getM: (provider?: string | null, name?: string | null) => IModel | undefined
+    getModel: (provider?: string | null, name?: string | null) => IModel | undefined
 }
 
 export type IExtendedModel = IModel & { 
@@ -51,7 +51,7 @@ export const [ configs, setConfigs ] = createSignal<IConfig>({
 } as any)
 
 const configPrototype = Object.getPrototypeOf(configs())
-configPrototype.getM = function(provider_key?: string, name?: string) { 
+configPrototype.getModel = function(provider_key?: string, name?: string) { 
     if (provider_key && name) { 
         const provider: Partial<IProvider> = configs().providers[provider_key as TProviderKeys] as IProvider
         const model = provider?.models?.find( (m: IModel) => m.name === name)
@@ -78,7 +78,7 @@ export function getEnabled() {
     if (enabled_models[0] && enabled_models[0]?.index !== 0) { 
         enabled_models[0].index = 0 
         const { provider_key, name } = enabled_models[0]
-        const model = configs().getM(provider_key, name)
+        const model = configs().getModel(provider_key, name)
         if(model) { model.index = 0 }
         flag = true
     }
@@ -88,7 +88,7 @@ export function getEnabled() {
         if (typeof a.index==="number" && typeof b.index==="number") { 
             if (b.index > a.index + 1 || b.index === a.index) { 
                 b.index = a.index+1 
-                const modelB = configs().getM(b.provider_key, b.name) as IModel 
+                const modelB = configs().getModel(b.provider_key, b.name) as IModel 
                 modelB.index = a.index+1
                 if (!flag) { flag = true }
             }

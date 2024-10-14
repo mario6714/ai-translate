@@ -48,7 +48,7 @@ export default function TextBox( {modelName: model_name, providerKey, index}: IT
     const handler = getHandler(providerKey, model_name)
     let textarea: HTMLTextAreaElement | undefined
     const provider = Providers[providerKey as TProviderKeys]
-    const auto_fetch = createMemo(() => configs().getM(providerKey, model_name)?.auto_fetch)
+    const auto_fetch = createMemo(() => configs().getModel(providerKey, model_name)?.auto_fetch)
     const textareaStyle = createMemo(() => text.translated==="Waiting for text..."? "italic text-zinc-100" : "")
     const autoFetchStyle = () => auto_fetch()? "text-green-500" : "text-red-600"
 
@@ -110,7 +110,7 @@ export default function TextBox( {modelName: model_name, providerKey, index}: IT
 
                             <button class={`${autoFetchStyle()} text-xs p-1 active:opacity-60`}
                              onClick={ () => { 
-                                const m = configs().getM(providerKey, model_name)
+                                const m = configs().getModel(providerKey, model_name)
                                 if(m) { 
                                     m.auto_fetch = !auto_fetch()
                                     setConfigs({ ...configs() })

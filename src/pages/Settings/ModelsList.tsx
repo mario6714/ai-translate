@@ -12,7 +12,7 @@ async function change_handler({provider, model}: {
 
 const provider_key = provider.provider_name as TProviderKeys
 const newConfigs = { ...configs() }
-const addedModel = newConfigs.getM(provider.provider_name, model?.name)
+const addedModel = newConfigs.getModel(provider.provider_name, model?.name)
 //const allowed_keys = ["name", "owned_by", "enabled", "index", "provider_name", "api_key"]
 let providerEntry: IProvider | null = newConfigs.providers[provider_key]
 
@@ -88,7 +88,7 @@ function ModelItem( {model, providerName: provider_name, textInputRef}: {model: 
     const provider = Providers[provider_name as TProviderKeys]
 
     createEffect(() => { 
-        if (configs().getM(provider_name, model.name)?.enabled && check_input) { check_input.checked = true }
+        if (configs().getModel(provider_name, model.name)?.enabled && check_input) { check_input.checked = true }
     } )
 
     function checkboxHandler(e: Event & {

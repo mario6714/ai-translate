@@ -28,8 +28,8 @@ export default function TextBoxes() {
             const box = element.getBoundingClientRect()
             //const boxCenterY = box.y + box.height / 2;
             if (e.clientY >= box.y && e.clientY <= (box.y+box.height)) { 
-                const modelA = configs().getM(dragging?.getAttribute('providerKey'), dragging?.getAttribute('modelName'))
-                const modelB = configs().getM(element.getAttribute('providerKey'), element.getAttribute('modelName'))
+                const modelA = configs().getModel(dragging?.getAttribute('providerKey'), dragging?.getAttribute('modelName'))
+                const modelB = configs().getModel(element.getAttribute('providerKey'), element.getAttribute('modelName'))
                 if (typeof modelA?.index==="number" && typeof modelB?.index==="number" && modelA.index !== modelB.index) { 
                     modelA.index = modelB.index
                     modelB.index += 0.5

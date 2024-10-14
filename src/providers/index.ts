@@ -44,12 +44,12 @@ export { GroqCloud, Google, HuggingFace, Cohere, Auto, HuggingSpaces, OpenRouter
 
 const Providers = { GroqCloud, Google, HuggingFace, Cohere, Auto, HuggingSpaces, OpenRouter }
 
-export type TProviderKeys = Exclude<keyof typeof Providers, "getM">
+export type TProviderKeys = Exclude<keyof typeof Providers, "getModel">
 
 export type IProviders = { 
     [key in keyof typeof Providers]: IProvider
 }
 
-export default Providers as Omit<typeof Providers, 'getM'>
+export default Providers as Omit<typeof Providers, 'getModel'>
 
 
