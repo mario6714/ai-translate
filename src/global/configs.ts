@@ -68,19 +68,21 @@ export function getEnabled() {
         if (enabled?.length) { enabled_models.push(...enabled) }
     } )
 
+
     enabled_models.sort( (b, a) => { 
         if (typeof a.index==="number" && typeof b.index==="number") { return b.index < a.index? -1 : 0 }
         return 0
     } )
 
+    let flag = false
     if (enabled_models[0] && enabled_models[0]?.index !== 0) { 
         enabled_models[0].index = 0 
         const { provider_key, name } = enabled_models[0]
         const model = configs().getM(provider_key, name)
         if(model) { model.index = 0 }
+        flag = true
     }
 
-    let flag = false
     for (let i=0; i<enabled_models.length-1; i++) { 
         const a = enabled_models[i]; const b = enabled_models[i+1]
         if (typeof a.index==="number" && typeof b.index==="number") { 
@@ -93,7 +95,7 @@ export function getEnabled() {
         }
     }
 
-    if (flag) { save_config(configs()) }
+    if(flag) { save_config({ ...configs() }) }
     setEnabledM(enabled_models)
     return enabled_models
 }

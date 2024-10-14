@@ -27,10 +27,10 @@ export default function App() {
 
     createEffect(() => { 
         window.onfocus = async function() { 
-            const result = JSON.stringify(await get_config() ?? undefined)//?.replaceAll("\n", "").replaceAll(" ", "").trim()
+            const configs_json = JSON.stringify(await get_config() ?? undefined)//?.replaceAll("\n", "").replaceAll(" ", "").trim()
             const configs_string = JSON.stringify(configs())//?.replaceAll("\n", "").replaceAll(" ", "").trim()
-            if (result !== configs_string && result) { 
-                setConfigs( JSON.parse(result) )
+            if (configs_json !== configs_string && configs_json) { 
+                setConfigs( JSON.parse(configs_json) )
                 getEnabled()
             }
         }
