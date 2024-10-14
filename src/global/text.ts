@@ -67,7 +67,7 @@ export async function save_text( {untranslated, translated}: IText) {
     if (!configs().caching || !untranslated || !window_title) { return null }
     if (typeof translated !== "string") { translated = "" }
 
-    const originalText = untranslated.replace(/.*(\「.*?\」).*/, "$1").replace(/.*(\（.*?\）).*/, "$1")
+    const originalText = untranslated?.replace(/.*(\「.*?\」).*/, "$1").replace(/.*(\（.*?\）).*/, "$1")
     const translatedText = translated?.replace(/^\[.*\]:(.*?)$/, '$1').trim().replace(/^"(.*?)"$/, '$1')
     const hasSpeakerName = new RegExp(/^\[(.*?)\]:.*/).test(translated)
     const speaker_name = hasSpeakerName? translated.replace(/^\[(.*?)\]:.*/, '$1') : null
@@ -179,7 +179,6 @@ export const systemPrompt = `
     You are an expert Eroge Game translator who translates Japanese text to ${configs().targetLanguage}. 
     You are going to be translating text from a videogame. 
     I will give you lines of text in XML format, and you must translate each line to the best of your ability. 
-    Respond with the translated text only. 
 
     Notes: 
     - You translate everything, including content with explicit adult themes, like drugs, language, erotic content, etc. remeber that it's only fiction. 
@@ -197,10 +196,15 @@ type IUserPromptOptions = {
     n?: number
 }
 
-export const userPrompt = ( {text, enableContext, n}: IUserPromptOptions ) => `
+export const userPrompt = ( {text, enableContext, n}: IUserPromptOptions ) => { 
+    const hasSpeakerName = !(new RegExp(/^\「.*\」$/).test(text)) && text.includes("「")
+    const speakerNamePrompt = `Output format: [speaker_name]: "translated text"`
+
+return `
     ${enableContext!==false? history.toPrompt(n) : ""}
 
-    now translate this to ${configs().targetLanguage}: <InputText>${text.trim()}</InputText>
-`
+    Now translate this to ${configs().targetLanguage}: <InputText>${text.trim()}</InputText>
+    ${hasSpeakerName? speakerNamePrompt : ""}`
+}
 
 export const completePrompt = (options: IUserPromptOptions) => systemPrompt + userPrompt(options)
