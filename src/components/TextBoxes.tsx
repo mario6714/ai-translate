@@ -1,6 +1,7 @@
 import { Show, createEffect, createSignal } from "solid-js"
 import { configs, open_settings, enabledModels, getEnabled } from "../global/configs"
 import TextBox from "../components/TextBox"
+import { IModel } from "../providers"
 
 
 
@@ -31,8 +32,9 @@ export default function TextBoxes() {
                 const modelA = configs().getModel(dragging?.getAttribute('providerKey'), dragging?.getAttribute('modelName'))
                 const modelB = configs().getModel(element.getAttribute('providerKey'), element.getAttribute('modelName'))
                 if (typeof modelA?.index==="number" && typeof modelB?.index==="number") { 
+                    const smaller = (modelA.index<modelB.index? modelA : modelB) as IModel & { index: number }
                     modelA.index = modelB.index
-                    modelB.index += 0.5
+                    smaller.index += 0.5
                     getEnabled()
                 }
             }
