@@ -1,3 +1,118 @@
+import { GetActiveWindowTitle, GetClipboardText } from "../../modules"
+
+
+
+interface ICallbackParams { 
+    window_title: string, 
+    text: string
+}
+
+type ICallback = (data: ICallbackParams) => unknown
+
+function setCallback(this: any, callback: ICallback) { 
+    if (callback instanceof Function) { 
+        this.callback = ({ window_title, text }: ICallbackParams) => { 
+            return callback({ window_title, text: text.replace("　", "").replaceAll("\n", "") })
+        }
+    }
+}
+
+
+export class Monitor { 
+    private interval?: NodeJS.Timeout | number
+    private callback?: ICallback
+
+    constructor( callback?: typeof this.callback) { 
+        if (callback) { this.setCallback(callback) }
+    }
+
+    setCallback = setCallback
+
+    async start(callback?: typeof this.callback) { 
+        if(callback) { this.setCallback(callback) }
+        if(this.interval) { this.stop() }
+        if(this.callback) { 
+            let value: string
+            for (let _=0; _<5; _++) { 
+                value = await GetClipboardText()
+                if (value===undefined) { await new Promise(res => setTimeout(res, 60)) }
+                else { break }
+            }
+
+
+            const execute = this.callback
+            async function loop(this: Monitor) { 
+                const documentVisibilityStatus = !document.hidden
+                const tmp_value = await GetClipboardText()
+                const window_title = (await GetActiveWindowTitle())?.replaceAll(/[\/\\:\*?"<>|]/g, "-")
+                if (documentVisibilityStatus && window_title !== "AI Translate") { 
+                    if ( (value !== tmp_value) && tmp_value && window_title ) { 
+                        await execute({ window_title, text: tmp_value })
+                    }
+                    //else if (document.hidden) { console.log(document.hidden) }
+                }
+
+                value = tmp_value
+                this.interval = setTimeout(loop, 100)
+            }
+
+            this.interval = 1
+            loop.call(this)
+        }
+    }
+
+    stop() { 
+        clearInterval(this.interval)
+        this.interval = undefined
+    }
+
+    isRunning() { return this.interval? true : false }
+
+}
+
+
+export class WsClient { 
+    private socket?: WebSocket
+    private callback?: ICallback
+    constructor( private _url?: string ) { 
+        if(_url) { this.socket = new WebSocket(_url) }
+    }
+
+    private loadListeners() { 
+        if (this.socket) { 
+            this.socket.addEventListener('message', async(event) => { 
+                const window_title = await GetActiveWindowTitle()
+                const text = event.data
+                if (window_title && this.callback) { this.callback({ window_title, text }) }
+            } )
+        }
+    }
+
+    get url() { return this._url }
+
+    setCallback = setCallback
+
+    connect() { 
+        if( this._url && (!this.socket || this.socket.CLOSED) ) { 
+            this.socket = new WebSocket(this._url) 
+            this.loadListeners()
+        }
+    }
+
+    setUrl(url: string) { 
+        this._url = url
+        this.connect()
+    }
+
+    close() { 
+        if(this.socket) { this.socket.close() }
+    }
+
+    isOpen() { return this.socket?.OPEN===1? true : false }
+
+}
+
+
 export type CustomSSEInit = { 
     method?: string
     headers?: { 
