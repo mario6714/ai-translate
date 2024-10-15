@@ -106,7 +106,7 @@ class Monitor {
                 const window_title = (await GetActiveWindowTitle())?.replaceAll(/[\/\\:\*?"<>|]/g, "-")
                 if (documentVisibilityStatus && window_title !== "AI Translate") { 
                     if ( (value !== tmp_value) && tmp_value && window_title ) { 
-                        await execute({ window_title, text: tmp_value.replace("　", "") })
+                        await execute({ window_title, text: tmp_value.replace("　", "").replaceAll("\n", "") })
                     }
                     //else if (document.hidden) { console.log(document.hidden) }
                 }
