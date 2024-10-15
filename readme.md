@@ -12,12 +12,14 @@ in all models available you can get a free API key. I want this repo to be also 
 ## Caching
 the translation of your favorite AI model (the first) is cached by default in **%appdata%\ai-translate**. it's cached in a **.xlsx** file, so it can be imported to translator++
 
+**warning:** for the import to work, it's required that the texts are strictly equal. so be careful with OCR and text hooks that includes the speaker name. if the game doesn't follow the pattern of putting the lines inside of「」(except for narration), the app won't be capable of splitting the line from the speaker name.
+
 #### Demo
 ![app screenshot](imgs/screenshot-01.png)
 
 ## Models
 the available models are gemini, gpt-3.5-turbo, gpt-4o-mini, llama, cohere models  
-other models: mixtral, nous mixtral, yi, qwen, and etc.  
+other models: Qwen, DeepSeek, mixtral, nous mixtral, yi, and etc.  
 
 there's also available: DeepLX, google translate, and SugoiV4
 
