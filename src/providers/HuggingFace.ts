@@ -8,6 +8,7 @@ export async function HuggingFaceHandler(text: string, model_name: string, tag: 
     if (!text || !tag || !model_name || !API_KEY) { return "" }
     const inference = new HfInference(API_KEY)
 
+    tag.value = ""
     const stream = inference.chatCompletionStream( {
         model: model_name,
         messages: [ 
