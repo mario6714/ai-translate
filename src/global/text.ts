@@ -117,7 +117,8 @@ type IUserPromptOptions = {
 }
 
 export const userPrompt = ( {text, enableContext, n}: IUserPromptOptions ) => { 
-    const hasSpeakerName = !(new RegExp(/^\「.*\」$/).test(text)) && text.includes("「")
+    const hasSpeakerName = (!(new RegExp(/^\「.*\」$/).test(text)) && text.includes("「")) ||
+        (!(new RegExp(/^\（.*\）$/).test(text)) && text.includes("（"))
     const speakerNamePrompt = `Output format: [speaker_name]: "translated text"`
 
 return `
