@@ -80,6 +80,8 @@ export async function GoogleHandler(text: string, model_name: string, tag: HTMLT
                 return translatedText
             })
         }
+
+        console.log(e)
         throw new GoogleGenerativeAIResponseError<IGoogleFilterBlock>(e.message, e.response)
     })
 }
