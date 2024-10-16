@@ -19,6 +19,7 @@ export async function OpenRouterHandler(text: string, model_name: string, tag: H
         for await (const chunk of stream) { 
           const text = chunk?.choices?.[0]?.delta?.content;
           if (text) { tag.value += text; }
+          else if (chunk?.error) { tag.value = chunk.error?.message }
           else if (chunk) { console.log(chunk) }
         }
     }
