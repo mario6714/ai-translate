@@ -21,8 +21,9 @@ export async function HuggingFaceHandler(text: string, model_name: string, tag: 
     } )
     for await (const chunk of stream) {
         if (chunk.choices && chunk.choices.length > 0) {
-            const newContent = chunk.choices[0].delta.content;
+            const newContent = chunk?.choices?.[0]?.delta?.content;
             if (newContent) { tag.value += newContent; }
+            if (tag.value?.length > 300) { location.reload() ; break }
         }
     }
 
