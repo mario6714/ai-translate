@@ -58,7 +58,8 @@ class GoogleChat extends GoogleGenerativeAI {
 
         for await (const chunk of result.stream) {
             const chunkText = chunk.text();
-            tag.value += chunkText;
+            if (chunkText) { tag.value += chunkText; }
+            else { console.log(chunk) }
             if (tag.value.length > 300) { location.reload() ; break }
         }
     
