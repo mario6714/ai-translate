@@ -57,7 +57,7 @@ async function SugoiHandler(text: string) {
     return await fetch(`https://playmak3r-sugoi-v4.hf.space/api/translate?text=${text}`, { method: "POST" }).then(response => { 
         if (response.status === 200) { return response.json() }
 
-    }).then(response => response?.[0])
+    }).then(response => response?.text)
     .catch(e => e)
 }
 
