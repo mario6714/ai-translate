@@ -96,7 +96,15 @@ export default {
             owned_by: "Cohere",
             auto_fetch: false
         }, { 
+            name: "command-r-08-2024",
+            owned_by: "Cohere",
+            auto_fetch: false
+        }, { 
             name: "command-r-plus",
+            owned_by: "Cohere",
+            auto_fetch: false
+        }, { 
+            name: "command-r-plus-08-2024",
             owned_by: "Cohere",
             auto_fetch: false
         }, { 
@@ -104,7 +112,7 @@ export default {
             owned_by: "Cohere",
             auto_fetch: false
         }, { 
-            name: "command-nightly",
+            name: "command-nightly", // nightly = experimental
             owned_by: "Cohere",
             auto_fetch: false
         }, { 
@@ -113,6 +121,14 @@ export default {
             auto_fetch: false
         }, { 
             name: "command-light-nightly",
+            owned_by: "Cohere",
+            auto_fetch: false
+        }, { 
+            name: "c4ai-aya-expanse-8b",
+            owned_by: "Cohere",
+            auto_fetch: false
+        }, { 
+            name: "c4ai-aya-expanse-32b",
             owned_by: "Cohere",
             auto_fetch: false
         }, 
