@@ -69,7 +69,7 @@ export async function save_text( {untranslated, translated}: IText) {
     if (typeof translated !== "string") { translated = "" }
 
     const originalText = untranslated?.replace(/.*(\「.*?\」).*/, "$1").replace(/.*(\（.*?\）).*/, "$1")
-    const translatedText = translated?.replace(/^\[.*\]:(.*?)$/, '$1').trim().replace(/^"(.*?)"$/, '$1')
+    const translatedText = translated?.replace(/^\[.*\]:(.*?)$/, '$1').trim().replace(/^"(.*?)"$/, '$1').replace(/.*\「(.*?)\」.*/, "$1")
     const hasSpeakerName = new RegExp(/^\[(.*?)\]:.*/).test(translated)
     const speaker_name = hasSpeakerName? translated.replace(/^\[(.*?)\]:.*/, '$1') : null
     SaveText({ 
