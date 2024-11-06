@@ -12,7 +12,8 @@ type ICallback = (data: ICallbackParams) => unknown
 function setCallback(this: any, callback: ICallback) { 
     if (callback instanceof Function) { 
         this.callback = ({ window_title, text }: ICallbackParams) => { 
-            return callback({ window_title, text: text.replace("　", "").replaceAll("\n", "") })
+            if (text.startsWith("　")) { text = text.replace("　", "") }
+            return callback({ window_title, text: text.replaceAll("\n", "") })
         }
     }
 }
