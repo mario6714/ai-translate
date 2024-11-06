@@ -59,24 +59,28 @@ export default {
         {
             name: "llama3-70b-8192",
             owned_by: "Meta",
-            enabled: undefined,
-            auto_fetch: true
-        }, {
-            name: "mixtral-8x7b-32768",
-            owned_by: "Mistral",
-            enabled: undefined,
-            auto_fetch: true
-        }, { 
-            name: "gemma2-9b-it",
-            owned_by: "Google",
-            enabled: undefined,
             auto_fetch: true
         }, { 
             name: "llama-3.1-70b-versatile",
             owned_by: "Meta",
-            enabled: undefined,
             auto_fetch: true
-        }
+        }, { 
+            name: "llama-3.2-11b-vision-preview",
+            owned_by: "Meta",
+            auto_fetch: true
+        }, { 
+            name: "llama-3.2-90b-vision-preview",
+            owned_by: "Meta",
+            auto_fetch: true
+        }, { 
+            name: "gemma2-9b-it",
+            owned_by: "Google",
+            auto_fetch: true
+        }, {
+            name: "mixtral-8x7b-32768",
+            owned_by: "Mistral",
+            auto_fetch: true
+        }, 
     ]
 }
 
