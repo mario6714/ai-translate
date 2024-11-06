@@ -69,8 +69,10 @@ const translators = {
     "Sugoi-V4": { execute(text:string) { return SugoiHandler(text) } }
 }
 
-export async function AutomaticHandler(text: string, engine: string, _: HTMLTextAreaElement) { 
+export async function AutomaticHandler(text: string, engine: string, tag: HTMLTextAreaElement) { 
     if (!text || !engine) { return null }
+    tag.value = ""
+    tag.placeholder = "Fetching..."
     return await translators[engine as keyof typeof translators]?.execute(text.trim())
 }
 
