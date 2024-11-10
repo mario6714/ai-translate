@@ -6,7 +6,8 @@ export default {
         colors: {
             primary: "#4493F8", 
             button: "#161B22",
-            placeholder: "#A1A1AA"
+            placeholder: "#A1A1AA",
+            background: "#0d1117"
         }
     },
   },

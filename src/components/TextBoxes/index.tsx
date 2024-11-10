@@ -49,7 +49,7 @@ export default function TextBoxes() {
 
 
     return ( 
-        <main class="flex flex-col gap-5" onmouseenter={ () => { 
+        <main class="flex flex-col" onmouseenter={ () => { 
             if(!hover()) { setHover(true) }
         } } onmouseleave={ () => { 
             if(hover()) { setHover(false) }

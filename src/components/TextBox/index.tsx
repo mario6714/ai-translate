@@ -81,7 +81,7 @@ export default function TextBox( {modelName: model_name, providerKey, index}: IT
 
 
     return (
-        <section class="w-[340px] flex justify-between" 
+        <section class="w-[334px] flex justify-between" 
          modelName={model_name} providerKey={providerKey} draggable={ dragging() }
          onDragOver={setDragOverStyle} onDragLeave={rmvDragOverStyle} onDrop={rmvDragOverStyle}>
 
