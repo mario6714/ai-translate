@@ -1,8 +1,9 @@
 import { Show, createEffect, createSignal } from "solid-js"
-import { configs, open_settings, enabledModels, getEnabled } from "../global/configs"
-import TextBox from "../components/TextBox"
-import { IModel } from "../providers"
-import Slider from "./TextBox/slider"
+import { configs, open_settings, enabledModels, getEnabled } from "../../global/configs"
+import TextBox from "../../components/TextBox"
+import Slider from "../TextBox/slider"
+import { IModel } from "../../providers"
+import "./style.css"
 
 
 
