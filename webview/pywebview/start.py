@@ -23,7 +23,7 @@ class Api(Clipboard, XLSX, SettingsApi):
 
 
 def screen_res() -> Tuple[int]:
-    return (342,615) if SettingsApi().GetConfig() is not None else (750,500)
+    return (340,630) if SettingsApi().GetConfig() is not None else (750,500)
 
 if __name__ == "__main__":
     main_window = webview.create_window("AI Translate", 

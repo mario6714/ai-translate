@@ -62,7 +62,7 @@ export default function TextBoxes() {
             </Show>
 
 
-            <div class="flex flex-col flex-wrap" onDrop={ dragHandler } onDragOver={(e) => {e.preventDefault()}}>
+            <div class="flex flex-col h-screen flex-wrap" onDrop={ dragHandler } onDragOver={(e) => {e.preventDefault()}}>
                 { enabledModels()?.map( (model, index) => 
                     <TextBox modelName={model.name} providerKey={model.provider_key} index={index} />
                 ) }
