@@ -2,11 +2,13 @@ import { Show, createEffect, createSignal } from "solid-js"
 import { configs, open_settings, enabledModels, getEnabled } from "../global/configs"
 import TextBox from "../components/TextBox"
 import { IModel } from "../providers"
+import Slider from "./TextBox/slider"
 
 
 
 export default function TextBoxes() { 
     const [ hover, setHover ] = createSignal(false)
+    let section: HTMLElement | undefined
 
     createEffect(() => { 
         document.addEventListener("dragstart", (e: any) => {
@@ -62,11 +64,16 @@ export default function TextBoxes() {
             </Show>
 
 
-            <div class="flex flex-col h-screen flex-wrap" onDrop={ dragHandler } onDragOver={(e) => {e.preventDefault()}}>
+            <section class="flex flex-col h-screen flex-wrap overflow-x-scroll scroll-smooth" ref={section}
+             onDrop={ dragHandler } onDragOver={(e) => {e.preventDefault()}}>
                 { enabledModels()?.map( (model, index) => 
                     <TextBox modelName={model.name} providerKey={model.provider_key} index={index} />
                 ) }
-            </div>
+            </section>
+
+            <Show when={section && section.scrollWidth >= 2 * section.offsetWidth}>
+                <Slider tag={section as HTMLElement} />
+            </Show>
 
         </main>
     )
