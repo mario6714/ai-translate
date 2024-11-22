@@ -54,5 +54,12 @@ $ npm run pack
 
 ## todo
 
-finish the webview in go  
+#### finish the webview in go  
+- add speaker name handler for go xlsx module  
+- hide cmd window for "OpenConfigDir"  
+- fix: remove fatal log from "GetConfig"  
+- set window's dimensions  
+- fix url and set title for "OpenConfigWindow"  
+- add debug flag  
+
 search for more providers
