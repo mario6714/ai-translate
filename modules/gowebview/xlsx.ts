@@ -1,10 +1,10 @@
-export async function QueryTranslation(data: ITextDTO): Promise<ITextDTO> { 
+export async function QueryTranslation(data: ITextDTO) { 
     if ('QueryTranslation' in window) { 
-        const response = await window.QueryTranslation<ITextDTO[]>(data)
+        const response = await window.QueryTranslation<ITextResponseDTO[]>(data)
         if (response?.length) { return response[0] }
     }
 
-    return {} as ITextDTO
+    return {} as any
 }
 
 export async function SaveText(data: ISaveTextDTO) { 

@@ -69,8 +69,8 @@ export default function TextBox( {modelName: model_name, providerKey, index}: IT
         if (global_text().untranslated !== text.untranslated) { 
             setText('untranslated', global_text().untranslated) 
             let translated = global_text().translated
-            if (translated) { 
-                if (index===0) { setText('translated', translated) }
+            if (translated?.length) { 
+                if (index < translated.length) { setText('translated', translated[index]) }
                 else { setText('translated', "") }
 
             } else if (auto_fetch()) { await translate({ save: true }) }

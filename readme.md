@@ -55,6 +55,7 @@ $ npm run pack
 ## todo
 
 #### finish the webview in go  
+- fix: Update DTO structure
 - add speaker name handler for go xlsx module  
 - hide cmd window for "OpenConfigDir"  
 - fix: remove fatal log from "GetConfig"  

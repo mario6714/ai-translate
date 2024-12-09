@@ -12,3 +12,6 @@ interface ISaveTextDTO extends ITextDTO {
     src_model: string
 }
 
+interface ITextResponseDTO extends ITextDTO { 
+    translatedText: string[]
+}

@@ -7,7 +7,7 @@ import { Monitor, WsClient } from "./lib"
 
 export interface IGlobalText { 
     untranslated?: string | null
-    translated?: string | null
+    translated?: string[]
     cached?: boolean
     window_title?: string
 }
@@ -50,7 +50,7 @@ async function onTextChange( {window_title, text}: { window_title: string, text:
         else if (history_texts?.length) { history = history_texts }
 
         if(translatedText) { global_text().translated = translatedText }
-        else if (global_text().translated) { global_text().translated = null }
+        else if (global_text().translated?.length) { global_text().translated = [] }
         if (global_text().untranslated !== text) { 
             global_text().untranslated = text
             setGlobalText({ ...global_text() })

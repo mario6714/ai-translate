@@ -1,4 +1,4 @@
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Tuple, Optional, Union
 import openpyxl, os
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
@@ -12,7 +12,8 @@ file_name: Optional[str] = None
 workbook: Optional[Workbook] = None
 
 class TextDTO:
-    history: List[str]
+    history: Optional[List[str]]
+    translatedText: Union[None, str, Tuple[str]]
     def __init__(self, DTO: Dict[str, str]):
         self.window_title = DTO["window_title"]
         self.originalText = DTO["originalText"]
@@ -71,8 +72,7 @@ class XLSX:
         entry = queryEntry(textDTO)
         if entry is not None: 
             textDTO.history = get_history(entry)
-            cell = worksheet().cell(row= entry, column=2)
-            textDTO.translatedText = cell.value
+            textDTO.translatedText = list(worksheet()[entry][1:]).reverse()
         elif worksheet() is not None: textDTO.history = get_history(worksheet().max_row+1)
 
         return textDTO.__dict__
@@ -82,7 +82,8 @@ class XLSX:
         textDTO: TextDTO = TextDTO(textDTO)
         entry = queryEntry(textDTO)
         if entry is not None and worksheet() is not None: 
-            cell = worksheet().cell(row= entry, column=2)
+            row = worksheet()[entry]
+            cell = worksheet().cell(row= entry, column= len(row)-1)
             cell.value = textDTO.translatedText
             cell.comment = Comment(textDTO.speakerName, textDTO.src_model)
 

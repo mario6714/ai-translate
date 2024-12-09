@@ -13,7 +13,7 @@ interface IExternalAPI {
     OpenConfigWindow(): Promise<void>
 
     SaveText<T= { error: string } | void>(data: ISaveTextDTO): Promise<T>
-    QueryTranslation<T= ITextDTO>(data: ITextDTO): Promise<T>
+    QueryTranslation<T= ITextResponseDTO>(data: ITextDTO): Promise<T>
 }
 
 interface IPyWebview { 
