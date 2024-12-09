@@ -1,15 +1,27 @@
 import { SetStoreFunction } from "solid-js/store"
-import { IText, save_text } from "../../global/text"
+import { save_text } from "../../global/text"
 
 
 
-export type ITextStore = IText & { 
+export type ITextStore = { 
+    model_name?: string
+    untranslated?: string | null
+    translated: string
     editing: boolean
 }
 
 type IConfirmationControlsProps = { 
     store: [ITextStore, SetStoreFunction<ITextStore>]
     textarea: HTMLTextAreaElement | undefined
+}
+
+
+export function storeToDTO(store: ITextStore): Omit<ISaveTextDTO, 'window_title'> { 
+    const src_model = store.model_name? { src_model: store.model_name as string } : null
+    return Object.assign({ 
+        originalText: store.untranslated as string,
+        translatedText: store.translated
+    }, src_model)
 }
 
 export default function ConfirmationControls({store, textarea}: IConfirmationControlsProps) { 
@@ -21,7 +33,7 @@ export default function ConfirmationControls({store, textarea}: IConfirmationCon
                 if (text.editing) { setText('editing', false) }
                 if (text.translated !== textarea?.value && textarea && textarea?.value) { 
                     setText('translated', textarea.value)
-                    save_text(text)
+                    save_text(storeToDTO(text))
                 }
             } }>
                 <svg class="w-5 h-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

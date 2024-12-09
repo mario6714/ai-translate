@@ -3,7 +3,7 @@ import { createStore } from "solid-js/store"
 import { global_text, save_text } from "../../global/text"
 import { configs, save_config, setConfigs } from "../../global/configs"
 import Providers, { getHandler, TProviderKeys } from "../../providers"
-import ConfirmationControls, { ITextStore } from "./ConfirmationControls"
+import ConfirmationControls, { ITextStore, storeToDTO } from "./ConfirmationControls"
 import SaveIcon from "../SaveIcon"
 import './style.css'
 
@@ -40,9 +40,9 @@ function rmvDragOverStyle(e: MyDragEvent) { e.currentTarget.style.border = "" }
 
 export default function TextBox( {modelName: model_name, providerKey, index}: ITextBoxProps ) { 
     const [ text, setText ] = createStore<ITextStore>({ 
-        editing: false,
-        translated: "Waiting for text...",
-        untranslated: global_text().untranslated
+        untranslated: global_text().untranslated, 
+        translated: "Waiting for text...", 
+        editing: false, 
     })
     const [ dragging, setDragging ] = createSignal(false)
     const handler = getHandler(providerKey, model_name)
@@ -59,7 +59,7 @@ export default function TextBox( {modelName: model_name, providerKey, index}: IT
             .catch(e => e)
             const translated = typeof result !== "string"? result : result?.replaceAll("\n", "").replaceAll("  ", " ").trim().replace(/^"(.*?)"$/, '$1')
             setText('translated', translated)
-            if (index===0 && options?.save) { save_text(text) }
+            if (index===0 && options?.save) { save_text(storeToDTO(text)) }
         }
     }
 
@@ -135,7 +135,7 @@ export default function TextBox( {modelName: model_name, providerKey, index}: IT
                             </button>
 
                             <SaveIcon onClick={() => {
-                                if (text.translated) { save_text(text) }
+                                if (text.translated) { save_text(storeToDTO(text)) }
                             } }/>
                     </div>
                 </div>

@@ -4,7 +4,7 @@ import { QueryTranslation, SaveText } from "./pywebview/xlsx"
 
 
 
-export interface IExternalAPI { 
+interface IExternalAPI { 
     GetActiveWindowTitle<T= string>(): Promise<T>
     GetClipboardText<T= string>(): Promise<T>
     GetConfig<T= Record<string, unknown>>(): Promise<T>
@@ -12,16 +12,16 @@ export interface IExternalAPI {
     OpenConfigDir(): Promise<void>
     OpenConfigWindow(): Promise<void>
 
-    SaveText<T= { error: string } | void>(data: ITextDTO): Promise<T>
+    SaveText<T= { error: string } | void>(data: ISaveTextDTO): Promise<T>
     QueryTranslation<T= ITextDTO>(data: ITextDTO): Promise<T>
 }
 
 interface IPyWebview { 
     pywebview: { 
-        api: IExternalAPI & { 
+        api: IExternalAPI /* & { 
             readBinary(fileName: string): Promise<string>
             writeBinary(fileName: string, textFile: string): Promise<void>
-        }
+        } */
     }
 }
 

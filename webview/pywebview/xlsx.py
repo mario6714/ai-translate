@@ -17,7 +17,7 @@ class TextDTO:
         self.window_title = DTO["window_title"]
         self.originalText = DTO["originalText"]
         self.translatedText = DTO["translatedText"] if "translatedText" in DTO else None
-        self.speaker_name = DTO['speaker_name'] if 'speaker_name' in DTO else None
+        self.speakerName = DTO['speakerName'] if 'speakerName' in DTO else None
 
 
 def loadFile(name: str): 
@@ -79,7 +79,7 @@ class XLSX:
         if entry is not None and worksheet() is not None: 
             cell = worksheet().cell(row= entry, column=2)
             cell.value = textDTO.translatedText
-            if textDTO.speaker_name is not None: cell.comment = Comment(textDTO.speaker_name, textDTO.speaker_name)
+            if textDTO.speakerName is not None: cell.comment = Comment(textDTO.speakerName, textDTO.speakerName)
 
         elif worksheet() is not None: 
             lastRow = worksheet().max_row+1 # same variable for both calls to avoid the "stairs" bug
@@ -87,7 +87,7 @@ class XLSX:
             cellB = worksheet().cell(row= lastRow, column=2)
             cellA.value = textDTO.originalText
             cellB.value = textDTO.translatedText
-            if textDTO.speaker_name is not None: cellB.comment = Comment(textDTO.speaker_name, textDTO.speaker_name)
+            if textDTO.speakerName is not None: cellB.comment = Comment(textDTO.speakerName, textDTO.speakerName)
 
         else: return
 

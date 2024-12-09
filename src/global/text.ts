@@ -5,12 +5,9 @@ import { Monitor, WsClient } from "./lib"
 
 
 
-export interface IText { 
-    untranslated: string | null
+export interface IGlobalText { 
+    untranslated?: string | null
     translated?: string | null
-}
-
-export interface IGlobalText extends IText {
     cached?: boolean
     window_title?: string
 }
@@ -63,21 +60,17 @@ async function onTextChange( {window_title, text}: { window_title: string, text:
 }
 
 
-export async function save_text( {untranslated, translated}: IText) { 
+export async function save_text(textDTO: Omit<ISaveTextDTO, 'window_title'>) { 
+    let { originalText, translatedText } = textDTO
     const window_title = global_text().window_title
-    if (!configs().caching || !untranslated || !window_title) { return null }
-    if (typeof translated !== "string") { translated = "" }
+    if (!configs().caching || !originalText || !window_title) { return null }
+    if (typeof translatedText !== "string") { translatedText = "" }
 
-    const originalText = untranslated?.replace(/.*(\「.*?\」).*/, "$1").replace(/.*(\（.*?\）).*/, "$1")
-    const translatedText = translated?.replace(/^\[.*\]:(.*?)$/, '$1').trim().replace(/^"(.*?)"$/, '$1').replace(/.*\「(.*?)\」.*/, "$1")
-    const hasSpeakerName = new RegExp(/^\[(.*?)\]:.*/).test(translated)
-    const speaker_name = hasSpeakerName? translated.replace(/^\[(.*?)\]:.*/, '$1') : null
-    SaveText({ 
-        window_title,
-        originalText,
-        translatedText,
-        speaker_name
-    })
+    originalText = originalText?.replace(/.*(\「.*?\」).*/, "$1").replace(/.*(\（.*?\）).*/, "$1")
+    translatedText = translatedText?.replace(/^\[.*\]:(.*?)$/, '$1').trim().replace(/^"(.*?)"$/, '$1').replace(/.*\「(.*?)\」.*/, "$1")
+    const hasSpeakerName = new RegExp(/^\[(.*?)\]:.*/).test(translatedText)
+    const speakerName = hasSpeakerName? translatedText.replace(/^\[(.*?)\]:.*/, '$1') : null
+    SaveText( Object.assign(textDTO, {speakerName, window_title}) )
 }
 
 
