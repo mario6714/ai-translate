@@ -16,8 +16,13 @@ class TextDTO:
     def __init__(self, DTO: Dict[str, str]):
         self.window_title = DTO["window_title"]
         self.originalText = DTO["originalText"]
+        self.src_model = DTO['src_model'] #if 'src_model' in DTO else None
         self.translatedText = DTO["translatedText"] if "translatedText" in DTO else None
-        self.speakerName = DTO['speakerName'] if 'speakerName' in DTO else None
+        self._speakerName = DTO['speakerName'] if 'speakerName' in DTO else None
+
+    @property
+    def speakerName(self):
+        return self._speakerName if self._speakerName is not None else ""
 
 
 def loadFile(name: str): 
@@ -51,7 +56,7 @@ def get_history(lastRowNumber: int):
             if rowNumber > 0:
                 cell = worksheet().cell(row= rowNumber, column=2)
                 if cell.value is not None and cell.value != "": 
-                    speaker_name = f"[{cell.comment.text}]: " if cell.comment is not None else ""
+                    speaker_name = f"[{cell.comment.text}]: " if cell.comment is not None and len(cell.comment.text) else ""
                     history.append(speaker_name + cell.value)
             else: break
 
@@ -79,7 +84,7 @@ class XLSX:
         if entry is not None and worksheet() is not None: 
             cell = worksheet().cell(row= entry, column=2)
             cell.value = textDTO.translatedText
-            if textDTO.speakerName is not None: cell.comment = Comment(textDTO.speakerName, textDTO.speakerName)
+            cell.comment = Comment(textDTO.speakerName, textDTO.src_model)
 
         elif worksheet() is not None: 
             lastRow = worksheet().max_row+1 # same variable for both calls to avoid the "stairs" bug
@@ -87,7 +92,7 @@ class XLSX:
             cellB = worksheet().cell(row= lastRow, column=2)
             cellA.value = textDTO.originalText
             cellB.value = textDTO.translatedText
-            if textDTO.speakerName is not None: cellB.comment = Comment(textDTO.speakerName, textDTO.speakerName)
+            cellB.comment = Comment(textDTO.speakerName, textDTO.src_model)
 
         else: return
 

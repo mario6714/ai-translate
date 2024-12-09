@@ -43,6 +43,7 @@ export default function TextBox( {modelName: model_name, providerKey, index}: IT
         untranslated: global_text().untranslated, 
         translated: "Waiting for text...", 
         editing: false, 
+        model_name
     })
     const [ dragging, setDragging ] = createSignal(false)
     const handler = getHandler(providerKey, model_name)
