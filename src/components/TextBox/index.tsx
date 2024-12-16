@@ -68,7 +68,7 @@ export default function TextBox( {modelName: model_name, providerKey, index}: IT
     createEffect( async() => { 
         if (global_text().untranslated !== text.untranslated) { 
             setText('untranslated', global_text().untranslated) 
-            let translated = global_text().translated
+            const translated = global_text().translated
             if (translated?.length) { 
                 if (index < translated.length) { setText('translated', translated[index]) }
                 else { setText('translated', "") }

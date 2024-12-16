@@ -13,5 +13,5 @@ interface ISaveTextDTO extends ITextDTO {
 }
 
 interface ITextResponseDTO extends ITextDTO { 
-    translatedText: string[]
+    translatedText?: string[]
 }

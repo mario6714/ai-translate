@@ -13,11 +13,11 @@ workbook: Optional[Workbook] = None
 
 class TextDTO:
     history: Optional[List[str]]
-    translatedText: Union[None, str, Tuple[str]]
+    translatedText: Union[None, str, List[str]]
     def __init__(self, DTO: Dict[str, str]):
         self.window_title = DTO["window_title"]
         self.originalText = DTO["originalText"]
-        self.src_model = DTO['src_model'] #if 'src_model' in DTO else None
+        self.src_model = DTO['src_model'] if 'src_model' in DTO else None
         self.translatedText = DTO["translatedText"] if "translatedText" in DTO else None
         self._speakerName = DTO['speakerName'] if 'speakerName' in DTO else None
 
@@ -72,7 +72,8 @@ class XLSX:
         entry = queryEntry(textDTO)
         if entry is not None: 
             textDTO.history = get_history(entry)
-            textDTO.translatedText = list(worksheet()[entry][1:]).reverse()
+            textDTO.translatedText = [cell.value for cell in worksheet()[entry][1:]]
+            textDTO.translatedText.reverse()
         elif worksheet() is not None: textDTO.history = get_history(worksheet().max_row+1)
 
         return textDTO.__dict__
@@ -83,7 +84,7 @@ class XLSX:
         entry = queryEntry(textDTO)
         if entry is not None and worksheet() is not None: 
             row = worksheet()[entry]
-            cell = worksheet().cell(row= entry, column= len(row)-1)
+            cell = worksheet().cell(row= entry, column= len(row))
             cell.value = textDTO.translatedText
             cell.comment = Comment(textDTO.speakerName, textDTO.src_model)
 
