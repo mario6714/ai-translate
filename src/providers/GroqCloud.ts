@@ -73,6 +73,10 @@ export default {
             owned_by: "Meta",
             auto_fetch: true
         }, { 
+            name: "llama-3.3-70b-versatile",
+            owned_by: "Meta",
+            auto_fetch: true
+        }, { 
             name: "gemma2-9b-it",
             owned_by: "Google",
             auto_fetch: true
