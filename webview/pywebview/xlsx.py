@@ -1,4 +1,5 @@
 from typing import Dict, List, Tuple, Optional, Union
+import ast
 import openpyxl, os
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
@@ -10,6 +11,25 @@ from openpyxl.comments import Comment
 save_dir = os.getenv('appdata')
 file_name: Optional[str] = None
 workbook: Optional[Workbook] = None
+
+class CustomComment(Comment):
+    def __init__(self, speaker_name: str, src_model: str):
+        data = {}
+        if self._validateInput(speaker_name): data['speaker_name'] = speaker_name
+        if self._validateInput(src_model): data['src_model'] = src_model
+        super().__init__(str(data), author= "")
+
+    def _validateInput(self, text: str) -> bool: 
+        if isinstance(text, str) and len(text): return True
+        return False
+
+    @staticmethod
+    def get_speaker_name(text: str): 
+        try:
+            data = ast.literal_eval(text)
+            return data['speaker_name']
+        except: return ""
+
 
 class TextDTO:
     history: Optional[List[str]]
@@ -57,8 +77,9 @@ def get_history(lastRowNumber: int):
             if rowNumber > 0:
                 cell = worksheet().cell(row= rowNumber, column=2)
                 if cell.value is not None and cell.value != "": 
-                    speaker_name = f"[{cell.comment.text}]: " if cell.comment is not None and len(cell.comment.text) else ""
-                    history.append(speaker_name + cell.value)
+                    speaker_name = CustomComment.get_speaker_name(cell.comment.text)
+                    formated_name = f"[{speaker_name}]: " if len(speaker_name) else ""
+                    history.append(formated_name + cell.value)
             else: break
 
         history.reverse()
@@ -86,7 +107,7 @@ class XLSX:
             row = worksheet()[entry]
             cell = worksheet().cell(row= entry, column= len(row))
             cell.value = textDTO.translatedText
-            cell.comment = Comment(textDTO.speakerName, textDTO.src_model)
+            cell.comment = CustomComment(textDTO.speakerName, textDTO.src_model)
 
         elif worksheet() is not None: 
             lastRow = worksheet().max_row+1 # same variable for both calls to avoid the "stairs" bug
@@ -94,7 +115,7 @@ class XLSX:
             cellB = worksheet().cell(row= lastRow, column=2)
             cellA.value = textDTO.originalText
             cellB.value = textDTO.translatedText
-            cellB.comment = Comment(textDTO.speakerName, textDTO.src_model)
+            cellB.comment = CustomComment(textDTO.speakerName, textDTO.src_model)
 
         else: return
 
