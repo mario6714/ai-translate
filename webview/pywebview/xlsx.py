@@ -1,6 +1,6 @@
 from typing import Dict, List, Tuple, Optional, Union
 import ast
-import openpyxl, os, csv
+import openpyxl, os, csv, re
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
@@ -15,6 +15,7 @@ def save_dir():
     path = os.path.join(os.getenv('appdata'), 'ai-translate')
     if not os.path.exists(path): os.mkdir(path)
     return path
+
 def filePath() -> str: 
     xlsx_path = os.path.join(save_dir(), file_name+'.xlsx')
     csv_path = os.path.join(save_dir(), file_name+'.csv')
@@ -87,7 +88,9 @@ def queryEntry(textDTO: TextDTO):
         if worksheet() is not None:
             column: Tuple[Cell] = worksheet()['A']
             for cell in column:
-                if cell.value is not None and textDTO.originalText == cell.value: return cell.row
+                if cell.value is not None:
+                    value = re.sub("[★]", "", cell.value)
+                    if textDTO.originalText == value: return cell.row
 
 
 def get_history(lastRowNumber: int):
