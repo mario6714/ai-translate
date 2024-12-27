@@ -1,6 +1,6 @@
 from typing import Dict, List, Tuple, Optional, Union
 import ast
-import openpyxl, os
+import openpyxl, os, csv
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
@@ -8,9 +8,33 @@ from openpyxl.comments import Comment
 
 
 
-save_dir = os.getenv('appdata')
 file_name: Optional[str] = None
 workbook: Optional[Workbook] = None
+
+def save_dir():
+    path = os.path.join(os.getenv('appdata'), 'ai-translate')
+    if not os.path.exists(path): os.mkdir(path)
+    return path
+def filePath() -> str: 
+    xlsx_path = os.path.join(save_dir(), file_name+'.xlsx')
+    csv_path = os.path.join(save_dir(), file_name+'.csv')
+    if os.path.isfile(csv_path) and not os.path.exists(xlsx_path): 
+        return csvToXLSX(csv_path, xlsx_path)
+    return xlsx_path
+
+def csvToXLSX(csv_path: str, xlsx_path: str) -> str:
+    if isinstance(csv_path, str) and isinstance(xlsx_path, str):
+        wb = Workbook()
+        sheet = wb.active
+        workbook.active.title = 'Translation'
+
+        with open(csv_path, newline='', encoding='utf-8') as csvfile:
+            reader = csv.reader(csvfile)
+            for linha in reader: sheet.append(linha)
+
+        wb.save(xlsx_path)
+        return xlsx_path
+
 
 class CustomComment(Comment):
     def __init__(self, speaker_name: str, src_model: str):
@@ -57,8 +81,6 @@ def loadFile(name: str):
 def worksheet() -> Worksheet: 
     if workbook is not None: return workbook['Translation']
 
-def filePath() -> str: return os.path.join(save_dir, 'ai-translate', file_name+'.xlsx')
-
 def queryEntry(textDTO: TextDTO):
     if isinstance(textDTO, TextDTO) and textDTO.window_title is not None:
         if textDTO.window_title != file_name or worksheet() is None: loadFile(textDTO.window_title)
@@ -69,7 +91,7 @@ def queryEntry(textDTO: TextDTO):
 
 
 def get_history(lastRowNumber: int):
-    if isinstance(lastRowNumber, int) and lastRowNumber is not None:
+    if isinstance(lastRowNumber, int):
         history = []
         rowNumber = lastRowNumber
         while len(history) < 10:
@@ -77,7 +99,7 @@ def get_history(lastRowNumber: int):
             if rowNumber > 0:
                 cell = worksheet().cell(row= rowNumber, column=2)
                 if cell.value is not None and cell.value != "": 
-                    speaker_name = CustomComment.get_speaker_name(cell.comment.text)
+                    speaker_name = CustomComment.get_speaker_name(cell.comment.text) if cell.comment is not None else ""
                     formated_name = f"[{speaker_name}]: " if len(speaker_name) else ""
                     history.append(formated_name + cell.value)
             else: break
