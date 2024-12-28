@@ -89,7 +89,7 @@ def queryEntry(textDTO: TextDTO):
             column: Tuple[Cell] = worksheet()['A']
             for cell in column:
                 if cell.value is not None:
-                    value = re.sub("[★]", "", cell.value)
+                    value = re.sub("\[★\]", "", cell.value)
                     if textDTO.originalText == value: return cell.row
 
 
