@@ -1,4 +1,4 @@
-import { Show, createEffect, createMemo, createSignal } from "solid-js"
+import { Show, createEffect, createMemo, createSignal, onCleanup } from "solid-js"
 import { createStore } from "solid-js/store"
 import { global_text, save_text } from "../../global/text"
 import { configs, save_config, setConfigs } from "../../global/configs"
@@ -23,6 +23,7 @@ type MyDragEvent = DragEvent & {
 export type ITextBoxSectionProps = { 
     modelName?: string
     providerKey?: string
+    "on:refreshAll"?: CallableFunction
 }
 
 declare module 'solid-js' {
@@ -79,6 +80,12 @@ export default function TextBox( {modelName: model_name, providerKey, index}: IT
         }
 
     })
+
+    const listener = () => { //console.log('Listened!')
+        if (auto_fetch() && index !== 0) { translate() }
+    }
+    window.addEventListener('refreshAll', listener)
+    onCleanup(() => window.removeEventListener('refreshAll', listener))
 
 
     return (
