@@ -4,7 +4,7 @@ import { global_text, save_text } from "../../global/text"
 import { configs, save_config, setConfigs } from "../../global/configs"
 import Providers, { getHandler, TProviderKeys } from "../../providers"
 import ConfirmationControls, { ITextStore, storeToDTO } from "./ConfirmationControls"
-import SaveIcon from "../SaveIcon"
+import SaveIcon from "./SaveIcon"
 import './style.css'
 
 
