@@ -27,9 +27,9 @@ def csvToXLSX(csv_path: str, xlsx_path: str) -> str:
     if isinstance(csv_path, str) and isinstance(xlsx_path, str):
         wb = Workbook()
         sheet = wb.active
-        workbook.active.title = 'Translation'
+        sheet.title = 'Translation'
 
-        with open(csv_path, newline='', encoding='utf-8') as csvfile:
+        with open(csv_path, 'r', newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile)
             for linha in reader: sheet.append(linha)
 
