@@ -50,7 +50,7 @@ export default function TextBoxes() {
 
 
     return ( 
-        <main class="flex flex-col" onmouseenter={ () => { 
+        <main class="flex flex-col overflow-hidden" onmouseenter={ () => { 
             if(!hover()) { setHover(true) }
         } } onmouseleave={ () => { 
             if(hover()) { setHover(false) }
