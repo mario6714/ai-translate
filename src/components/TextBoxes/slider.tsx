@@ -16,6 +16,7 @@ export default function Slider({ tag }: SliderProps) {
 
     createEffect(() => { 
         tag.onscroll = () => setScrollStore('left', tag.scrollLeft)
+        window.onblur = () => tag.scrollTo({ left: 0 })
     })
 
 

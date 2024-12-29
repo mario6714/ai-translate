@@ -34,10 +34,6 @@ export default function App() {
                 getEnabled()
             }
         }
-
-        window.onblur = function() { 
-            document.querySelector('html')?.scrollTo({ top: 0 })
-        }
     } )
 
 
