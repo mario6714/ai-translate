@@ -73,7 +73,9 @@ export async function AutomaticHandler(text: string, engine: string, tag: HTMLTe
     if (!text || !engine) { return null }
     tag.value = ""
     tag.placeholder = "Fetching..."
-    return await translators[engine as keyof typeof translators]?.execute(text.trim())
+    const response = await translators[engine as keyof typeof translators]?.execute(text.trim())
+    tag.placeholder = ""
+    return response
 }
 
 export default { 
