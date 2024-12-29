@@ -1,8 +1,8 @@
 import { Show, createEffect, createMemo, createSignal, onCleanup } from "solid-js"
 import { createStore } from "solid-js/store"
 import { global_text, save_text } from "../../global/text"
-import { configs, save_config, setConfigs } from "../../global/configs"
-import Providers, { getHandler, TProviderKeys } from "../../providers"
+import { configs, getEnabled, save_config, setConfigs } from "../../global/configs"
+import Providers, { getHandler, IModel, TProviderKeys } from "../../providers"
 import ConfirmationControls, { ITextStore, storeToDTO } from "./ConfirmationControls"
 import SaveIcon from "./SaveIcon"
 import './style.css'
@@ -37,6 +37,27 @@ declare module 'solid-js' {
 
 function setDragOverStyle(e: MyDragEvent) { e.currentTarget.style.border = "2px solid white" }
 function rmvDragOverStyle(e: MyDragEvent) { e.currentTarget.style.border = "" }
+
+function dragDropHandler(e: MyDragEvent) { 
+    const dragging = document.querySelector('.dragging') as HTMLElement
+    const box = e.currentTarget.getBoundingClientRect()
+    //const boxCenterY = box.y + box.height / 2;
+
+    if (e.clientY >= box.y && e.clientY <= (box.y+box.height)) { 
+        const modelA = configs().getModel(dragging?.getAttribute('providerKey'), dragging?.getAttribute('modelName'))
+        const modelB = configs().getModel(e.currentTarget.getAttribute('providerKey'), e.currentTarget.getAttribute('modelName'))
+        if (typeof modelA?.index==="number" && typeof modelB?.index==="number") { 
+            const smaller = (modelA.index<modelB.index? modelA : modelB) as IModel & { index: number }
+            modelA.index = modelB.index
+            smaller.index += 0.5
+            getEnabled()
+        }
+    }
+
+    dragging?.classList.remove("dragging")
+    rmvDragOverStyle(e)
+    e.stopPropagation()
+}
 
 
 export default function TextBox( {modelName: model_name, providerKey, index}: ITextBoxProps ) { 
@@ -91,7 +112,7 @@ export default function TextBox( {modelName: model_name, providerKey, index}: IT
     return (
         <section class="w-[334px] flex justify-between" 
          modelName={model_name} providerKey={providerKey} draggable={ dragging() }
-         onDragOver={setDragOverStyle} onDragLeave={rmvDragOverStyle} onDrop={rmvDragOverStyle}>
+         onDragOver={setDragOverStyle} onDragLeave={rmvDragOverStyle} onDrop={dragDropHandler}>
 
             <div class="w-full py-1 relative">
                 <textarea class={`w-full h-44 p-2 ${textareaStyle()} bg-inherit`} 
@@ -105,7 +126,7 @@ export default function TextBox( {modelName: model_name, providerKey, index}: IT
             }>
                 <div class="flex flex-col justify-end items-center m-4">
                     <div class="flex flex-col gap-2 items-center"
-                     onDragOver={ e => {e.stopPropagation();e.preventDefault()} }>
+                     onDragOver={ e => {e.stopPropagation()} }>
                             <button onMouseDown={ () => { 
                                 if (!dragging()) { setDragging(true) }
                             } } onMouseUp={ () => { 
