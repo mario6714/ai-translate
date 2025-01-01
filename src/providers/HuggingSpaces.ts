@@ -8,7 +8,8 @@ const models = {
     "llama-3.1-405b": "Nymbo/Llama-3.1-405B-Instruct",
     "llama-3.1-405b-fp8": "as-cle-bert/Llama-3.1-405B-FP8",
     "Qwen-2.5-72B-Instruct": "Nymbo/Qwen-2.5-72B-Instruct",
-    "Command-R-Plus-08-2024": "Nymbo/Command-R-Plus-08-2024"
+    "Command-R-Plus-08-2024": "Nymbo/Command-R-Plus-08-2024",
+    "Command-R+": "Nymbo/c4ai-command-r-plus",
 }
 
 /* const endpoints = { 
@@ -19,57 +20,52 @@ const models = {
 
 
 
-interface IHugSpacesChat { 
-    model_name: string
-    sendPrompt(text: string): Promise<unknown>
-}
+class HugSpacesChat { 
+    private clientReq?: Promise<Client | null>
+    private model_name?: string
 
-class HugSpacesChat implements IHugSpacesChat { 
-    readonly model_name: string
-    private client: Client | null = null
-    private conn: Promise<boolean | null>
-
-    constructor(model_name: string) { 
-        this.model_name = model_name
-        this.conn = this.connect(model_name)
+    constructor(model_name?: string) { 
+        if (model_name) { 
+            this.model_name = model_name 
+            this.connect(model_name)
+        }
     }
 
-    private async connect(model_name: string) { 
+    connect(model_name?: string) { 
+        model_name = model_name ?? this.model_name
         if (!model_name) { return null }
-        return await Client.connect(models[model_name as never])
-        .then(client => { 
-            this.client = client
-            return true
-
-        }).catch(() => false)
+        else if (!models[model_name as never]) { alert('Invalid model!') }
+        else if (model_name !== this.model_name || !this.clientReq) { 
+            if (model_name !== this.model_name) { this.model_name = model_name }
+            this.clientReq = Client.connect(models[model_name as never])
+            .catch(() => null)
+        }
     }
 
     async sendPrompt(text: string) { 
-        const conn_status = await this.conn
-        if (conn_status) { 
-            return await this.client?.submit("/chat", { 		
+        const client = await this.clientReq
+        if (client) { 
+            return client.submit("/chat", { 		
                 message: userPrompt({ text }), 
                 system_message: systemPrompt, 
-                max_tokens: 1, 
+                //max_tokens: 1, 
                 temperature: 0,
                 top_p: 0.1, 
-            } as any) as any;
+            });
         }
     }
 
 }
 
 export async function HuggingSpacesHandler(text: string, model_name: string, tag: HTMLTextAreaElement): Promise<string> { 
+    tag.value = ""
     const client = new HugSpacesChat(model_name)
     const stream = await client.sendPrompt(text)
 
-
-    tag.value = ""
     if (stream) { 
         for await (const msg of stream) { 
             if (msg.type === "data") { 
                 tag.value = msg.data[0] as string
-                //if (tag.value.length > 300) { result.cancel() ; break }
             }
         }
     }
@@ -88,6 +84,9 @@ export default {
             owned_by: "Qwen",
         }, { 
             name: "Command-R-Plus-08-2024",
+            owned_by: "Cohere"
+        }, { 
+            name: "Command-R+",
             owned_by: "Cohere"
         }, /*{
             name: "llama-3.1-405b",
