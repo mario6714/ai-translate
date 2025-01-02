@@ -38,6 +38,10 @@ export default {
           owned_by: "Qwen",
           auto_fetch: false
         }, { 
+          name: "deepseek/deepseek-chat-v2.5",
+          owned_by: "DeepSeek",
+          auto_fetch: false
+        }, { 
           name: "deepseek/deepseek-chat",
           owned_by: "DeepSeek",
           auto_fetch: false
@@ -63,6 +67,10 @@ export default {
           auto_fetch: false
         }, { 
           name: "meta-llama/llama-3.2-90b-vision-instruct",
+          owned_by: "meta-llama",
+          auto_fetch: false
+        }, { 
+          name: "meta-llama/llama-3.3-70b-instruct",
           owned_by: "meta-llama",
           auto_fetch: false
         }, { 
