@@ -31,7 +31,7 @@ def csvToXLSX(csv_path: str, xlsx_path: str) -> str:
 
         with open(csv_path, 'r', newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile)
-            for linha in reader: sheet.append(linha)
+            for row in reader: sheet.append(row)
 
         wb.save(xlsx_path)
         return xlsx_path
@@ -132,7 +132,7 @@ class XLSX:
             row = worksheet()[entry]
             cell = worksheet().cell(row= entry, column= len(row))
             cell.value = textDTO.translatedText
-            cell.comment = CustomComment(textDTO.speakerName, textDTO.src_model)
+            #cell.comment = CustomComment(textDTO.speakerName, textDTO.src_model)
 
         elif worksheet() is not None: 
             lastRow = worksheet().max_row+1 # same variable for both calls to avoid the "stairs" bug
@@ -140,13 +140,11 @@ class XLSX:
             cellB = worksheet().cell(row= lastRow, column=2)
             cellA.value = textDTO.originalText
             cellB.value = textDTO.translatedText
-            cellB.comment = CustomComment(textDTO.speakerName, textDTO.src_model)
+            #cellB.comment = CustomComment(textDTO.speakerName, textDTO.src_model)
 
-        else: return
+        else: 
+            return { "error": "failed to save text" }
 
         workbook.save(filePath())
-        response = self.QueryTranslation(textDTO.__dict__)
-        if response is None:
-            return { "error": "failed to save text" }
 
 
