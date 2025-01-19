@@ -7,11 +7,12 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+*.local
 node_modules
 output
 build
 dist
 dist-ssr
-*.local
+start.bat
 
 
