@@ -10,6 +10,7 @@ const models = {
     "Qwen-2.5-72B-Instruct": "Nymbo/Qwen-2.5-72B-Instruct",
     "Command-R-Plus-08-2024": "Nymbo/Command-R-Plus-08-2024",
     "Command-R+": "Nymbo/c4ai-command-r-plus",
+    "DeepSeek-R1": "qsardor/deepseek-ai-DeepSeek-R1"
 }
 
 /* const endpoints = { 
@@ -88,6 +89,9 @@ export default {
         }, { 
             name: "Command-R+",
             owned_by: "Cohere"
+        }, { 
+            name: "DeepSeek-R1",
+            owned_by: "DeepSeek AI"
         }, /*{
             name: "llama-3.1-405b",
             owned_by: "Meta",
