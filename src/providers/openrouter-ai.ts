@@ -38,12 +38,16 @@ export default {
           owned_by: "Qwen",
           auto_fetch: false
         }, { 
-          name: "deepseek/deepseek-chat-v2.5",
-          owned_by: "DeepSeek",
+          name: "deepseek/deepseek-r1:free",
+          owned_by: "DeepSeek AI",
           auto_fetch: false
         }, { 
           name: "deepseek/deepseek-chat",
-          owned_by: "DeepSeek",
+          owned_by: "DeepSeek AI",
+          auto_fetch: false
+        }, { 
+          name: "deepseek/deepseek-chat-v2.5",
+          owned_by: "DeepSeek AI",
           auto_fetch: false
         }, { 
           name: "cohere/command-r-plus",
