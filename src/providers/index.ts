@@ -5,6 +5,7 @@ import Cohere, { CohereHandler } from './Cohere'
 import HuggingFace, { HuggingFaceHandler } from './HuggingFace'
 import Auto, { AutomaticHandler } from './Auto'
 import OpenRouter, { OpenRouterHandler } from './openrouter-ai'
+import g4f, { g4fHandler } from './g4f'
 
 
 
@@ -32,7 +33,8 @@ const Handlers = {
     Cohere: CohereHandler,
     Auto: AutomaticHandler,
     HuggingSpaces: HuggingSpacesHandler,
-    OpenRouter: OpenRouterHandler
+    OpenRouter: OpenRouterHandler,
+    g4f: g4fHandler
 }
 
 export function getHandler(provider_key: string, _: string): 
@@ -40,9 +42,9 @@ export function getHandler(provider_key: string, _: string):
         return Handlers[provider_key as keyof typeof Handlers]
 }
 
-export { GroqCloud, Google, HuggingFace, Cohere, Auto, HuggingSpaces, OpenRouter }
+export { GroqCloud, Google, HuggingFace, Cohere, Auto, HuggingSpaces, OpenRouter, g4f }
 
-const Providers = { GroqCloud, Google, HuggingFace, Cohere, Auto, HuggingSpaces, OpenRouter }
+const Providers = { GroqCloud, Google, HuggingFace, Cohere, Auto, HuggingSpaces, OpenRouter, g4f }
 
 export type TProviderKeys = Exclude<keyof typeof Providers, "getModel">
 

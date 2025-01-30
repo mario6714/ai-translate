@@ -18,8 +18,11 @@ the translation of your favorite AI model (the first) is cached by default in **
 ![app screenshot](imgs/screenshot-01.png)
 
 ## Models
-the available models are gemini, gpt-3.5-turbo, gpt-4o-mini, llama, cohere models  
-other models: Qwen, DeepSeek, mixtral, nous mixtral, yi, and etc.  
+the available models are:  
+o1, claude-3-opus, claude-3.5-sonnet  
+DeepSeek-R1, DeepSeek-V3, gpt-4o, gpt-4o-mini, gpt-3.5-turbo  
+gemini, cohere models, Qwen, llama  
+other models: mixtral, nous mixtral, yi, and etc.  
 
 there's also available: DeepLX, google translate, and SugoiV4
 
