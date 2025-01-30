@@ -61,6 +61,14 @@ export default {
             owned_by: "OpenAI",
             enabled: undefined
         },*/ {
+            name: "deepseek-ai/DeepSeek-R1",
+            owned_by: "DeepSeek AI",
+            auto_fetch: true
+        }, {
+            name: "deepseek-ai/DeepSeek-V3",
+            owned_by: "DeepSeek AI",
+            auto_fetch: true
+        }, {
             name: "Qwen/Qwen2.5-72B-Instruct",
             owned_by: "Qwen",
             auto_fetch: true
