@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js"
 import { configs } from "./configs"
 import { QueryTranslation, SaveText } from "../../modules"
-import { Monitor, WsClient } from "./lib"
+import { Monitor, TextHistory, WsClient } from "./lib"
 
 
 
@@ -12,26 +12,9 @@ export interface IGlobalText {
     window_title?: string
 }
 
-declare global {
-    interface Array<T> {
-        toPrompt(n?: number): string;
-    }
-}
-
-export let history: string[] = []
-const historyPrototype = Object.getPrototypeOf(history)
-historyPrototype.toPrompt = function(n?: number) { 
-    if (!history.length) { return "" }
-    if (typeof n === "number") { n = history.length - n }
-
-    const slice = history.slice(n ?? 0)
-    return `context (FOR CONTEXT ONLY, DO NOT TRANSLATE THIS): 
-        ${slice.map( (content, i) => `<Text${i+1}>${content}</Text${i+1}>` ).join('\n')}
-    `
-}
-
+const text_history = new TextHistory()
 export const [ global_text, setGlobalText ] = createSignal<IGlobalText>({
-    untranslated: null//"とある王妃の閨事～貞淑な妻はいかにして孕んだか～"
+    untranslated: null //"ダンガンロンパ 希望の学園と絶望の高校生"
 })
 
 
@@ -47,8 +30,8 @@ async function onTextChange( {window_title, text}: { window_title: string, text:
             originalText: text
         })
 
-        if (translatedText?.length && history?.length && !history_texts?.length) { history = [] }
-        else if (history_texts?.length) { history = history_texts }
+        if (translatedText?.length && history?.length && !history_texts?.length) { text_history.set([]) }
+        else if (history_texts?.length) { text_history.set(history_texts) }
 
         if (translatedText?.length) { global_text().translated = translatedText }
         else { global_text().translated = [] }
@@ -89,7 +72,7 @@ export class MyWs extends WsClient {
 export const systemPrompt = `
     You are an expert Eroge Game translator who translates Japanese text to ${configs().targetLanguage}. 
     You are going to be translating text from a videogame. 
-    I will give you lines of text in XML format, and you must translate each line to the best of your ability. 
+    I will give you lines of text and you must translate each line to the best of your ability. 
     Respond with the translated text only. 
 
     Notes: 
@@ -114,9 +97,9 @@ export const userPrompt = ( {text, enableContext, n}: IUserPromptOptions ) => {
     const speakerNamePrompt = `Output format: [speaker_name]: "translated text"`
 
 return `
-    ${enableContext!==false? history.toPrompt(n) : ""}
+    ${enableContext!==false? text_history.toJSONPrompt(n) : ""}
 
-    Now translate this to ${configs().targetLanguage}: <InputText>${text.trim()}</InputText>
+    Now translate this to ${configs().targetLanguage}: ${text.trim()}
     ${hasSpeakerName? speakerNamePrompt : ""}`
 }
 

@@ -2,6 +2,40 @@ import { GetActiveWindowTitle, GetClipboardText } from "../../modules"
 
 
 
+export class TextHistory { 
+    private history: string[]
+    constructor(history?: string[]) { 
+        this.history = history ?? []
+    }
+
+    get() { return this.history }
+    set(history: string[]) { this.history = history }
+
+    toXMLPrompt(n?: number) { 
+        if (!this.history.length) { return "" }
+        if (typeof n === "number") { n = this.history.length - n }
+
+        const slice = this.history.slice(n ?? 0)
+        return `context (FOR CONTEXT ONLY, DO NOT TRANSLATE OR RETURN THESE TEXT LINES): 
+            ${slice.map( (content, i) => `<Text${i+1}>${content}</Text${i+1}>` ).join('\n')}
+        `
+    }
+
+    toJSONPrompt(n?: number) { 
+        if (!this.history.length) { return "" }
+        if (typeof n === "number") { n = this.history.length - n }
+
+        const output: Record<string, string> = {}
+        const slice = this.history.slice(n ?? 0)
+        slice.forEach( (text, i) => (output[String(i)] = text) )
+        return `context (FOR CONTEXT ONLY, DO NOT TRANSLATE OR RETURN THESE TEXT LINES): 
+            ${JSON.stringify(output)}
+        `
+    }
+
+}
+
+
 interface ICallbackParams { 
     window_title: string, 
     text: string
@@ -23,7 +57,7 @@ export class Monitor {
     private interval?: NodeJS.Timeout | number
     private callback?: ICallback
 
-    constructor( callback?: typeof this.callback) { 
+    constructor( callback?: ICallback) { 
         if (callback) { this.setCallback(callback) }
     }
 
