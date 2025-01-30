@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     webview.settings = { 
         'ALLOW_DOWNLOADS': False,
-        "OPEN_EXTERNAL_LINKS_IN_BROWSER": True,
+        "OPEN_EXTERNAL_LINKS_IN_BROWSER": False,
         'ALLOW_FILE_URLS': True,
         'OPEN_DEVTOOLS_IN_DEBUG': True,
     }
