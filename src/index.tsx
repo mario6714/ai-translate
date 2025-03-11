@@ -5,6 +5,7 @@ import { Router, Route } from '@solidjs/router'
 import { get_config, setConfigs, getEnabled } from './global/configs'
 import App from './pages/App'
 import Settings from './pages/Settings'
+import './global.css'
 
 
 
