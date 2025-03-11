@@ -31,7 +31,8 @@ def csvToXLSX(csv_path: str, xlsx_path: str) -> str:
 
         with open(csv_path, 'r', newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile)
-            for row in reader: sheet.append(row)
+            for row in reader: 
+                if '' not in row[0]: sheet.append(row)
 
         wb.save(xlsx_path)
         return xlsx_path
