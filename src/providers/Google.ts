@@ -94,10 +94,6 @@ export default {
     api_key: undefined,
     models: [
         {
-            name: "gemini-1.0-pro",
-            owned_by: "Google",
-            auto_fetch: false
-        }, {
             name: "gemini-1.5-flash",
             owned_by: "Google",
             auto_fetch: true
@@ -106,9 +102,21 @@ export default {
             owned_by: "Google",
             auto_fetch: true
         }, {
-            name: "gemini-2.0-flash-exp",
+            name: "gemini-2.0-flash",
             owned_by: "Google",
             auto_fetch: true
+        }, {
+            name: "gemini-2.0-flash-lite",
+            owned_by: "Google",
+            auto_fetch: true
+        }, {
+            name: "gemini-2.0-flash-thinking-exp-01-21",
+            owned_by: "Google",
+            auto_fetch: true
+        }, {
+            name: "gemini-1.0-pro",
+            owned_by: "Google",
+            auto_fetch: false
         }, {
             name: "gemini-1.5-pro", 
             owned_by: "Google",
@@ -118,15 +126,11 @@ export default {
             owned_by: "Google",
             auto_fetch: false
         }, {
-            name: "gemini-1.5-pro-002", 
-            owned_by: "Google",
-            auto_fetch: true
-        }, {
-            name: "gemini-1.5-flash-002",
+            name: "gemini-2.0-pro-exp-02-05", 
             owned_by: "Google",
             auto_fetch: true
         }, 
     ]
 }
 
-// https://ai.google.dev/
+// https://ai.google.dev/ 
