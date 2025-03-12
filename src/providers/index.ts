@@ -19,7 +19,7 @@ export interface IModel {
 
 export interface IProvider { 
     provider_name: string
-    about_url: string | null
+    about_url?: string | null
     models: IModel[]
     api_key?: string
 }
@@ -52,6 +52,6 @@ export type IProviders = {
     [key in keyof typeof Providers]: IProvider
 }
 
-export default Providers as Omit<typeof Providers, 'getModel'>
+export default Providers as IProviders
 
 
