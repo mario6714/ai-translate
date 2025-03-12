@@ -42,6 +42,10 @@ export default {
             owned_by: "X AI",
             auto_fetch: false
         }, { 
+            name: "grok-3",
+            owned_by: "X AI",
+            auto_fetch: false
+        }, { 
             name: "deepseek-r1",
             owned_by: "DeepSeek AI",
             auto_fetch: false
