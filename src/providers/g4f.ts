@@ -46,11 +46,15 @@ export default {
             owned_by: "X AI",
             auto_fetch: false
         }, { 
-            name: "deepseek-r1",
+            name: "deepseek-chat",
             owned_by: "DeepSeek AI",
             auto_fetch: false
         }, { 
-            name: "deepseek-chat",
+            name: "deepseek-v3",
+            owned_by: "DeepSeek AI",
+            auto_fetch: false
+        }, { 
+            name: "deepseek-r1",
             owned_by: "DeepSeek AI",
             auto_fetch: false
         }, { 
