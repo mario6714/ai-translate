@@ -5,7 +5,7 @@ import { systemPrompt, userPrompt } from "../global/text";
 
 export async function g4fHandler(text: string, model_name: string, tag: HTMLTextAreaElement) { 
     if (!text || !tag || !model_name) { return "" }
-    const client = new OpenAIChat("https://playmak3r-g4f.hf.space/v1/chat/completions", { 
+    const client = new OpenAIChat(`https://playmak3r-g4f.hf.space/v1/chat/completions?id=${Date.now()}`, { 
         model: model_name,
         system_prompt: systemPrompt
     })
@@ -37,15 +37,11 @@ export default {
             name: "command-r-plus",
             owned_by: "cohere",
             auto_fetch: false
-        }, { 
-            name: "grok-2",
-            owned_by: "X AI",
-            auto_fetch: false
-        }, { 
+        }, /* { 
             name: "grok-3",
             owned_by: "X AI",
             auto_fetch: false
-        }, { 
+        },  */{ 
             name: "deepseek-chat",
             owned_by: "DeepSeek AI",
             auto_fetch: false
