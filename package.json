@@ -13,7 +13,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
     "@gradio/client": "^1.8.0",
-    "@huggingface/inference": "^2.8.1",
+    "@huggingface/inference": "^3.6.1",
     "@solidjs/router": "^0.15.2",
     "ai-translate": "file:",
     "groq-sdk": "^0.9.1",
