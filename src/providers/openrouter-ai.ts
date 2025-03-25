@@ -34,30 +34,6 @@ export default {
     api_key: undefined,
     models: [ 
         { 
-          name: "qwen/qwen-2.5-72b-instruct",
-          owned_by: "Qwen",
-          auto_fetch: false
-        }, { 
-          name: "deepseek/deepseek-r1:free",
-          owned_by: "DeepSeek AI",
-          auto_fetch: false
-        }, { 
-          name: "deepseek/deepseek-chat",
-          owned_by: "DeepSeek AI",
-          auto_fetch: false
-        }, { 
-          name: "deepseek/deepseek-chat-v2.5",
-          owned_by: "DeepSeek AI",
-          auto_fetch: false
-        }, { 
-          name: "cohere/command-r-plus",
-          owned_by: "cohere",
-          auto_fetch: false
-        }, { 
-          name: "cohere/command-r-plus-08-2024",
-          owned_by: "cohere",
-          auto_fetch: false
-        }, { 
           name: "meta-llama/llama-3-70b-instruct",
           owned_by: "meta-llama",
           auto_fetch: false
@@ -76,6 +52,46 @@ export default {
         }, { 
           name: "meta-llama/llama-3.3-70b-instruct",
           owned_by: "meta-llama",
+          auto_fetch: false
+        }, { 
+          name: "cohere/command-r-plus",
+          owned_by: "cohere",
+          auto_fetch: false
+        }, { 
+          name: "cohere/command-r-plus-08-2024",
+          owned_by: "cohere",
+          auto_fetch: false
+        }, { 
+          name: "qwen/qwq-32b:free",
+          owned_by: "Qwen",
+          auto_fetch: false
+        }, { 
+          name: "qwen/qwen-2.5-72b-instruct:free",
+          owned_by: "Qwen",
+          auto_fetch: false
+        }, { 
+          name: "qwen/qwen2.5-vl-72b-instruct:free",
+          owned_by: "Qwen",
+          auto_fetch: false
+        }, { 
+          name: "deepseek/deepseek-chat-v2.5",
+          owned_by: "DeepSeek AI",
+          auto_fetch: false
+        }, { 
+          name: "deepseek/deepseek-r1:free",
+          owned_by: "DeepSeek AI",
+          auto_fetch: false
+        }, { 
+          name: "deepseek/deepseek-r1-zero:free",
+          owned_by: "DeepSeek AI",
+          auto_fetch: false
+        }, { 
+          name: "deepseek/deepseek-chat:free",
+          owned_by: "DeepSeek AI",
+          auto_fetch: false
+        }, { 
+          name: "deepseek/deepseek-chat-v3-0324:free",
+          owned_by: "DeepSeek AI",
           auto_fetch: false
         }, { 
           name: "openai/gpt-3.5-turbo",
@@ -117,7 +133,19 @@ export default {
           name: "anthropic/claude-3.5-sonnet",
           owned_by: "anthropic",
           auto_fetch: false
-        },  */
+        },*/ { 
+          name: "google/gemma-3-27b-it:free",
+          owned_by: "Google",
+          auto_fetch: false
+        }, { 
+          name: "google/gemini-2.0-flash-exp:free",
+          owned_by: "Google",
+          auto_fetch: false
+        }, { 
+          name: "google/gemini-2.0-pro-exp-02-05:free",
+          owned_by: "Google",
+          auto_fetch: false
+        }, 
     ]
 }
 
@@ -130,32 +158,10 @@ export default {
     alpindale/magnum-72b
     anthracite-org/magnum-v2-72b
 
-    anthropic/claude-3-opus:beta
-    anthropic/claude-3-opus
-    anthropic/claude-3-sonnet:beta
-    anthropic/claude-3-sonnet
-    anthropic/claude-3-haiku:beta
-    anthropic/claude-3-haiku
-    anthropic/claude-3.5-sonnet:beta
-    anthropic/claude-3.5-sonnet
 
-    openai/gpt-4o-2024-05-13
-    openai/gpt-4o-2024-08-06 (cheaper)
-    openai/chatgpt-4o-latest
-    cohere/command-r-plus
-    cohere/command-r-plus-04-2024
-    cohere/command-r-plus-08-2024
-    meta-llama/llama-3-70b-instruct
-    meta-llama/llama-3.1-405b-instruct
-    meta-llama/llama-3.1-405b
-    nousresearch/hermes-3-llama-3.1-405b:extended
-    nousresearch/hermes-3-llama-3.1-405b
-    nousresearch/hermes-3-llama-3.1-405b:free
+    google/gemini-2.0-flash-001
+    google/gemini-2.0-flash-lite-preview-02-05:free
 
-
-    battles:
-        4o vs o1 mini
-        hermes vs llama
 */
 
 
