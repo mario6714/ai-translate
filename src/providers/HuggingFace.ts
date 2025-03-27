@@ -62,7 +62,7 @@ export default {
             name: "command-r-plus",
             owned_by: "CohereForAI",
             enabled: undefined
-        }, {
+        },*/ {
             name: "meta-llama/Llama-3.3-70B-Instruct",
             owned_by: "Meta",
             enabled: undefined
@@ -78,7 +78,7 @@ export default {
             name: "deepseek-ai/DeepSeek-R1",
             owned_by: "DeepSeek AI",
             auto_fetch: true
-        },*/ {
+        }, {
             name: "Qwen/Qwen2.5-72B-Instruct",
             owned_by: "Qwen",
             auto_fetch: true
