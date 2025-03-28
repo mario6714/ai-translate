@@ -113,11 +113,11 @@ export default {
           name: "openai/gpt-4o-mini-2024-07-18",
           owned_by: "openai",
           auto_fetch: false
-        }, /* { 
+        }, { 
           name: "openai/gpt-4o",
           owned_by: "openai",
           auto_fetch: false
-        }, { 
+        }, /*{ 
           name: "openai/o1-mini",
           owned_by: "openai",
           auto_fetch: false
