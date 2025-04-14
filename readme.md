@@ -15,7 +15,7 @@ the translation of your favorite AI model (the first) is cached by default in **
 **warning:** for the import to work, it's required that the texts are strictly equal. so be careful with OCR and text hooks that includes the speaker name. if the game doesn't follow the pattern of putting the lines inside of「」(except for narration), the app won't be capable of splitting the line from the speaker name.
 
 #### Demo
-![app screenshot](imgs/screenshot-01.png)
+![app screenshot](https://raw.githubusercontent.com/rafael-vasconcellos/ai-translate/refs/heads/page/screenshot-01.png)
 
 ## Models
 the available models are:  
