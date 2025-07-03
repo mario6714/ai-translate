@@ -58,11 +58,6 @@ $ npm run pack
 ## todo
 
 #### finish the webview in go  
-- fix: Update DTO structure
-- add csv loading  
-- hide cmd window for "OpenConfigDir"  
-- fix: remove fatal log from "GetConfig"  
-
 - set window's dimensions  
 - fix url and set title for "OpenConfigWindow"  
 - add debug flag  
