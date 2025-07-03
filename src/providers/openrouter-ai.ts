@@ -66,6 +66,10 @@ export default {
           owned_by: "Qwen",
           auto_fetch: false
         }, { 
+          name: "qwen/qwen3-235b-a22b:free",
+          owned_by: "Qwen",
+          auto_fetch: false
+        }, { 
           name: "qwen/qwen-2.5-72b-instruct:free",
           owned_by: "Qwen",
           auto_fetch: false
@@ -79,6 +83,10 @@ export default {
           auto_fetch: false
         }, { 
           name: "deepseek/deepseek-r1:free",
+          owned_by: "DeepSeek AI",
+          auto_fetch: false
+        }, { 
+          name: "deepseek/deepseek-r1-0528:free",
           owned_by: "DeepSeek AI",
           auto_fetch: false
         }, { 
@@ -117,6 +125,10 @@ export default {
           name: "openai/gpt-4o",
           owned_by: "openai",
           auto_fetch: false
+        }, { 
+          name: "openai/gpt-4.1-mini",
+          owned_by: "openai",
+          auto_fetch: false
         }, /*{ 
           name: "openai/o1-mini",
           owned_by: "openai",
@@ -138,11 +150,15 @@ export default {
           owned_by: "Google",
           auto_fetch: false
         }, { 
-          name: "google/gemini-2.0-flash-exp:free",
+          name: "google/gemini-2.5-flash",
           owned_by: "Google",
           auto_fetch: false
         }, { 
-          name: "google/gemini-2.0-pro-exp-02-05:free",
+          name: "google/gemini-2.5-flash-lite-preview-06-17",
+          owned_by: "Google",
+          auto_fetch: false
+        }, { 
+          name: "google/gemini-2.5-pro",
           owned_by: "Google",
           auto_fetch: false
         }, 
@@ -159,9 +175,13 @@ export default {
     anthracite-org/magnum-v2-72b
 
 
-    google/gemini-2.0-flash-001
-    google/gemini-2.0-flash-lite-preview-02-05:free
+    openai/gpt-4.1
 
+    shisa-ai/shisa-v2-llama3.3-70b:free
+    deepseek/deepseek-v3-base:free
+    deepseek/deepseek-prover-v2
+    tngtech/deepseek-r1t-chimera:free
+    openai/o4-mini
 */
 
 
