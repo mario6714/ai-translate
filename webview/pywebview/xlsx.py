@@ -1,4 +1,4 @@
-from typing import Dict, List, Tuple, Optional, Union
+from typing import Dict, List, Tuple, Optional, Union, Any
 import ast
 import openpyxl, os, csv, re
 from openpyxl import Workbook
@@ -11,22 +11,27 @@ from openpyxl.comments import Comment
 file_name: Optional[str] = None
 workbook: Optional[Workbook] = None
 
-def save_dir():
-    path = os.path.join(os.getenv('appdata'), 'ai-translate')
-    if not os.path.exists(path): os.mkdir(path)
-    return path
+def get_save_dir():
+    env = os.getenv('appdata')
+    if env:
+        path = os.path.join(env, 'ai-translate')
+        if not os.path.exists(path): os.mkdir(path)
+        return path
 
-def filePath() -> str: 
-    xlsx_path = os.path.join(save_dir(), file_name+'.xlsx')
-    csv_path = os.path.join(save_dir(), file_name+'.csv')
-    if os.path.isfile(csv_path) and not os.path.exists(xlsx_path): 
-        return csvToXLSX(csv_path, xlsx_path)
-    return xlsx_path
+def filePath(): 
+    save_dir = get_save_dir()
+    if save_dir and file_name:
+        xlsx_path = os.path.join(save_dir, file_name+'.xlsx')
+        csv_path = os.path.join(save_dir, file_name+'.csv')
+        if os.path.isfile(csv_path) and not os.path.exists(xlsx_path): 
+            return csvToXLSX(csv_path, xlsx_path)
+        return xlsx_path
 
 def csvToXLSX(csv_path: str, xlsx_path: str) -> str:
     if isinstance(csv_path, str) and isinstance(xlsx_path, str):
         wb = Workbook()
         sheet = wb.active
+        if not sheet: raise Exception("CSV convertion error: newly created workbook has no sheets!")
         sheet.title = 'Translation'
 
         with open(csv_path, 'r', newline='', encoding='utf-8') as csvfile:
@@ -50,7 +55,7 @@ class CustomComment(Comment):
         return False
 
     @staticmethod
-    def get_speaker_name(text: str): 
+    def get_speaker_name(text: str) -> str: 
         try:
             data = ast.literal_eval(text)
             return data['speaker_name']
@@ -59,7 +64,8 @@ class CustomComment(Comment):
 
 class TextDTO:
     history: Optional[List[str]]
-    translatedText: Union[None, str, List[str]]
+    translatedText: Union[None, str, List[Any]]
+    originalText: str
     def __init__(self, DTO: Dict[str, str]):
         self.window_title = DTO["window_title"]
         self.originalText = DTO["originalText"]
@@ -75,13 +81,17 @@ class TextDTO:
 def loadFile(name: str): 
     global workbook, file_name
     file_name = name
-    try: workbook = openpyxl.load_workbook(filePath())
-    except: 
+    file_path = filePath()
+    if file_path: workbook = openpyxl.load_workbook(file_path)
+    else: 
         workbook = Workbook()
-        workbook.active.title = 'Translation'
+        sheet = workbook.active
+        if not sheet: raise Exception("Newly create workbook has no sheets!")
+        sheet.title = 'Translation'
 
-def worksheet() -> Worksheet: 
+def worksheet() -> Worksheet: # type: ignore
     if workbook is not None: return workbook['Translation']
+
 
 def queryEntry(textDTO: TextDTO):
     if isinstance(textDTO, TextDTO) and textDTO.window_title is not None:
@@ -89,12 +99,13 @@ def queryEntry(textDTO: TextDTO):
         if worksheet() is not None:
             column: Tuple[Cell] = worksheet()['A']
             for cell in column:
-                if cell.value is not None:
-                    value = re.sub("\[★\]", "", cell.value)
+                value = cell.value
+                if isinstance(value, str):
+                    value = re.sub(r"\[★\]", "", value)
                     if textDTO.originalText == value: return cell.row
 
 
-def get_history(lastRowNumber: int):
+def get_history(lastRowNumber: int) -> list[Any]:
     if isinstance(lastRowNumber, int):
         history = []
         rowNumber = lastRowNumber
@@ -105,7 +116,7 @@ def get_history(lastRowNumber: int):
                 if cell.value is not None and cell.value != "": 
                     speaker_name = CustomComment.get_speaker_name(cell.comment.text) if cell.comment is not None else ""
                     formated_name = f"[{speaker_name}]: " if len(speaker_name) else ""
-                    history.append(formated_name + cell.value)
+                    if isinstance(cell.value, str): history.append(formated_name + cell.value)
             else: break
 
         history.reverse()
@@ -114,8 +125,8 @@ def get_history(lastRowNumber: int):
 
 
 class XLSX:
-    def QueryTranslation(self, textDTO: Dict[str, str]) -> TextDTO: 
-        textDTO: TextDTO = TextDTO(textDTO)
+    def QueryTranslation(self, text_dto_dict: Dict[str, Any]) -> dict[str, Any]: 
+        textDTO: TextDTO = TextDTO(text_dto_dict)
         entry = queryEntry(textDTO)
         if entry is not None: 
             textDTO.history = get_history(entry)
@@ -126,26 +137,28 @@ class XLSX:
         return textDTO.__dict__
 
 
-    def SaveText(self, textDTO: Dict[str, str]):
-        textDTO: TextDTO = TextDTO(textDTO)
+    def SaveText(self, text_dto_dict: Dict[str, Any]):
+        textDTO: TextDTO = TextDTO(text_dto_dict)
         entry = queryEntry(textDTO)
         if entry is not None and worksheet() is not None: 
             row = worksheet()[entry]
             cell = worksheet().cell(row= entry, column= len(row))
-            cell.value = textDTO.translatedText
+            cell.value = textDTO.translatedText # type: ignore
             #cell.comment = CustomComment(textDTO.speakerName, textDTO.src_model)
 
         elif worksheet() is not None: 
             lastRow = worksheet().max_row+1 # same variable for both calls to avoid the "stairs" bug
             cellA = worksheet().cell(row= lastRow, column=1)
             cellB = worksheet().cell(row= lastRow, column=2)
-            cellA.value = textDTO.originalText
-            cellB.value = textDTO.translatedText
+            cellA.value = textDTO.originalText # type: ignore
+            cellB.value = textDTO.translatedText # type: ignore
             #cellB.comment = CustomComment(textDTO.speakerName, textDTO.src_model)
 
         else: 
             return { "error": "failed to save text" }
 
-        workbook.save(filePath())
+        file_path = filePath()
+        if not workbook or not file_path: raise Exception('Failed to save workbook: workbook or file not found!')
+        workbook.save(file_path)
 
 
