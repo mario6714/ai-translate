@@ -47,7 +47,7 @@ func loadFile(name string) {
 		workbook.SetSheetName("Sheet1", sheetName())
 		err := workbook.SaveAs(myFilePath())
 		if err != nil {
-			fmt.Println("Error while saving file: ", err)
+			log.Println("Error while saving file: ", err)
 		}
 	}
 
@@ -124,15 +124,22 @@ func queryEntry(textDTO map[string]interface{}) int {
 func getHistory(lastRowNumber int) []string {
 	history := make([]string, 0)
 	rowNumber := lastRowNumber
+	rows, GetRowsError := workbook.GetRows(sheetName())
+	if GetRowsError != nil {
+		log.Println("Error on getHistory: Failed to get sheet's rows.")
+		return history
+	}
 	for len(history) < 10 {
 		rowNumber = rowNumber - 1
 		if (rowNumber) > 0 {
-			rowNumberStr := strconv.Itoa(rowNumber)
-			value, err := workbook.GetCellValue(sheetName(), "B"+rowNumberStr)
+			cellname, GetCellNameError := excelize.CoordinatesToCellName(len(rows[rowNumber])-1, rowNumber)
+			if GetCellNameError != nil {
+				log.Println("Error on getHistory: Failed to get sheet's name.")
+			}
+			value, err := workbook.GetCellValue(sheetName(), cellname)
 			if err == nil && value != "" {
 				history = append(history, value)
 			}
-
 		} else {
 			break
 		}
@@ -149,7 +156,7 @@ func (X XLSX) QueryTranslation(textDTO map[string]interface{}) map[string]interf
 	defer func() {
 		if workbook != nil {
 			if err := workbook.Close(); err != nil {
-				log.Printf("error closing workbook: %v", err)
+				log.Printf("Error on QueryTranslation: failed to close the workbook: %v", err)
 			}
 		}
 	}()
@@ -162,7 +169,7 @@ func (X XLSX) QueryTranslation(textDTO map[string]interface{}) map[string]interf
 			textDTO["translatedText"] = rows[e][1:]
 
 		} else {
-			log.Printf(`error in "GetCellValue", failed to get cell value: %v`, err)
+			log.Printf(`Error on QueryTranslation: failed to get cell's value: %v`, err)
 		}
 
 	} else {
@@ -178,7 +185,7 @@ func (X XLSX) SaveText(textDTO map[string]interface{}) interface{} {
 	defer func() {
 		if workbook != nil {
 			if err := workbook.Close(); err != nil {
-				log.Printf("error closing workbook: %v", err)
+				log.Printf("Error on SaveText: failed to close the workbook: %v", err)
 			}
 		}
 	}()

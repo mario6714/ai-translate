@@ -9,7 +9,7 @@ import (
 )
 
 type ISettings interface {
-	OpenConfigDir()
+	OpenConfigDir() error
 	GetConfig() string
 	SaveConfig(content string)
 }
