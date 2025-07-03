@@ -159,7 +159,7 @@ func (X XLSX) QueryTranslation(textDTO map[string]interface{}) map[string]interf
 	if e != -1 {
 		if err == nil {
 			textDTO["history"] = getHistory(e)
-			textDTO["translatedText"] = rows[e]
+			textDTO["translatedText"] = rows[e][1:]
 
 		} else {
 			log.Printf(`error in "GetCellValue", failed to get cell value: %v`, err)
