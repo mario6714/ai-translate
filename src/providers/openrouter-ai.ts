@@ -102,6 +102,26 @@ export default {
           owned_by: "DeepSeek AI",
           auto_fetch: false
         }, { 
+          name: "deepseek/deepseek-chat-v3.1:free",
+          owned_by: "DeepSeek AI",
+          auto_fetch: false
+        }, { 
+          name: "moonshotai/kimi-k2:free",
+          owned_by: "Moonshot AI",
+          auto_fetch: false
+        }, { 
+          name: "openai/gpt-oss-20b:free",
+          owned_by: "openai",
+          auto_fetch: false
+        }, { 
+          name: "openai/gpt-oss-120b:free",
+          owned_by: "openai",
+          auto_fetch: false
+        }, { 
+          name: "x-ai/grok-4-fast:free",
+          owned_by: "X AI",
+          auto_fetch: false
+        }, { 
           name: "openai/gpt-3.5-turbo",
           owned_by: "openai",
           auto_fetch: false
@@ -145,10 +165,6 @@ export default {
           name: "anthropic/claude-3.5-sonnet",
           owned_by: "anthropic",
           auto_fetch: false
-        },*/ { 
-          name: "google/gemma-3-27b-it:free",
-          owned_by: "Google",
-          auto_fetch: false
         }, { 
           name: "google/gemini-2.5-flash",
           owned_by: "Google",
@@ -161,27 +177,18 @@ export default {
           name: "google/gemini-2.5-pro",
           owned_by: "Google",
           auto_fetch: false
+        },*/ { 
+          name: "google/gemma-3-27b-it:free",
+          owned_by: "Google",
+          auto_fetch: false
         }, 
     ]
 }
 
 /*
-    microsoft/wizardlm-2-8x22b
-    cognitivecomputations/dolphin-mixtral-8x7b
-    nousresearch/nous-hermes-yi-34b
-    sophosympatheia/midnight-rose-70b
-    databricks/dbrx-instruct
-    alpindale/magnum-72b
-    anthracite-org/magnum-v2-72b
-
-
     openai/gpt-4.1
-
-    shisa-ai/shisa-v2-llama3.3-70b:free
-    deepseek/deepseek-v3-base:free
-    deepseek/deepseek-prover-v2
-    tngtech/deepseek-r1t-chimera:free
-    openai/o4-mini
+    z-ai/glm-4.5
+    
 */
 
 
