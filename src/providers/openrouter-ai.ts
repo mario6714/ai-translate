@@ -78,6 +78,10 @@ export default {
           owned_by: "Qwen",
           auto_fetch: false
         }, { 
+          name: "qwen/qwen3-coder:free",
+          owned_by: "Qwen",
+          auto_fetch: false
+        }, { 
           name: "deepseek/deepseek-chat-v2.5",
           owned_by: "DeepSeek AI",
           auto_fetch: false
