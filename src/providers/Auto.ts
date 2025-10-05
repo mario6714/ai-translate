@@ -54,7 +54,8 @@ async function DeepLXHandler(text: string) {
 }
 
 async function SugoiHandler(text: string) { 
-    return await fetch(`https://playmak3r-sugoi-v4.hf.space/api/translate?text=${text}`, { method: "POST" }).then(response => { 
+    return await fetch(`https://playmak3r-sugoi-v4.hf.space/api/translate?text=${text}`)
+    .then(response => { 
         if (response.status === 200) { return response.json() }
 
     }).then(response => response?.text)
